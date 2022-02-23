@@ -1,0 +1,21 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/.vscode
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Application/bin
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Application/obj
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Domain/bin
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Domain/obj
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Infrastructure.Identity/bin
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Infrastructure.Identity/obj
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Infrastructure.Persistence/bin
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Infrastructure.Persistence/obj
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Infrastructure.Shared/bin
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.Infrastructure.Shared/obj
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.WebApi/bin
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.WebApi/obj
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.WebApp/bin
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.WebApp/obj
+/VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.WebApp/ClientApp/node_modules
