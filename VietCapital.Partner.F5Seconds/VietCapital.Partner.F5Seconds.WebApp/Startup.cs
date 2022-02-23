@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VietCapital.Partner.F5Seconds.WebApi.Extensions;
+using VietCapital.Partner.F5Seconds.WebApp.Extensions;
 
 namespace VietCapital.Partner.F5Seconds.WebApp
 {
@@ -20,7 +22,10 @@ namespace VietCapital.Partner.F5Seconds.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddSwaggerExtension();
+            services.AddControllers();
+            services.AddApiVersioningExtension();
+            services.AddHealthChecks();
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
@@ -49,7 +54,11 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             app.UseSpaStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseSwaggerExtension();
+            app.UseErrorHandlingMiddleware();
+            app.UseHealthChecks("/health");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
