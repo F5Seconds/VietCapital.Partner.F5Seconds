@@ -27,14 +27,16 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
             {
+                
                 services.AddDbContext<IdentityContext>(options =>
                     options.UseInMemoryDatabase("IdentityDb"));
             }
             else
             {
+                var serverVersion = new MySqlServerVersion(new Version(5, 7, 35));
                 services.AddDbContext<IdentityContext>(options =>
-                options.UseSqlServer(
-                    configuration.GetConnectionString("IdentityConnection"),
+                options.UseMySql(
+                    configuration.GetConnectionString("IdentityConnection"), serverVersion,
                     b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)));
             }
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();

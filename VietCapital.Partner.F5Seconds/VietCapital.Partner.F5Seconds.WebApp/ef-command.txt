@@ -1,0 +1,1 @@
+﻿dotnet ef database update --context IdentityContext --project VietCapital.Partner.F5Seconds\VietCapital.Partner.F5Seconds.WebApp

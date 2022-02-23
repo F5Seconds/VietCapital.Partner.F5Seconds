@@ -23,9 +23,10 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
             }
             else
             {
+                var serverVersion = new MySqlServerVersion(new Version(5, 7, 35));
                 services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(
-                   configuration.GetConnectionString("DefaultConnection"),
+               options.UseMySql(
+                   configuration.GetConnectionString("DefaultConnection"), serverVersion,
                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
             }
             #region Repositories

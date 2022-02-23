@@ -5,29 +5,38 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VietCapital.Partner.F5Seconds.Application;
+using VietCapital.Partner.F5Seconds.Application.Interfaces;
+using VietCapital.Partner.F5Seconds.Infrastructure.Identity;
+using VietCapital.Partner.F5Seconds.Infrastructure.Persistence;
+using VietCapital.Partner.F5Seconds.Infrastructure.Shared;
 using VietCapital.Partner.F5Seconds.WebApi.Extensions;
 using VietCapital.Partner.F5Seconds.WebApp.Extensions;
+using VietCapital.Partner.F5Seconds.WebApp.Services;
 
 namespace VietCapital.Partner.F5Seconds.WebApp
 {
     public class Startup
     {
+        public IConfiguration _config { get; }
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _config = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationLayer();
+            services.AddIdentityInfrastructure(_config);
+            services.AddPersistenceInfrastructure(_config);
+            services.AddSharedInfrastructure(_config);
             services.AddSwaggerExtension();
             services.AddControllers();
             services.AddApiVersioningExtension();
             services.AddHealthChecks();
             services.AddControllersWithViews();
-
+            services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -52,7 +61,6 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
