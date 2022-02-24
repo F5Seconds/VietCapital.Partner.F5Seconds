@@ -23,7 +23,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
             }
             else
             {
-                var serverVersion = new MySqlServerVersion(new Version(5, 7, 35));
+                var serverVersion = new MySqlServerVersion(new Version(10, 5, 10));
                 services.AddDbContext<ApplicationDbContext>(options =>
                options.UseMySql(
                    configuration.GetConnectionString("DefaultConnection"), serverVersion,

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -33,11 +34,14 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity
             }
             else
             {
-                var serverVersion = new MySqlServerVersion(new Version(5, 7, 35));
+                var serverVersion = new MySqlServerVersion(new Version(10, 5, 10));
                 services.AddDbContext<IdentityContext>(options =>
                 options.UseMySql(
                     configuration.GetConnectionString("IdentityConnection"), serverVersion,
-                    b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)));
+                    b => {
+                        b.SchemaBehavior(MySqlSchemaBehavior.Ignore);
+                        b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName); 
+                    }));
             }
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
             #region Services

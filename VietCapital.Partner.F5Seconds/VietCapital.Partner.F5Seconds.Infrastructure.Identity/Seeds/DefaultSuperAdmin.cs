@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Crypto.Prng.Drbg;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Enums;
 using VietCapital.Partner.F5Seconds.Infrastructure.Identity.Models;
