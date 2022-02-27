@@ -54,6 +54,13 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
                 });
             });
         }
+        public static void AddNewtonsoftJson(this IServiceCollection services)
+        {
+            services.AddControllers()
+            .AddNewtonsoftJson(o => o.SerializerSettings.ReferenceLoopHandling =
+                Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+        }
+        
         public static void AddApiVersioningExtension(this IServiceCollection services)
         {
             services.AddApiVersioning(config =>
