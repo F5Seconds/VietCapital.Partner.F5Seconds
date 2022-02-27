@@ -91,7 +91,8 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                UserName = request.UserName
+                UserName = request.UserName,
+                EmailConfirmed = true
             };
             var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
             if (userWithSameEmail == null)
@@ -100,10 +101,12 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
-                    var verificationUri = await SendVerificationEmail(user, origin);
+                    return new Response<string>(user.Id, message: $"Đăng ký thành công");
+
+                    // var verificationUri = await SendVerificationEmail(user, origin);
                     //TODO: Attach Email Service here and configure it via appsettings
-                    await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest() { From = "mail@codewithmukesh.com", To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration" });
-                    return new Response<string>(user.Id, message: $"User Registered. Please confirm your account by visiting this URL {verificationUri}");
+                    // await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest() { From = "mail@codewithmukesh.com", To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration" });
+                    // return new Response<string>(user.Id, message: $"User Registered. Please confirm your account by visiting this URL {verificationUri}");
                 }
                 else
                 {
@@ -173,6 +176,47 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             //Email Service Call Here
             return verificationUri;
         }
+        public async Task<object> InfoUser(string username)
+        {
+            var nhanvien = await _userManager.FindByNameAsync(username);
+            var role = await _userManager.GetRolesAsync(nhanvien);
+            var claim = await _userManager.GetClaimsAsync(nhanvien);
+            var roles = _roleManager.Roles.ToList();
+            var arr = new List<string>();
+            foreach (var item in roles)
+            {
+                if (role.IndexOf(item.Name) != -1)
+                {
+                    var claim_role = await _roleManager.GetClaimsAsync(item);
+                    foreach (var items in claim_role)
+                    {
+                        arr.Add(items.Value);
+                    }
+                }
+            }
+            if (nhanvien != null)
+            {
+                return new
+                {
+                    Id = nhanvien.Id,
+                    Email = nhanvien.Email,
+                    Username = nhanvien.UserName,
+                    Result = true,
+                    role = role,
+                    roleClaim = arr
+                };
+            }
+            else
+            {
+                return new
+                {
+                    Result = false,
+                    Errors = new List<string>(){
+                                                "Invalid payload"
+                                            }
+                };
+            }
+        }
 
         public async Task<Response<string>> ConfirmEmailAsync(string userId, string code)
         {
@@ -200,12 +244,13 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             };
         }
 
-        public async Task ForgotPassword(ForgotPasswordRequest model, string origin)
+        public async Task<object> ForgotPassword(ForgotPasswordRequest model, string origin)
         {
             var account = await _userManager.FindByEmailAsync(model.Email);
 
             // always return ok response to prevent email enumeration
-            if (account == null) return;
+            if (account == null) 
+            return null;
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(account);
             var route = "api/account/reset-password/";
@@ -217,6 +262,8 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 Subject = "Reset Password",
             };
             await _emailService.SendAsync(emailRequest);
+            return emailRequest;
+             
         }
 
         public async Task<Response<string>> ResetPassword(ResetPasswordRequest model)
@@ -233,6 +280,253 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 throw new ApiException($"Error occured while reseting the password.");
             }
         }
+
+
+        /////role
+
+        public async Task<object> GetAllRoles()
+        {
+            var roles = _roleManager.Roles.ToList();
+            return roles;
+        }
+
+        public async Task<object> CreateRole(string roleName)
+        {
+            var roleExist = await _roleManager.RoleExistsAsync(roleName);
+            if (!roleExist)
+            {
+                //create the roles and seed them to the database: Question 1
+                var roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+
+                if (roleResult.Succeeded)
+                {
+                    return new { result = $"Role {roleName} added successfully" };
+                }
+                else
+                {
+                    return new { error = $"Issue adding the new {roleName} role" };
+                }
+            }
+
+            return new { error = "Role already exist" };
+        }
+
+        public async Task<object> AddUserToRole(string userName, string roleName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user != null)
+            {
+                var result = await _userManager.AddToRoleAsync(user, roleName);
+                var role = await _roleManager.FindByNameAsync(roleName);
+                var roles = await _roleManager.GetClaimsAsync(role);
+                foreach (var item in roles)
+                {
+                    await _userManager.AddClaimAsync(user, new Claim(item.Type, item.Value));
+                }
+                return new { result = $"Thêm thành công" };
+
+            }
+
+            return new { result = $"Nhân viên không tồn tại" };
+        }
+
+        public async Task<object> AddUsersToRole(List<SelectNhanVien> listuser, string roleName)
+        {
+            foreach (var item in listuser)
+            {
+                var user = await _userManager.FindByEmailAsync(item.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.AddToRoleAsync(user, roleName);
+                    var role = await _roleManager.FindByNameAsync(roleName);
+                    var roles = await _roleManager.GetClaimsAsync(role);
+                    foreach (var item1 in roles)
+                    {
+                        await _userManager.AddClaimAsync(user, new Claim(item1.Type, item1.Value));
+                    }
+                }
+            }
+            return new { result = $"Thêm thành công" };
+        }
+        public async Task<object> RemoveUserFromRole(string username, string roleName)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user != null)
+            {
+                var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+
+                if (result.Succeeded)
+                {
+                    var role = await _roleManager.FindByNameAsync(roleName);
+                    var roles = await _roleManager.GetClaimsAsync(role);
+                    foreach (var item in roles)
+                    {
+                        await _userManager.RemoveClaimAsync(user, new Claim(item.Type, item.Value));
+                    }
+                    return new { result = $"User {user.UserName} removed from the {roleName} role" };
+                }
+                else
+                {
+                    return new { error = $"Error: Unable to removed user {user.UserName} from the {roleName} role" };
+                }
+            }
+
+            // User doesn't exist
+            return new { error = "Unable to find user" };
+        }
+
+        public async Task<object> DeleteRole(string id)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+            var users = await _userManager.GetUsersInRoleAsync(role.Name);
+            if (users.Count == 0)
+            {
+                var rolename = role.Name;
+                if (role != null)
+                {
+                    var result = await _roleManager.DeleteAsync(role);
+
+                    if (result.Succeeded)
+                    {
+                        return new { result = $"removed from the {rolename} role" };
+                    }
+                    else
+                    {
+                        return new { error = $"Error: Unable to removed  the {rolename} role" };
+                    }
+                }
+                return new { error = "Unable to find role" };
+            }
+            return new { error = "Đã có nhân viên trong quyền này" };
+
+
+        }
+        public async Task<object> UpdateRole(string id, string newRoleName)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+            var users = await _userManager.GetUsersInRoleAsync(role.Name);
+            var rolename = role.Name;
+            if (role != null)
+            {
+                role.Name = newRoleName;
+                var result = await _roleManager.UpdateAsync(role);
+
+                if (result.Succeeded)
+                {
+                    return new { result = $"update from the {rolename} role to {newRoleName}" };
+                }
+                else
+                {
+                    return new { error = $"Error: Unable to update  the {rolename} role to {newRoleName}" };
+                }
+            }
+            return new { error = "Unable to find role" };
+
+
+        }
+
+
+        public async Task<object> GetAllUsersByRole(string id)
+        {
+            var roles = await _roleManager.FindByIdAsync(id);
+            var users = await _userManager.GetUsersInRoleAsync(roles.Name);
+            List<string> danhsachnhanvien = new List<string>();
+            foreach (var item in users)
+            {
+                danhsachnhanvien.Add(item.UserName);
+            }
+            return new { listUser = danhsachnhanvien };
+        }
+        //clam
+        public async Task<object> AddClaimToRoles(string role, string claimName, string value)
+        {
+            var getrole = await _roleManager.FindByNameAsync(role);
+            if (getrole != null)
+            {
+                var getclaim = await _roleManager.GetClaimsAsync(getrole);
+                foreach (var item in getclaim)
+                {
+                    if (item.Value == value && item.Type == claimName)
+                    {
+                        return new { error = $"Error: The claim {claimName} to the  User {getrole.Name} has been use" };
+                    }
+                }
+                var userClaim = new Claim(claimName, value);
+                var result = await _roleManager.AddClaimAsync(getrole, userClaim);
+
+                if (result.Succeeded)
+                {
+                    var roles = await _roleManager.FindByNameAsync(role);
+                    var users = await _userManager.GetUsersInRoleAsync(roles.Name);
+                    foreach (var item in users)
+                    {
+                        await _userManager.AddClaimAsync(item, new Claim(claimName, value));
+                    }
+                    return new { result = $"the claim {claimName} add to the  Role {getrole.Name}" };
+                }
+                else
+                {
+                    return new { error = $"Error: Unable to add the claim {claimName} to the  Role {getrole.Name}" };
+                }
+            }
+
+            // User doesn't exist
+            return new { error = "Unable to find user" };
+        }
+
+        public async Task<object> RemoveClaimToRole(string role, string claimName, string value)
+        {
+            var getrole = await _roleManager.FindByNameAsync(role);
+            var getclaim = await _roleManager.GetClaimsAsync(getrole);
+            Claim claim = null;
+            if (getclaim != null)
+            {
+                claim = getclaim.FirstOrDefault(c => c.Type == claimName && c.Value == value);
+            }
+            if (claim == null)
+            {
+                return new { error = "Unable to find claim" };
+            }
+            if (getrole != null)
+            {
+
+                var result = await _roleManager.RemoveClaimAsync(getrole, claim);
+
+
+                if (result.Succeeded)
+                {
+                    var roles = await _roleManager.FindByNameAsync(role);
+                    var users = await _userManager.GetUsersInRoleAsync(roles.Name);
+                    foreach (var item in users)
+                    {
+                        await _userManager.RemoveClaimAsync(item, new Claim(claimName, value));
+                    }
+                    return new { result = $"the claim {claimName} remove to the  Role {getrole.Name}" };
+                }
+                else
+                {
+                    return new { error = $"Error: Unable to remove the claim {claimName} to the  Role {getrole.Name}" };
+                }
+            }
+
+            // User doesn't exist
+            return new { error = "Unable to find user" };
+        }
+
+        public async Task<object> GetAllClaimsInRole(string rolename)
+        {
+            var role = await _roleManager.FindByNameAsync(rolename);
+            var roles = await _roleManager.GetClaimsAsync(role);
+            List<string> arr = new List<string>();
+
+            foreach (var item in roles)
+            {
+                arr.Add(item.Value);
+            }
+            return new { clams = arr };
+        }
+
     }
 
 }

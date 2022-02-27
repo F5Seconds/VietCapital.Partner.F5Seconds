@@ -30,6 +30,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             services.AddApplicationLayer();
             services.AddIdentityInfrastructure(_config);
             services.AddPersistenceInfrastructure(_config);
+            services.AddNewtonsoftJson();
             services.AddSharedInfrastructure(_config);
             services.AddSwaggerExtension();
             services.AddControllers();
