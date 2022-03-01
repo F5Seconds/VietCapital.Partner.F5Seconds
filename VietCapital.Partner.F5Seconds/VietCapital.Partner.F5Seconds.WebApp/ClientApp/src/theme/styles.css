@@ -1,0 +1,735 @@
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-size: 14px;
+}
+.logo {
+  height: 40px;
+  margin-top: 2px;
+}
+.listChukyso li {
+  border-bottom: 1px solid #eee;
+}
+.listChukyso li:first-child {
+  border-top: 1px solid #eee;
+}
+.SnackbarContainer-top {
+  top: 55px !important;
+}
+.MuiOutlinedInput-root {
+  max-height: 40px;
+}
+
+.boxFeatures .MuiPaper-root {
+  padding: 2px 10px 2px 0px;
+}
+.boxChucNang,
+.boxDemo {
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+.boxChucNang .title,
+.boxDemo .title {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+.boxChucNang .boxNoiDung,
+.boxDemo .boxNoiDung {
+  padding: 10px;
+}
+.boxChucNang .boxBtnChucNang {
+  padding: 2px;
+  border-top: 1px solid #eee;
+}
+.MuiButton-root.btnAction:hover {
+  background: #2e7d32 !important;
+  color: #fff !important;
+  box-shadow: none;
+}
+.MuiButton-root.btnError:hover {
+  background: #d90606 !important;
+  color: #fff !important;
+  box-shadow: none;
+}
+.MuiDialogActions-root {
+  padding: 16px !important;
+}
+.MuiCardHeader-root {
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+.MuiCardActions-root {
+  padding: 16px;
+  justify-content: end;
+  border-top: 1px solid #eee;
+}
+.MuiTabPanel-root {
+  padding: 16px;
+}
+.MuiPaper-root {
+  text-align: left;
+}
+.m0 {
+  margin: 0;
+}
+.boxBtnActive .MuiButtonBase-root {
+  border: 1px solid #f47373;
+  height: 34px;
+  width: 34px;
+}
+.boxBtnActive .MuiButtonBase-root.MuiIconButton-colorEdit {
+  border: 1px solid #697689;
+}
+.boxBtnActive .MuiButtonBase-root.MuiIconButton-colorDelete {
+  border: 1px solid #f47373;
+}
+.boxBtnActive .MuiButtonBase-root:first-child {
+  margin-right: 10px;
+}
+.boxTab {
+  border: 1px solid #eee;
+  border-radius: 6px;
+}
+.boxPerson {
+  position: relative;
+}
+.boxPersonCheck {
+  position: absolute;
+  bottom: -5px;
+  right: 0;
+  background: #fff;
+  border-radius: 50%;
+}
+.boxStatusTable {
+  width: fit-content;
+  margin: 0 auto;
+  font-size: 12px;
+}
+.boxSuccess {
+  color: #42b814;
+}
+.boxWaiting {
+  color: #0277bd;
+}
+.boxReject {
+  color: #f44336;
+}
+.boxFrm {
+  background: #eee;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+.boxFrm button {
+  background: #fff;
+}
+.btnDefault {
+  border: 1px solid #999;
+  color: #999;
+}
+.btnDefault:hover {
+  border: 1px solid #1854a5;
+  color: #1854a5;
+}
+.itemField {
+  margin-bottom: 15px;
+  width: 100%;
+  font-size: 14px;
+}
+.itemArea {
+  padding: 10px;
+  border-radius: 6px;
+  resize: vertical;
+  word-wrap: break-word;
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  box-shadow: none;
+  border: 1px solid #eee;
+}
+thead {
+  background: #fafafa;
+}
+thead th {
+  font-weight: bold !important;
+}
+.setPosition .MuiPaper-elevation8 {
+  overflow-y: initial;
+  overflow-x: initial;
+}
+.boxHeader {
+  display: flex;
+  justify-content: space-between;
+}
+.boxOwnerCommentHeader,
+.boxOtherCommentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.btnMenu {
+  min-width: 33px;
+  min-height: 33px;
+  padding: 0px;
+}
+.btnMenu:hover {
+  cursor: pointer;
+}
+.menuItem {
+  font-size: 14px;
+  /* color: #555; */
+  border-bottom: 1px solid #eee;
+}
+.menuItem:last-child {
+  border-bottom: none;
+}
+.MuiMenu-list {
+  padding: 0px !important;
+}
+.itemAreaOtherUser {
+  margin-left: 40px;
+  width: calc(100% - 40px) !important;
+}
+.boxOtherComment {
+  margin-bottom: 10px;
+}
+.boxOtherComment:last-child {
+  margin-bottom: 0px;
+}
+.boxOtherComment .boxOtherComment {
+  margin-left: 40px;
+  width: calc(100% - 40px) !important;
+}
+.MuiTimelineItem-root:before {
+  content: none;
+}
+h4 {
+  font-weight: bold !important;
+}
+h5 {
+  font-size: 14px !important;
+  font-weight: bold !important;
+  color: #003268;
+}
+.tlTime {
+  font-size: 12px;
+}
+.tlContent {
+  font-size: 12px;
+}
+a {
+  color: #555;
+}
+a:active {
+  color: #4caf50 !important;
+}
+.boxSidebar {
+  background: #0c56a5;
+}
+.boxSidebar .MuiTypography-root {
+  color: #fff;
+}
+.boxSidebar a {
+  color: #fff;
+}
+.boxSidebar a.active {
+  opacity: 0.6;
+}
+.boxSidebar ul li:last-child {
+  position: fixed;
+  bottom: 0;
+  background: #023164;
+  left: 0;
+  width: 199px;
+  padding-left: 22px;
+  /* display: none; */
+}
+.boxContent ul {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.mainStatus {
+  padding: 8px 24px;
+  background-color: #fff;
+  box-shadow: 0 0 0 1px rgb(63 63 68 / 5%), 0 1px 2px 0 rgb(63 63 68 / 15%);
+  text-transform: uppercase;
+}
+.MuiDialogTitle-root {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+.MuiAvatar-root {
+  font-size: 13px;
+}
+.MuiLink-root {
+  text-decoration: none;
+}
+.fs-small {
+  font-size: 14px !important;
+  margin-bottom: 3px;
+}
+.clearfix {
+  overflow: auto;
+}
+.MuiCardHeader-title {
+  font-weight: bold;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.hoverBox {
+  position: relative;
+}
+.hoverBox:hover {
+  background: #f3f9ff;
+}
+.btnDel {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: none;
+}
+.hoverBox:hover .btnDel {
+  display: block;
+  cursor: pointer;
+}
+.hoverBox:hover .btnDel:hover {
+  opacity: 0.5;
+}
+.boxBtn {
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 8px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.boxList {
+  width: 280px;
+  position: relative;
+}
+.boxList .contentList {
+  position: fixed;
+  width: 264px;
+}
+.boxList.showBoxList {
+  transform: rotate(90deg);
+  position: fixed;
+  left: 77px;
+  top: 180px;
+  padding: 0;
+  height: 50px;
+}
+.boxMainContent {
+  width: calc(100% - 280px);
+  position: relative;
+}
+.boxMainContent.showBoxList {
+  width: calc(100% - 32px);
+  margin-left: 32px;
+}
+.btnToggle.showBoxList {
+  transform: rotate(90deg);
+}
+.boxAttachment {
+  width: 280px;
+}
+.boxMain {
+  width: calc(100% - 280px);
+  position: relative;
+}
+.boxBtnDetails {
+  position: absolute;
+  top: 25px;
+  right: 10px;
+}
+.boxNoti {
+  position: absolute;
+  left: 115px;
+  top: 15px;
+  height: 22px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  z-index: 9;
+  padding: 0 10px 0 5px;
+  font-weight: bold;
+  color: #f44336;
+  border: 1px solid #f44336;
+  font-size: 12px;
+}
+.boxNoti:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+.boxNoti:hover [data-testid='NotificationsNoneIcon'] {
+  -webkit-animation: none;
+  animation: none;
+}
+
+.showNoti {
+  position: fixed;
+  left: 0px;
+  top: 10px;
+  z-index: 9;
+  transition: all ease 0.3s;
+  display: none;
+}
+.contentNoti.showNoti {
+  transition: all ease 0.3s;
+  display: block;
+  left: 200px;
+  box-shadow: 1px 2px 5px #a5a5a5;
+  border-radius: 8px;
+}
+.contentNoti.showNoti ::-webkit-scrollbar {
+  display: none;
+}
+.btnClosePopup {
+  position: absolute;
+  z-index: 9;
+  color: #f44336;
+  right: -10px;
+  top: -10px;
+  background: #fff;
+  border-radius: 50%;
+}
+.btnClosePopup:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+.contentNotiAction .MuiSvgIcon-root:hover {
+  opacity: 0.7;
+  cursor: pointer;
+}
+.btnCheck {
+  width: 50px;
+  padding: 0px 10px;
+  text-align: center;
+}
+.btnToggle {
+  background: #ebf4ff;
+  border-radius: 50%;
+  padding: 3px;
+}
+.btnToggle:hover {
+  cursor: pointer;
+  color: #1854a5;
+  background: #cce1fb;
+}
+.filepond--credits {
+  display: none;
+}
+.listTabs {
+  min-height: 40px !important;
+}
+.listTabs .MuiTab-root {
+  font-size: 10px;
+  padding: 0px 5px;
+  min-height: 40px;
+  flex: 1;
+}
+.contentTabs {
+  padding: 5px 0px;
+  /* height: calc(100vh - 170px);
+    overflow-y: scroll; */
+  max-height: 446px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.itemComment {
+  display: none;
+}
+.itemComment.showComment {
+  display: block;
+}
+.boxFlexCenter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+}
+.itemStatus {
+  position: relative;
+  margin: 0px 8px;
+  padding: 4px 8px;
+}
+.itemStatus::before {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 5px;
+  width: 1px;
+  height: 15px;
+  background: #f1f7ff;
+}
+.itemStatus:last-child::before {
+  content: none;
+}
+.itemStatus:first-child {
+  margin-left: 0px;
+}
+.boxFilter button {
+  position: relative;
+}
+.boxFilter button .number {
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  background: #f44336;
+  padding: 5px;
+  border-radius: 50%;
+  height: 18px;
+  width: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 11px;
+}
+.listFiles {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 10px;
+}
+.listFiles .title {
+  background: #eee;
+  padding: 10px 10px;
+  font-weight: bold;
+}
+.listFiles li {
+  position: relative;
+  list-style: none;
+  padding: 12px 0px;
+  border-bottom: 1px solid #eee;
+}
+.listFiles li:hover {
+  background: #f3f9ff;
+}
+.listFiles li .iconDel {
+  position: absolute;
+  right: 5px;
+  top: 8px;
+  cursor: pointer;
+}
+.listFiles li .iconDel:hover {
+  opacity: 0.8;
+}
+.titleRadio {
+  font-size: 12px;
+}
+.lblRadio .MuiFormControlLabel-label {
+  font-size: 14px;
+}
+.listFileAttached li {
+  border-bottom: 1px solid #eee;
+  min-height: 36px;
+}
+.listFileAttached li:first-child {
+  border-top: 1px solid #eee;
+}
+.contentAttched {
+  padding-left: 10px;
+}
+.contentAttched .MuiTypography-root {
+  font-size: 12px;
+}
+pre {
+  white-space: pre-wrap; /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+  color: #555;
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+}
+.boxPercent {
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.boxPercentSlider {
+  padding: 0px 20px;
+}
+.boxMoreInfo {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.wordWrap {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.mainTitle {
+  font-size: 14px;
+  margin-left: 15px;
+}
+.MuiToolbar-root {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+@media screen and (max-width: 1366px) {
+  .btnUpload {
+    font-size: 10px;
+  }
+  h4 {
+    font-size: 14px !important;
+    font-weight: bold !important;
+  }
+  h5 {
+    font-size: 14px !important;
+    font-weight: bold !important;
+  }
+  .fs-small {
+    margin-bottom: 2px;
+    font-size: 14px !important;
+  }
+  .boxStatus .MuiButton-root {
+    font-size: 10px;
+  }
+  .boxFilter .MuiButton-root {
+    font-size: 10px;
+  }
+  .MuiTableCell-root {
+    font-size: 12px;
+  }
+  .MuiTab-root {
+    font-size: 12px;
+  }
+  .boxList {
+    width: 250px;
+  }
+  .boxList .contentList {
+    width: 234px;
+  }
+  .boxMainContent {
+    width: calc(100% - 250px);
+  }
+  .boxList.showBoxList {
+    transform: rotate(90deg);
+    position: fixed;
+    left: 90px;
+    top: 161px;
+    padding: 0;
+  }
+  .boxSelect {
+    font-size: 14px;
+  }
+  .MuiInputBase-root.MuiInput-root,
+  .MuiSelect-root {
+    font-size: 14px;
+  }
+  ::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    font-size: 14px;
+  }
+  ::-moz-placeholder {
+    /* Firefox 19+ */
+    font-size: 14px;
+  }
+  :-ms-input-placeholder {
+    /* IE 10+ */
+    font-size: 14px;
+  }
+  :-moz-placeholder {
+    /* Firefox 18- */
+    font-size: 14px;
+  }
+  .boxDBItem .MuiCardContent-root {
+    padding: 10px !important;
+  }
+  .boxDBItem .MuiAvatar-root {
+    width: 34px !important;
+    height: 34px !important;
+  }
+  .boxDBItem .MuiSvgIcon-root {
+    font-size: 1.2rem !important;
+  }
+  .textSecondary,
+  .MuiTypography-h6 {
+    font-size: 12px !important;
+  }
+}
+#pdf-controls {
+  padding-right: 43px;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+::-webkit-scrollbar-track {
+  border: none;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px #999;
+  box-shadow: inset 0 0 6px #999;
+  background-color: '#999';
+}
+.textInput-readOnly label {
+  color: #6b778c !important;
+}
+.textInput-readOnly div {
+  color: #000 !important;
+}
+
+.textInput-readOnly div input {
+  -webkit-text-fill-color: unset !important;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+@media screen and (max-width: 1000px) {
+  .mainStatus {
+    display: block;
+  }
+}
+@media screen and (max-width: 768px) {
+}
