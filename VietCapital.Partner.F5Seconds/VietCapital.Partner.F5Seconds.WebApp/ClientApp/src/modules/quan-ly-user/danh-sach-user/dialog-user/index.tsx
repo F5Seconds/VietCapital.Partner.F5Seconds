@@ -1,19 +1,27 @@
-import {useForm} from 'react-hook-form';
-import React, {FC, useState} from 'react';
-import {DialogBase} from '../../../../components/base';
 import {CircularProgress, Grid, Stack} from '@mui/material';
-import {InputField} from '../../../../components/hook-form';
+import React, {FC, useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {DialogBase} from '../../../../components/base';
 import LoadingOverlay from '../../../../components/base/loading-overlay';
+import {InputField} from '../../../../components/hook-form';
 
 interface Props {
   open: boolean;
-  id?: number | string;
+  id?: number | string | null;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit: (data: any) => void;
 }
+
 const DialogUser: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
   const form = useForm({
-    defaultValues: {},
+    defaultValues: {
+      lastName: '',
+      firstName: '',
+      email: '',
+      userName: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   const {
@@ -21,11 +29,13 @@ const DialogUser: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
     formState: {isSubmitting},
   } = form;
   const [isLoading, setIsLoading] = useState(false);
+
   return (
     <DialogBase
       open={open}
-      title={id ? 'Cập nhật bộ phận' : 'Tạo bộ phận'}
+      title={id ? 'Chỉnh sửa user' : 'Tạo user mới'}
       onClose={onClose}
+      textPositive={id ? 'Cập nhật' : 'Tạo'}
       onSubmit={handleSubmit(onSubmit)}
     >
       {isLoading ? (
@@ -76,7 +86,7 @@ const DialogUser: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
           <Grid item xs={12} sm={6} xl={4}>
             <InputField
               form={form}
-              name="username"
+              name="userName"
               label="Tên đăng nhập"
               rules={{
                 required: {
@@ -91,6 +101,20 @@ const DialogUser: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
               form={form}
               name="password"
               label="Mật khẩu"
+              type="password"
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Không được để trống',
+                },
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} xl={4}>
+            <InputField
+              form={form}
+              name="confirmPassword"
+              label="Nhập lại mật khẩu"
               type="password"
               rules={{
                 required: {

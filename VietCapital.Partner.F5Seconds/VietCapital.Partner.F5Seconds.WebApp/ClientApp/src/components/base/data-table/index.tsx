@@ -24,7 +24,7 @@ interface Props {
   columns: Array<Column>;
   rows: Array<any>;
   height?: number;
-  pagination: {
+  pagination?: {
     rowsPerPage: number;
     page: number;
     onPageChange?: (page: number) => void; //page

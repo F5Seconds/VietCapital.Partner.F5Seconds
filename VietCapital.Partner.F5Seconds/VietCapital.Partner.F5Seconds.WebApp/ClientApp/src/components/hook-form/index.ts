@@ -1,3 +1,2 @@
-import InputField from './input-field';
-
-export {InputField};
+export {default as InputField} from './input-field';
+export {default as AutocompleteAsyncField} from './autocomplete-async-field';

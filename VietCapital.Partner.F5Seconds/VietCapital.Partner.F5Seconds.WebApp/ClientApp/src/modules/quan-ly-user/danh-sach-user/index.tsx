@@ -6,12 +6,18 @@ import queryString from 'query-string';
 import {useWindowDimensions} from '../../../hooks';
 import {Button, Stack} from '@mui/material';
 import DialogUser from './dialog-user';
+import accountApi, {Account} from '../../../apis/account-api';
+import {useSnackbar} from 'notistack';
 
 const DanhSachUser = () => {
   const location = useLocation();
+  const {enqueueSnackbar} = useSnackbar();
   const queryParams = queryString.parse(location.search);
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState<{open: boolean; id?: number | null}>({
+    open: false,
+    id: null,
+  });
   const [isLoading, setIsLoading] = useState(false);
   const {height} = useWindowDimensions();
 
@@ -31,7 +37,7 @@ const DanhSachUser = () => {
     hasNext: false,
   });
 
-  const handleOpen = () => setOpen(prev => !prev);
+  const handleCloseDialog = () => setOpenDialog(prev => ({...prev, open: false}));
 
   const columns = [
     {
@@ -74,12 +80,33 @@ const DanhSachUser = () => {
       width: 160,
     },
   ];
+
+  const handleSubmitUser = async (data: Account) => {
+    try {
+      const res = await accountApi.register(data);
+      if (res.succeeded) {
+        enqueueSnackbar('Thêm mới user thành công', {variant: 'success'});
+      } else {
+        enqueueSnackbar(res.message, {variant: 'error'});
+      }
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+      //   enqueueSnackbar(error?.message, {variant: 'error'});
+    }
+  };
   return (
     <div>
       <Header title="Danh sách user" />
       <div style={{padding: 16}}>
         <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
-          <Button variant="contained" color="success" onClick={handleOpen}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              setOpenDialog(prev => ({open: true}));
+            }}
+          >
             Thêm user
           </Button>
         </Stack>
@@ -89,7 +116,7 @@ const DanhSachUser = () => {
           loading={isLoading}
           height={height - 200}
           onRowClick={row => {
-            navigate(`chi-tiet/${row.id}`);
+            setOpenDialog(prev => ({...prev, open: true, id: row.id}));
           }}
           pagination={{
             show: true,
@@ -105,7 +132,12 @@ const DanhSachUser = () => {
           }}
         />
       </div>
-      <DialogUser open={open} onSubmit={handleOpen} onClose={handleOpen} />
+      <DialogUser
+        open={openDialog.open}
+        id={openDialog.id}
+        onSubmit={handleSubmitUser}
+        onClose={handleCloseDialog}
+      />
     </div>
   );
 };

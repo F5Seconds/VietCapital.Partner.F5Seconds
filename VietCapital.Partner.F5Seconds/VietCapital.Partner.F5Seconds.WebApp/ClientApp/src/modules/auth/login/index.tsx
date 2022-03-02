@@ -6,7 +6,7 @@ import {accountApi} from '../../../apis';
 import {useSnackbar} from 'notistack';
 import {Navigate, useNavigate} from 'react-router';
 import {useAppSelector, useAppDispatch} from '../../../redux/hooks';
-import {selectJWT, setAuth} from '../../../redux/reducer/auth';
+import {selectJWT, setAuth} from '../../../redux/slice/auth';
 
 interface defaultValues {
   username: string;

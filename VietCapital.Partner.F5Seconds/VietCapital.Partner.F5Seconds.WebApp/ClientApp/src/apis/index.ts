@@ -1,1 +1,1 @@
-export {default as accountApi} from './account';
+export {default as accountApi} from './account-api';

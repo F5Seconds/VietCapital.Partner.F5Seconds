@@ -6,7 +6,7 @@ const LoadingOverlay: FC<{open: boolean}> = ({open}) => {
     <Backdrop
       sx={{
         color: '#fff',
-        zIndex: theme => theme.zIndex.drawer + 10,
+        zIndex: theme => theme.zIndex.drawer + 100,
         width: '100%',
         height: '100%',
       }}
