@@ -19,10 +19,12 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
             _products = dbContext.Set<Product>();
         }
 
-        public Task<bool> IsUniqueBarcodeAsync(string barcode)
+        public async Task<List<Product>> GetByNameAsync(string Name)
         {
-            return _products
-                .AllAsync(p => p.Barcode != barcode);
+            return await _products.ToListAsync();
         }
+            
+
+        
     }
 }

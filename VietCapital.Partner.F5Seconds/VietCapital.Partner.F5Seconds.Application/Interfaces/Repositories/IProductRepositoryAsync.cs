@@ -8,6 +8,8 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories
 {
     public interface IProductRepositoryAsync : IGenericRepositoryAsync<Product>
     {
-        Task<bool> IsUniqueBarcodeAsync(string barcode);
+        // Task<bool> IsUniqueBarcodeAsync(string barcode);
+
+        Task<List<Product>>GetByNameAsync(string Name);
     }
 }

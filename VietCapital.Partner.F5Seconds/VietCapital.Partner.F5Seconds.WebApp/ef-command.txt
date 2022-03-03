@@ -1,1 +1,2 @@
 ﻿dotnet ef database update --context IdentityContext --project VietCapital.Partner.F5Seconds\VietCapital.Partner.F5Seconds.WebApp
+dotnet ef migrations add CreateTableProduct --project VietCapital.Partner.F5Seconds\VietCapital.Partner.F5Seconds.WebApp
