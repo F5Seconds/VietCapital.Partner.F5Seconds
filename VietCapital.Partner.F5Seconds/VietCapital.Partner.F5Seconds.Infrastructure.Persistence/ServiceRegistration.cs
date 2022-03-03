@@ -16,19 +16,13 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
     {
         public static void AddPersistenceInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            if (configuration.GetValue<bool>("UseInMemoryDatabase"))
-            {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseInMemoryDatabase("ApplicationDb"));
-            }
-            else
-            {
-                var serverVersion = new MySqlServerVersion(new Version(10, 5, 10));
-                services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseMySql(
-                   configuration.GetConnectionString("DefaultConnection"), serverVersion,
-                   b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-            }
+            
+            var serverVersion = new MySqlServerVersion(new Version(10, 5, 10));
+            services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseMySql(
+                configuration.GetConnectionString("DefaultConnection"), serverVersion,
+                //b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                b => b.MigrationsAssembly("VietCapital.Partner.F5Seconds.WebMvc")));
             #region Repositories
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
             services.AddTransient<IProductRepositoryAsync, ProductRepositoryAsync>();

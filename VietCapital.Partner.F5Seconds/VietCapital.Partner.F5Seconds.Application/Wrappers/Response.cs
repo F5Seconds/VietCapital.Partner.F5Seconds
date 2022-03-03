@@ -9,6 +9,13 @@ namespace VietCapital.Partner.F5Seconds.Application.Wrappers
         public Response()
         {
         }
+        public Response(bool succeeded, T data, string message = null, List<string> error = null)
+        {
+            Succeeded = succeeded;
+            Message = message;
+            Data = data;
+            Errors = error;
+        }
         public Response(T data, string message = null)
         {
             Succeeded = true;

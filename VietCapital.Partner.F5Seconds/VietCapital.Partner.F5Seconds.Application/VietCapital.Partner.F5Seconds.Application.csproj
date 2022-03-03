@@ -19,5 +19,9 @@
   <ItemGroup>
     <ProjectReference Include="..\VietCapital.Partner.F5Seconds.Domain\VietCapital.Partner.F5Seconds.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\Products\Commands\" />
+    <Folder Include="Features\Products\Queries\" />
+  </ItemGroup>
 
 </Project>

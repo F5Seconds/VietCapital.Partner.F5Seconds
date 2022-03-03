@@ -26,24 +26,17 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity
     {
         public static void AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            if (configuration.GetValue<bool>("UseInMemoryDatabase"))
-            {
-                
-                services.AddDbContext<IdentityContext>(options =>
-                    options.UseInMemoryDatabase("IdentityDb"));
-            }
-            else
-            {
-                var serverVersion = new MySqlServerVersion(new Version(10, 5, 10));
-                services.AddDbContext<IdentityContext>(options =>
-                options.UseMySql(
-                    configuration.GetConnectionString("IdentityConnection"), serverVersion,
-                    b => {
-                        b.SchemaBehavior(MySqlSchemaBehavior.Ignore);
-                        b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName); 
-                    }));
-            }
-            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
+            
+            var serverVersion = new MySqlServerVersion(new Version(10, 5, 10));
+            services.AddDbContext<IdentityContext>(options =>
+            options.UseMySql(
+                configuration.GetConnectionString("IdentityConnection"), serverVersion,
+                b => {
+                    b.SchemaBehavior(MySqlSchemaBehavior.Ignore);
+                    b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName); 
+                }));
+            services
+                .AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
             #region Services
             services.AddTransient<IAccountService, AccountService>();
             #endregion

@@ -22,7 +22,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
         public Task<bool> IsUniqueBarcodeAsync(string barcode)
         {
             return _products
-                .AllAsync(p => p.Barcode != barcode);
+                .AllAsync(p => p.Code != barcode);
         }
     }
 }
