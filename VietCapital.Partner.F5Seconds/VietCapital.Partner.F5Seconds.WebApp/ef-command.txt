@@ -1,1 +1,2 @@
 ﻿dotnet ef database update --context IdentityContext --project VietCapital.Partner.F5Seconds\VietCapital.Partner.F5Seconds.WebApp
+docker build . -t vietcapital.F5Seconds.vn:v.1.0 --build-arg REACT_APP_PREFIX_URL=vietcapital
