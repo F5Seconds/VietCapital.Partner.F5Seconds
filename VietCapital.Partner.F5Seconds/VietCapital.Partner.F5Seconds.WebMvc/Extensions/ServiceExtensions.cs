@@ -9,6 +9,7 @@ using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
 using VietCapital.Partner.F5Seconds.WebMvc.Consumer;
+using VietCapital.Partner.F5Seconds.WebMvc.HostedService;
 
 namespace VietCapital.Partner.F5Seconds.WebMvc.Extensions
 {
@@ -61,6 +62,11 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Extensions
                 }));
             });
             services.AddMassTransitHostedService();
+        }
+
+        public static void AddHostedService(this IServiceCollection services)
+        {
+            services.AddHostedService<GatewayProductSyncHostedService>();
         }
     }
 }

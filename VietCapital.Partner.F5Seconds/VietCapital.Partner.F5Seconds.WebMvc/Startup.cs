@@ -1,14 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Identity;
@@ -46,6 +41,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc
             services.AddSharedInfrastructure(_config);
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);
+            services.AddHostedService();
             services.AddControllersWithViews();
             services.AddHttpClientExtension(_config,_env);
             services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();

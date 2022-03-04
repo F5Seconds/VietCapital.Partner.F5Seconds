@@ -78,7 +78,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.HostedService
         {
             Task.Run(async () =>
             {
-                await DoWork();
+                //await DoWork();
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     await Task.Delay(UntilNextExecution(), cancellationToken);
