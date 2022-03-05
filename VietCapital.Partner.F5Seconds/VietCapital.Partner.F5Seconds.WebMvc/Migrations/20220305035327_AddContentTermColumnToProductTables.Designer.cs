@@ -9,8 +9,8 @@ using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
 namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220304090853_AddCategoryProductTable")]
-    partial class AddCategoryProductTable
+    [Migration("20220305035327_AddContentTermColumnToProductTables")]
+    partial class AddContentTermColumnToProductTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,6 +51,39 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.CategoryProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CategoryProducts");
+                });
+
             modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -63,10 +96,10 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                     b.Property<string>("BrandName")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Code")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Content")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("Created")
@@ -90,6 +123,9 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                     b.Property<string>("Partner")
                         .HasColumnType("longtext");
 
+                    b.Property<float?>("Point")
+                        .HasColumnType("float");
+
                     b.Property<float>("Price")
                         .HasColumnType("float");
 
@@ -102,26 +138,47 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<string>("Term")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Thumbnail")
+                        .HasColumnType("longtext");
+
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.Product", b =>
+            modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.CategoryProduct", b =>
                 {
-                    b.HasOne("VietCapital.Partner.F5Seconds.Domain.Entities.Category", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId");
+                    b.HasOne("VietCapital.Partner.F5Seconds.Domain.Entities.Category", "Category")
+                        .WithMany("CategoryProducts")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VietCapital.Partner.F5Seconds.Domain.Entities.Product", "Product")
+                        .WithMany("CategoryProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.Category", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("CategoryProducts");
+                });
+
+            modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("CategoryProducts");
                 });
 #pragma warning restore 612, 618
         }

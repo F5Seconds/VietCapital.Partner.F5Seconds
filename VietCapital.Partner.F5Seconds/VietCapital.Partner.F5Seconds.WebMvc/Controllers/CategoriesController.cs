@@ -54,7 +54,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Image,Status,Id,CreatedBy,Created,LastModifiedBy,LastModified")] Category category)
+        public async Task<IActionResult> Create([Bind("Name,Image,Status,Id")] Category category)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Image,Status,Id,CreatedBy,Created,LastModifiedBy,LastModified")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Image,Status,Id")] Category category)
         {
             if (id != category.Id)
             {

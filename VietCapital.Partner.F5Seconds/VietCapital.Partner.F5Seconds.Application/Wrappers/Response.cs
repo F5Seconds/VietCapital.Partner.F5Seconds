@@ -32,4 +32,11 @@ namespace VietCapital.Partner.F5Seconds.Application.Wrappers
         public List<string> Errors { get; set; }
         public T Data { get; set; }
     }
+
+    public class ResponseBase
+    {
+        public bool Succeeded { get; set; }
+        public string Message { get; set; }
+        public List<string> Errors { get; set; }
+    }
 }

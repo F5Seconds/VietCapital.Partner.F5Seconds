@@ -10,6 +10,6 @@ namespace VietCapital.Partner.F5Seconds.Domain.Entities
         public string Name { get; set; }
         public string Image { get; set; }
         public bool Status { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public virtual ICollection<CategoryProduct> CategoryProducts { get; set; }
     }
 }
