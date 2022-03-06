@@ -1,30 +1,85 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GreenPipes;
+using MassTransit;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.Interfaces;
+using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
+using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
+using VietCapital.Partner.F5Seconds.WebApi.Consumer;
 
 namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
 {
     public static class ServiceExtensions
     {
+        public static void AddHttpClientExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
+        {
+            string gateWayUri = configuration["Gateway:Uri"];
+            if (env.IsProduction())
+            {
+                gateWayUri = Environment.GetEnvironmentVariable("GATEWAY_URI");
+            }
+            services.AddHttpClient<IGatewayHttpClientService, GatewayHttpClientRepository>(c => {
+                c.BaseAddress = new Uri(gateWayUri);
+            });
+        }
+        public static void AddRabbitMqExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
+        {
+            string rabbitHost = configuration[RabbitMqAppSettingConst.Host];
+            string rabbitvHost = configuration[RabbitMqAppSettingConst.Vhost];
+            string rabbitUser = configuration[RabbitMqAppSettingConst.User];
+            string rabbitPass = configuration[RabbitMqAppSettingConst.Pass];
+            string voucherTransactionQueue = configuration[RabbitMqAppSettingConst.voucherTransactionQueue];
+            if (env.IsProduction())
+            {
+                rabbitHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Host);
+                rabbitvHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Vhost);
+                rabbitUser = Environment.GetEnvironmentVariable(RabbitMqEnvConst.User);
+                rabbitPass = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Pass);
+                voucherTransactionQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.voucherTransactionQueue);
+            }
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<VoucherTransactionConsumer>();
+                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+                {
+                    config.Host(rabbitHost, rabbitvHost, h =>
+                    {
+                        h.Username(rabbitUser);
+                        h.Password(rabbitPass);
+                    });
+                    config.ReceiveEndpoint(voucherTransactionQueue, ep =>
+                    {
+                        ep.PrefetchCount = 16;
+                        ep.UseMessageRetry(r => r.Interval(2, 100));
+                        ep.ConfigureConsumer<VoucherTransactionConsumer>(provider);
+                    });
+                }));
+            });
+            services.AddMassTransitHostedService();
+        }
         public static void AddSwaggerExtension(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
             {
-                c.IncludeXmlComments(string.Format(@"{0}\VietCapital.Partner.F5Seconds.WebApi.xml", System.AppDomain.CurrentDomain.BaseDirectory));
+                c.IncludeXmlComments(string.Format(@"VietCapital.Partner.F5Seconds.WebApi.xml"));
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Clean Architecture - VietCapital.Partner.F5Seconds.WebApi",
+                    Title = "VietCapital.Partner.F5Seconds.WebApi",
                     Description = "This Api will be responsible for overall data distribution and authorization.",
                     Contact = new OpenApiContact
                     {
-                        Name = "codewithmukesh",
-                        Email = "hello@codewithmukesh.com",
-                        Url = new Uri("https://codewithmukesh.com/contact"),
+                        Name = "Le Anh Toan",
+                        Email = "toanle@f5seconds.vn",
+                        Url = new Uri("https://f5seconds.vn"),
                     }
                 });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

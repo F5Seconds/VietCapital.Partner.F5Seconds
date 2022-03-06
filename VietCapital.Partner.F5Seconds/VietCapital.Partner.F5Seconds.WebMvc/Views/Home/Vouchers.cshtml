@@ -35,6 +35,9 @@
                         <li class="nav-item">
                         <a class="nav-link @(Model.State == 4 ? "active" : null)" asp-route-state="4" asp-route-cif="@Model.Cif">Hủy</a>
                         </li>
+                        <li class="nav-item">
+                        <a class="nav-link @(Model.State == 5 ? "active" : null)" asp-route-state="5" asp-route-cif="@Model.Cif">Hết hạn sư dụng</a>
+                        </li>
                     </ul>    
                     <hr/>
                 </div>

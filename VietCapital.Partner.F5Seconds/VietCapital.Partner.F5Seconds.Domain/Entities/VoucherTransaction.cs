@@ -5,6 +5,7 @@ namespace VietCapital.Partner.F5Seconds.Domain.Entities
 {
     public class VoucherTransaction : AuditableBaseEntity
     {
+        public int ProductId { get; set; }
         public string TransactionId { get; set; }
         public float ProductPrice { get; set; }
         public string CustomerId { get; set; }

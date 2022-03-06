@@ -68,7 +68,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
             var payload = new Application.DTOs.Gateway.BuyVoucherPayload()
             {
                 customerId = buyVoucher.Cif,
-                propductId = buyVoucher.Code
+                productCode = buyVoucher.Code
             };
             var trans = await _gatewayHttpClient.BuyProduct(payload);
             if(!trans.Succeeded) return BadRequest(trans);

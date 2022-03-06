@@ -61,7 +61,7 @@ namespace VietCapital.Partner.F5Seconds.Application.DTOs.Gateway
 
     public class BuyVoucherPayload
     {
-        public string propductId { get; set; }
+        public string productCode { get; set; }
         public int quantity { get; set; } = 1;
         public string transactionId { get; set; } = Guid.NewGuid().ToString();
         public string customerId { get; set; }

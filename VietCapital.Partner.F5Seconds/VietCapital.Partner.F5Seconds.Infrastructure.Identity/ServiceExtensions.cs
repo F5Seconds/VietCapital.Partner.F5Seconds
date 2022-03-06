@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
@@ -24,13 +26,17 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity
 {
     public static class ServiceExtensions
     {
-        public static void AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static void AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
-            
+            string identityConStr = configuration.GetConnectionString("IdentityConnection");
+            if (env.IsProduction())
+            {
+                identityConStr = Environment.GetEnvironmentVariable("DB_URI_IDENTITY");
+            }
             var serverVersion = new MySqlServerVersion(new Version(10, 5, 10));
             services.AddDbContext<IdentityContext>(options =>
             options.UseMySql(
-                configuration.GetConnectionString("IdentityConnection"), serverVersion,
+                identityConStr, serverVersion,
                 b => {
                     b.SchemaBehavior(MySqlSchemaBehavior.Ignore);
                     b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName); 

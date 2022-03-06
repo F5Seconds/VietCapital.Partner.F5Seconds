@@ -36,8 +36,8 @@ namespace VietCapital.Partner.F5Seconds.WebMvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplicationLayer();
-            services.AddIdentityInfrastructure(_config);
-            services.AddPersistenceInfrastructure(_config);
+            services.AddIdentityInfrastructure(_config,_env);
+            services.AddPersistenceInfrastructure(_config,_env.IsProduction());
             services.AddSharedInfrastructure(_config);
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);
