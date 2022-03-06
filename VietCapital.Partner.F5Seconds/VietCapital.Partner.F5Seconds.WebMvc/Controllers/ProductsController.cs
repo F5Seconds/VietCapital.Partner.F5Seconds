@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
+using VietCapital.Partner.F5Seconds.WebMvc.Extensions;
 using VietCapital.Partner.F5Seconds.WebMvc.ModelView;
 
 namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
@@ -23,9 +24,10 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1,int pageSize = 50)
         {
-            return View(await _context.Products.Where(x => !string.IsNullOrEmpty(x.Image)).Take(20).ToListAsync());
+            var query = _context.Products.Where(x => !string.IsNullOrEmpty(x.Image)).AsQueryable();
+            return View(await query.GetPaged(page,pageSize));
         }
 
         // GET: Products/Details/5

@@ -1,0 +1,67 @@
+﻿@model VietCapital.Partner.F5Seconds.WebMvc.ModelView.ListVoucher
+@{
+    ViewData["Title"] = "Voucher";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+        @if (string.IsNullOrEmpty(Model.Cif))
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <form class="form-inline" method="get" asp-controller="Home" asp-action="Vouchers">
+                      <label class="sr-only" for="cif">Name</label>
+                      <input type="number" name="state" class="form-control sr-only" value="1">
+                      <input type="text" name="cif" class="form-control mb-2 mr-sm-2" id="cif" placeholder="Số CIF">
+                      <button type="submit" class="btn btn-primary mb-2">Submit</button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="nav nav-pills nav-fill">
+                        <li class="nav-item">
+                        <a asp-controller="Home" asp-action="Vouchers" asp-route-state="1" asp-route-cif="@Model.Cif" class="nav-link @(Model.State == 1 ? "active" : null)">Chưa sử dụng</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link @(Model.State == 2 ? "active" : null)" asp-route-state="2" asp-route-cif="@Model.Cif">Đã sử dụng</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link @(Model.State == 3 ? "active" : null)" asp-route-state="3" asp-route-cif="@Model.Cif">Hết hàng</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link @(Model.State == 4 ? "active" : null)" asp-route-state="4" asp-route-cif="@Model.Cif">Hủy</a>
+                        </li>
+                    </ul>    
+                    <hr/>
+                </div>
+                @foreach (var item in Model.Vouchers)
+                   {
+                       <div class="col-md-3">
+                            <div class="card mb-3 box-shadow">
+                            <img class="card-img-top" data-src="@item.Product.Image" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="@item.Product.Image" data-holder-rendered="true">
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <h6 class="font-weight-semibold mb-2"> 
+                                        <a href="@Url.Action("ProductDetail", "Home", new { id = @item.Product.Code })" class="text-default mb-2" data-abc="true">@item.Product.Name</a> 
+                                        </h6> <a href="#" class="text-muted" data-abc="true">@item.Product.BrandName</a>
+                                </div>
+                                <h6 class="mb-0 font-weight-semibold">Mã voucher: @item.VoucherCode </h6>
+                                <h6 class="mb-0 font-weight-semibold">@item.Product.Point <small>điểm</small></h6>
+                                <h6 class="mb-0 font-weight-semibold">Ngày hết hạn: @item.ExpiryDate.ToString("dd/MM/yyyy") </h6>
+                                <br/>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="@Url.Action("VoucherDetail", "Home", new { id = @item.Id }) " class="btn btn-outline-secondary btn-block">Sử dụng</a>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                   }
+            </div>
+        }
+        
+</div>
+

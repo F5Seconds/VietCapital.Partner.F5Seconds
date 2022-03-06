@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using QRCoder;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
@@ -60,7 +63,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
         public async Task<IActionResult> Transaction(BuyVoucher buyVoucher)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var product = await _context.Products.SingleAsync(x => x.Code.Equals(buyVoucher.Code));
+            var product = await _context.Products.Include(t => t.VoucherTransactions).SingleAsync(x => x.Code.Equals(buyVoucher.Code));
             if (product is null) return NotFound("Not found product");
             var payload = new Application.DTOs.Gateway.BuyVoucherPayload()
             {
@@ -72,19 +75,20 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
             foreach (var item in trans.Data)
             {
                 bool expried = DateTime.TryParseExact(item.expiryDate, "yyyy-MM-dd", CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime expiryDate);
-                await _context.VoucherTransactions.AddAsync(new Domain.Entities.VoucherTransaction()
+                
+                product.VoucherTransactions.Add(new Domain.Entities.VoucherTransaction()
                 {
-                    Product = product,
                     CustomerId = buyVoucher.Cif,
                     CustomerPhone = payload.customerPhone,
-                    ExpiryDate = expried? expiryDate : DateTime.Now,
+                    ExpiryDate = expried ? expiryDate : DateTime.Now,
                     ProductPrice = item.productPrice,
                     TransactionId = item.transactionId,
                     VoucherCode = item.voucherCode
                 });
             }
+            _context.Products.Update(product);
             await _context.SaveChangesAsync();
-            return RedirectToActionPermanent(nameof(ProblemDetails), new {id = buyVoucher.Code});
+            return RedirectToAction(nameof(Vouchers),new { cif = buyVoucher.Cif,state = 1});
         }
 
         [HttpGet("danh-muc/{id}")]
@@ -97,6 +101,47 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
                 .SingleAsync(c => c.Id == id);
             return View(category);
         }
+
+        [HttpGet("vouchers")]
+        public async Task<IActionResult> Vouchers(string cif = null,int? state = 1)
+        {
+            if(string.IsNullOrEmpty(cif) || state is null) return View(new ListVoucher());
+            var voucher = await _context.VoucherTransactions.Include(x => x.Product).Where(x => x.CustomerId.Equals(cif) && x.State.Equals(state)).ToListAsync();
+            return View(new ListVoucher()
+            {
+                Cif = cif,
+                State = state??0,
+                Vouchers = voucher
+            });
+        }
+
+        [HttpGet("voucher")]
+        public async Task<IActionResult> VoucherDetail(int? id)
+        {
+            if(id is null) return NotFound();
+            var voucher = await _context.VoucherTransactions.Include(x => x.Product).ThenInclude(cp => cp.CategoryProducts).ThenInclude(c => c.Category).SingleAsync(x => x.Id.Equals(id));
+            if(voucher is null) return NotFound();
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(voucher.VoucherCode,
+            QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+            return View(new DetailVoucher()
+            {
+                Voucher = voucher,
+                QrCodeVoucher = BitmapToBytes(qrCodeImage)
+            });
+        }
+
+        private static Byte[] BitmapToBytes(Bitmap img)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                return stream.ToArray();
+            }
+        }
+
         public IActionResult Privacy()
         {
             return View();
