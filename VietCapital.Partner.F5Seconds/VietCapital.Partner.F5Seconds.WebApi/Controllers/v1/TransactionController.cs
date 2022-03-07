@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
@@ -72,9 +73,9 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
         }
 
         [HttpGet("query")]
-        public async Task<IActionResult> GetTransaction(string cif,int state)
+        public async Task<IActionResult> GetTransaction([FromQuery] GetVoucherTransFilterParameter filter)
         {
-            return Ok(await Mediator.Send(new GetVoucherTransFilterQuery() { Cif = cif,State = state}));
+            return Ok(await Mediator.Send(new GetVoucherTransFilterQuery() { Cif = filter.Cif, State = filter.State,PageNumber = filter.PageNumber,PageSize = filter.PageSize,Search = filter.Search }));
         }
     }
 }

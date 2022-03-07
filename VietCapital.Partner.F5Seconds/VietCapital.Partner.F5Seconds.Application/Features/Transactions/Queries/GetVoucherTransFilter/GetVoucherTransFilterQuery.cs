@@ -1,30 +1,45 @@
-﻿using MediatR;
-using System.Collections.Generic;
+﻿using AutoMapper;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
 using VietCapital.Partner.F5Seconds.Domain.Const;
-using VietCapital.Partner.F5Seconds.Domain.Entities;
 
 namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter
 {
-    public class GetVoucherTransFilterQuery : IRequest<Response<IReadOnlyList<VoucherTransaction>>>
+    public class GetVoucherTransFilterQuery : IRequest<Response<object>>
     {
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public string Search { get; set; } = "";
         public string Cif { get; set; }
         public int State { get; set; }
-        public class GetVoucherTransFilterQueryHandler : IRequestHandler<GetVoucherTransFilterQuery, Response<IReadOnlyList<VoucherTransaction>>>
+        public class GetVoucherTransFilterQueryHandler : IRequestHandler<GetVoucherTransFilterQuery, Response<object>>
         {
             private readonly IVoucherTransactionRepositoryAsync _voucherTransaction;
-            public GetVoucherTransFilterQueryHandler(IVoucherTransactionRepositoryAsync voucherTransaction)
+            private readonly IMapper _mapper;
+            public GetVoucherTransFilterQueryHandler(IVoucherTransactionRepositoryAsync voucherTransaction, IMapper mapper)
             {
                 _voucherTransaction = voucherTransaction;
+                _mapper = mapper;
             }
-            public async Task<Response<IReadOnlyList<VoucherTransaction>>> Handle(GetVoucherTransFilterQuery request, CancellationToken cancellationToken)
+
+            public async Task<Response<object>> Handle(GetVoucherTransFilterQuery request, CancellationToken cancellationToken)
             {
-                var trans = await _voucherTransaction.GetVoucherTransactionByFilter(request.Cif,request.State);
-                if (trans is null) return new Response<IReadOnlyList<VoucherTransaction>>(false,null, ResponseConst.NotData);
-                return new Response<IReadOnlyList<VoucherTransaction>>(true,trans);
+                var filter = _mapper.Map<GetVoucherTransFilterParameter>(request);
+                var trans = await _voucherTransaction.GetPagedVoucherTransByFilter(filter);
+                if (trans is null) return new Response<object>(false,null, ResponseConst.NotData);
+                return new Response<object>(true, new
+                {
+                    trans.CurrentPage,
+                    trans.TotalPages,
+                    trans.PageSize,
+                    trans.TotalCount,
+                    trans.HasPrevious,
+                    trans.HasNext,
+                    Data = trans
+                });
             }
         }
     }

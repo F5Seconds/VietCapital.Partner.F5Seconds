@@ -1,30 +1,42 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using AutoMapper;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
 using VietCapital.Partner.F5Seconds.Domain.Const;
-using VietCapital.Partner.F5Seconds.Domain.Entities;
 
 namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct
 {
-    public class GetListProductQuery : IRequest<Response<IReadOnlyList<Product>>>
+    public class GetListProductQuery : IRequest<Response<object>>
     {
-        public class GetListProductQueryHandler : IRequestHandler<GetListProductQuery, Response<IReadOnlyList<Product>>>
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public string Search { get; set; } = "";
+        public class GetListProductQueryHandler : IRequestHandler<GetListProductQuery, Response<object>>
         {
             private readonly IProductRepositoryAsync _products;
-            public GetListProductQueryHandler(IProductRepositoryAsync products)
+            private readonly IMapper _mapper;
+            public GetListProductQueryHandler(IProductRepositoryAsync products, IMapper mapper)
             {
                 _products = products;
+                _mapper = mapper;
             }
-            public async Task<Response<IReadOnlyList<Product>>> Handle(GetListProductQuery request, CancellationToken cancellationToken)
+            public async Task<Response<object>> Handle(GetListProductQuery request, CancellationToken cancellationToken)
             {
-                var products = await _products.GetListAsync();
-                if (products is null) return new Response<IReadOnlyList<Product>>(false, null, ResponseConst.NotData);
-                return new Response<IReadOnlyList<Product>>(true,products);
+                var filter = _mapper.Map<GetListProductParameter>(request);
+                var products = await _products.GetPagedListAsync(filter);
+                if (products is null) return new Response<object>(false, null, ResponseConst.NotData);
+                return new Response<object>(true, new
+                {
+                    products.CurrentPage,
+                    products.TotalPages,
+                    products.PageSize,
+                    products.TotalCount,
+                    products.HasPrevious,
+                    products.HasNext,
+                    Data = products
+                });
             }
         }
     }

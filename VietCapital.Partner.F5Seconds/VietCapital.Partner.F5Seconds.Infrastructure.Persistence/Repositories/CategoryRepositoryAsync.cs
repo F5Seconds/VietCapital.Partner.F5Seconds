@@ -19,10 +19,10 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
 
         public async Task<Category> FindCategoryById(int id)
         {
-            return await _categories
+            var cats = _categories
                 .Include(cp => cp.CategoryProducts)
-                .ThenInclude(p => p.Product)
-                .SingleOrDefaultAsync(x => x.Id.Equals(id) && x.Status);
+                .ThenInclude(p => p.Product).AsQueryable();
+            return await cats.SingleOrDefaultAsync(x => x.Id.Equals(id) && x.Status);
         }
 
         public async Task<IReadOnlyList<Category>> GetCategoryList()

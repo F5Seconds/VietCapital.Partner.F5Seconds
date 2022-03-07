@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.DetailProduct;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
@@ -13,9 +12,9 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
     public class ProductController : BaseApiController
     {
         [HttpGet("list")]
-        public async Task<IActionResult> GetListProduct()
+        public async Task<IActionResult> GetListProduct([FromQuery] GetListProductParameter filter)
         {
-            return Ok(await Mediator.Send(new GetListProductQuery()));
+            return Ok(await Mediator.Send(new GetListProductQuery() { PageNumber = filter.PageNumber,PageSize = filter.PageSize,Search = filter.Search}));
         }
 
         [HttpGet("detail")]
