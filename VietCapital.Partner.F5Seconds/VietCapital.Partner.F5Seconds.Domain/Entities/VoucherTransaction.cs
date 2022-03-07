@@ -13,6 +13,8 @@ namespace VietCapital.Partner.F5Seconds.Domain.Entities
         public string VoucherCode { get; set; }
         public int State { get; set; } = 1;
         public DateTime ExpiryDate { get; set; }
+        public DateTime UsedTime { get; set; }
+        public string UsedBrand { get; set; }
         public virtual Product Product { get; set; }
     }
 }

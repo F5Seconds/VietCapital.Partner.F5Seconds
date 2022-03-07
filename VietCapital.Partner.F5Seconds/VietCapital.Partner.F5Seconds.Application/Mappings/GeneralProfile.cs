@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
+using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.ListCategory;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
@@ -26,6 +27,10 @@ namespace VietCapital.Partner.F5Seconds.Application.Mappings
 
             #region Transaction
             CreateMap<GetVoucherTransFilterQuery, GetVoucherTransFilterParameter>();
+            #endregion
+
+            #region Category
+            CreateMap<GetListCategoryQuery, GetListCategoryParameter>();
             #endregion
         }
     }

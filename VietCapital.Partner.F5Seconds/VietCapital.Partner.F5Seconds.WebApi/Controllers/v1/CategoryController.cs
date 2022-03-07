@@ -10,9 +10,9 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
     public class CategoryController : BaseApiController
     {
         [HttpGet("list")]
-        public async Task<IActionResult> GetListCategory()
+        public async Task<IActionResult> GetListCategory([FromQuery] GetListCategoryParameter filter)
         {
-            return Ok(await Mediator.Send(new GetListCategoryQuery()));
+            return Ok(await Mediator.Send(new GetListCategoryQuery() { PageNumber = filter.PageNumber,PageSize = filter.PageSize,Search = filter.Search}));
         }
 
         [HttpGet("detail")]

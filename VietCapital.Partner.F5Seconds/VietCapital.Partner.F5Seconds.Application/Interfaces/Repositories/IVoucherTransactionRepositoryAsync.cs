@@ -13,5 +13,6 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories
         Task<bool> IsUniqueTransactionAsync(string transId);
         Task<IReadOnlyList<VoucherTransaction>> GetVoucherTransactionByFilter(string cif, int state);
         Task<PagedList<VoucherTransaction>> GetPagedVoucherTransByFilter(GetVoucherTransFilterParameter parameter);
+        Task<VoucherTransaction> GetVoucherByTransId(string transId);
     }
 }

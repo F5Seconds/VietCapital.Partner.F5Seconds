@@ -8,8 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
@@ -37,6 +35,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
             string rabbitUser = configuration[RabbitMqAppSettingConst.User];
             string rabbitPass = configuration[RabbitMqAppSettingConst.Pass];
             string voucherTransactionQueue = configuration[RabbitMqAppSettingConst.voucherTransactionQueue];
+            string channelUpdateStateQueue = configuration[RabbitMqAppSettingConst.channelUpdateStateQueue];
             if (env.IsProduction())
             {
                 rabbitHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Host);
@@ -44,10 +43,12 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
                 rabbitUser = Environment.GetEnvironmentVariable(RabbitMqEnvConst.User);
                 rabbitPass = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Pass);
                 voucherTransactionQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.voucherTransactionQueue);
+                channelUpdateStateQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.channelUpdateStateQueue);
             }
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<VoucherTransactionConsumer>();
+                x.AddConsumer<ChannelUpdateStateConsumer>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
                 {
                     config.Host(rabbitHost, rabbitvHost, h =>
@@ -60,6 +61,12 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
                         ep.PrefetchCount = 16;
                         ep.UseMessageRetry(r => r.Interval(2, 100));
                         ep.ConfigureConsumer<VoucherTransactionConsumer>(provider);
+                    });
+                    config.ReceiveEndpoint(channelUpdateStateQueue, ep =>
+                    {
+                        ep.PrefetchCount = 16;
+                        ep.UseMessageRetry(r => r.Interval(2, 100));
+                        ep.ConfigureConsumer<ChannelUpdateStateConsumer>(provider);
                     });
                 }));
             });

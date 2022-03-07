@@ -42,7 +42,9 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity
                     b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName); 
                 }));
             services
-                .AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
+                .AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityContext>()
+                .AddDefaultTokenProviders();
             #region Services
             services.AddTransient<IAccountService, AccountService>();
             #endregion

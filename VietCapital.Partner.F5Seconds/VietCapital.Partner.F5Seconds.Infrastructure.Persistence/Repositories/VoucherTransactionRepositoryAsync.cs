@@ -50,5 +50,10 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
         {
             return await _voucherTransactions.AnyAsync(x => x.TransactionId.Equals(transId.Trim()));
         }
+
+        public async Task<VoucherTransaction> GetVoucherByTransId(string transId)
+        {
+            return await _voucherTransactions.SingleOrDefaultAsync(x=> x.TransactionId.Equals(transId.Trim()));
+        }
     }
 }

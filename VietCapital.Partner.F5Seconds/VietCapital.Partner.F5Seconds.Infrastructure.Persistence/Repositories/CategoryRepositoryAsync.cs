@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.ListCategory;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
+using VietCapital.Partner.F5Seconds.Application.Wrappers;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repository;
@@ -31,6 +33,25 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
                 .Include(cp => cp.CategoryProducts.Where(p => p.Product.Status))
                 .ThenInclude(p => p.Product)
                 .Where(c => c.Status).ToListAsync();
+        }
+
+        public async Task<PagedList<Category>> GetPagedListAsync(GetListCategoryParameter parameter)
+        {
+            var categories = _categories
+                .Include(cp => cp.CategoryProducts.Where(p => p.Product.Status))
+                .ThenInclude(p => p.Product)
+                .Where(c => c.Status).AsQueryable();
+            Search(ref categories,parameter.Search);
+            return await PagedList<Category>.ToPagedList(categories.OrderByDescending(x => x.Id).AsNoTracking(), parameter.PageNumber, parameter.PageSize);
+        }
+
+        private void Search(ref IQueryable<Category> products, string search)
+        {
+            if (string.IsNullOrWhiteSpace(search)) return;
+            search = $"%{search.Trim()}%";
+            products = products.Where(x =>
+                EF.Functions.Like(x.Name, search)
+            );
         }
     }
 }

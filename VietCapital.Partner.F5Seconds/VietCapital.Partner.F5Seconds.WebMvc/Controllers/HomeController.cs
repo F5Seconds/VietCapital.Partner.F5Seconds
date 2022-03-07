@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QRCoder;
@@ -29,6 +30,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
             _context = context;
             _gatewayHttpClient = gatewayHttpClient;
         }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -141,7 +143,8 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
                 return stream.ToArray();
             }
         }
-
+        [Authorize]
+        [HttpGet]
         public IActionResult Privacy()
         {
             return View();

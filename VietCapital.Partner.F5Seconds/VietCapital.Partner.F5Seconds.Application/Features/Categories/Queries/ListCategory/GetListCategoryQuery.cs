@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,20 +10,35 @@ using VietCapital.Partner.F5Seconds.Domain.Entities;
 
 namespace VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.ListCategory
 {
-    public class GetListCategoryQuery : IRequest<Response<IReadOnlyList<Category>>>
+    public class GetListCategoryQuery : IRequest<Response<object>>
     {
-        public class GetListCategoryQueryHandler : IRequestHandler<GetListCategoryQuery, Response<IReadOnlyList<Category>>>
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public string Search { get; set; } = "";
+        public class GetListCategoryQueryHandler : IRequestHandler<GetListCategoryQuery, Response<object>>
         {
             private readonly ICategoryRepositoryAsync _category;
-            public GetListCategoryQueryHandler(ICategoryRepositoryAsync category)
+            private readonly IMapper _mapper;
+            public GetListCategoryQueryHandler(ICategoryRepositoryAsync category, IMapper mapper)
             {
+                _mapper = mapper;
                 _category = category;
             }
-            public async Task<Response<IReadOnlyList<Category>>> Handle(GetListCategoryQuery request, CancellationToken cancellationToken)
+            public async Task<Response<object>> Handle(GetListCategoryQuery request, CancellationToken cancellationToken)
             {
-                var categories = await _category.GetCategoryList();
-                if(categories == null) return new Response<IReadOnlyList<Category>>(false,null, ResponseConst.NotData);
-                return new Response<IReadOnlyList<Category>>(true, categories);
+                var filter = _mapper.Map<GetListCategoryParameter>(request);
+                var categories = await _category.GetPagedListAsync(filter);
+                if(categories == null) return new Response<object>(false,null, ResponseConst.NotData);
+                return new Response<object>(true, new
+                {
+                    categories.CurrentPage,
+                    categories.TotalPages,
+                    categories.PageSize,
+                    categories.TotalCount,
+                    categories.HasPrevious,
+                    categories.HasNext,
+                    Data = categories
+                });
             }
         }
     }

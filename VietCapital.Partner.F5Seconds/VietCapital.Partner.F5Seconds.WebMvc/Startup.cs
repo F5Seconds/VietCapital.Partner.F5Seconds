@@ -42,7 +42,10 @@ namespace VietCapital.Partner.F5Seconds.WebMvc
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);
             services.AddHostedService();
+            services.AddAuthorizeCookieExtension();
+            services.AddSession();
             services.AddControllersWithViews();
+            services.AddRazorPages();
             services.AddHttpClientExtension(_config,_env);
             services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
         }
@@ -65,6 +68,8 @@ namespace VietCapital.Partner.F5Seconds.WebMvc
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -72,6 +77,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }

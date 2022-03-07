@@ -15,6 +15,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const
         public static string Pass { get; set; } = "RABBITMQ_PASS";
         public static string productSyncQueue { get; set; } = "RABBITMQ_PRODUCT_SYNC";
         public static string voucherTransactionQueue { get; set; } = "RABBITMQ_VOUCHER_TRANS";
+        public static string channelUpdateStateQueue { get; set; } = "RABBITMQ_CHANNEL_UPDATE_STATE";
     }
 
     public static class RabbitMqAppSettingConst
@@ -25,5 +26,6 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const
         public static string Pass { get; set; } = "RabbitMqSettings:Password";
         public static string productSyncQueue { get; set; } = "RabbitMqSettings:productSyncQueue";
         public static string voucherTransactionQueue { get; set; } = "RabbitMqSettings:voucherTransactionQueue";
+        public static string channelUpdateStateQueue { get; set; } = "RabbitMqSettings:channelUpdateStateQueue";
     }
 }

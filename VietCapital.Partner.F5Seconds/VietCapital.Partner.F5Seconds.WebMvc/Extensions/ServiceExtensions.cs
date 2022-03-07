@@ -1,10 +1,13 @@
 ﻿using GreenPipes;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
@@ -27,6 +30,26 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Extensions
             });
         }
 
+        public static void AddAuthorizeCookieExtension(this IServiceCollection services)
+        {
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Account/AccessDenied");
+                options.Cookie.Name = "Cookie";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(720);
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = x =>
+                    {
+                        x.Response.Redirect("/Identity/Account/Login");
+                        return Task.CompletedTask;
+                    }
+                };
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = true;
+            });
+        }
         public static void AddRabbitMqExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
             string rabbitHost = configuration[RabbitMqAppSettingConst.Host];
