@@ -16,10 +16,9 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
         }
 
         [HttpGet("detail")]
-        public async Task<IActionResult> GetDetailCategory(int? id)
+        public async Task<IActionResult> GetDetailCategory([FromQuery] GetDetailCategoryParameter parameter)
         {
-            if(id is null) return BadRequest();
-            return Ok(await Mediator.Send(new GetDetailCategoryQuery() { Id = id}));
+            return Ok(await Mediator.Send(new GetDetailCategoryQuery() { Id = parameter.Id }));
         }
     }
 }

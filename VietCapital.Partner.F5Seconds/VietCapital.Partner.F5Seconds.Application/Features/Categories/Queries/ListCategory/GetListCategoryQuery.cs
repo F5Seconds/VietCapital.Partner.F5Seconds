@@ -3,6 +3,7 @@ using MediatR;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
 using VietCapital.Partner.F5Seconds.Domain.Const;
@@ -12,8 +13,8 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.
 {
     public class GetListCategoryQuery : IRequest<Response<object>>
     {
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
         public string Search { get; set; } = "";
         public class GetListCategoryQueryHandler : IRequestHandler<GetListCategoryQuery, Response<object>>
         {
@@ -37,7 +38,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.
                     categories.TotalCount,
                     categories.HasPrevious,
                     categories.HasNext,
-                    Data = categories
+                    Data = _mapper.Map<ICollection<CategoryOutsideResponse>>(categories),
                 });
             }
         }

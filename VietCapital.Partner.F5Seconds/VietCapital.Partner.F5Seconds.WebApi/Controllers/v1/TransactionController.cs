@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.DTOs.F5seconds;
-using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
@@ -69,7 +68,6 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
                         d.CustomerId = command.customerId;
                         d.CustomerPhone = command.customerPhone;
                     }));
-                    _logger.LogInformation(JsonConvert.SerializeObject(trans));
                     await endPoint.Send(trans);
                 }
             }
@@ -82,6 +80,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
             return Ok(await Mediator.Send(new GetVoucherTransFilterQuery() { Cif = filter.Cif, State = filter.State,PageNumber = filter.PageNumber,PageSize = filter.PageSize,Search = filter.Search }));
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("update-state")]
         public async Task<IActionResult> PostUpdateState([FromBody] ChannelUpdateStateDto payload)
         {

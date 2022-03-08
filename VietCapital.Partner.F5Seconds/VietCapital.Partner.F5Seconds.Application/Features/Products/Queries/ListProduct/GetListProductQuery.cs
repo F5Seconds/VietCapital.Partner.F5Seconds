@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
 using VietCapital.Partner.F5Seconds.Domain.Const;
@@ -35,7 +37,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.Li
                     products.TotalCount,
                     products.HasPrevious,
                     products.HasNext,
-                    Data = products
+                    Data = _mapper.Map<ICollection<ProductOutSideResponse>>(products)
                 });
             }
         }

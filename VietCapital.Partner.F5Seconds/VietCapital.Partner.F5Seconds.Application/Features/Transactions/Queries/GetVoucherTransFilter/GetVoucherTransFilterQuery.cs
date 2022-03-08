@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
 using VietCapital.Partner.F5Seconds.Domain.Const;
@@ -10,8 +12,8 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Querie
 {
     public class GetVoucherTransFilterQuery : IRequest<Response<object>>
     {
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
         public string Search { get; set; } = "";
         public string Cif { get; set; }
         public int State { get; set; }
@@ -38,7 +40,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Querie
                     trans.TotalCount,
                     trans.HasPrevious,
                     trans.HasNext,
-                    Data = trans
+                    Data = _mapper.Map<ICollection<TransactionOutSideResponse>>(trans)
                 });
             }
         }

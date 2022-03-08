@@ -56,7 +56,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
                 .ThenInclude(c => c.Category)
                 .Where(p => p.Status).AsQueryable();
             Search(ref products,parameter.Search);
-            return await PagedList<Product>.ToPagedList(products.OrderByDescending(x => x.Id).AsNoTracking(), parameter.PageNumber, parameter.PageSize);
+            return await PagedList<Product>.ToPagedList(products.OrderByDescending(x => x.Id), parameter.PageNumber, parameter.PageSize);
         }
 
         public async Task<bool> IsExitedByCode(string code)

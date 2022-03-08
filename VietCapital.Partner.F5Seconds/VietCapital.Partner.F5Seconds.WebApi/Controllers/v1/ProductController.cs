@@ -18,10 +18,9 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
         }
 
         [HttpGet("detail")]
-        public async Task<IActionResult> GetDetailProduct(string code)
+        public async Task<IActionResult> GetDetailProduct([FromQuery] GetDetailProductParameter parameter)
         {
-            if(string.IsNullOrEmpty(code)) return BadRequest();
-            return Ok(await Mediator.Send(new GetDetailProductQuery() { Code = code }));
+            return Ok(await Mediator.Send(new GetDetailProductQuery() { Code = parameter.Code }));
         }
     }
 }
