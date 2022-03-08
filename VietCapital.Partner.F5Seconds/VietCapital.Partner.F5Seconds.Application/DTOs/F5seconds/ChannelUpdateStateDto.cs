@@ -9,6 +9,6 @@ namespace VietCapital.Partner.F5Seconds.Application.DTOs.F5seconds
         public string Channel { get; set; }
         public int State { get; set; }
         public string UsedBrand { get; set; }
-        public DateTime UsedTime { get; set; }
+        public DateTime? UsedTime { get; set; }
     }
 }

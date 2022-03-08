@@ -9,8 +9,8 @@ using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
 namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220307215903_AddColumnToVoucherTrans")]
-    partial class AddColumnToVoucherTrans
+    [Migration("20220308041553_ChangeDateTimIsNullUsedTime")]
+    partial class ChangeDateTimIsNullUsedTime
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -96,9 +96,6 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                     b.Property<string>("BrandName")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Code")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Content")
                         .HasColumnType("longtext");
 
@@ -128,6 +125,9 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
 
                     b.Property<float>("Price")
                         .HasColumnType("float");
+
+                    b.Property<string>("ProductCode")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -194,7 +194,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                     b.Property<string>("UsedBrand")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("UsedTime")
+                    b.Property<DateTime?>("UsedTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("VoucherCode")

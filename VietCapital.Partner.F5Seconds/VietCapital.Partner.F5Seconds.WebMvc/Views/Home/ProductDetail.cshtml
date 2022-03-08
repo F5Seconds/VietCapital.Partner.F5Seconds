@@ -30,7 +30,7 @@
                     <form asp-controller="Home" asp-action="transaction" class="form-inline" method="post">
                         @Html.AntiForgeryToken()
                         <label class="sr-only" for="inlineFormInputName2">CIF</label>
-                        <input type="text" class="form-control sr-only" name="Code" value="@Model.Product.Code" />
+                        <input type="text" class="form-control sr-only" name="Code" value="@Model.Product.ProductCode" />
                         <input type="text" class="form-control mb-2 mr-sm-2" name="Cif" id="inlineFormInputName2" placeholder="Số CIF">
                         <button type="submit" class="btn btn-primary btn-rounded mb-2">Đổi ngay</button>
                     </form>

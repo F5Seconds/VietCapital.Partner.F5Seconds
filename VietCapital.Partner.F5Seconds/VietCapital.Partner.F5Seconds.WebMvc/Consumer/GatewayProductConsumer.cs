@@ -17,7 +17,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Consumer
         }
         public async Task Consume(ConsumeContext<Product> context)
         {
-            var exited = await _productRepository.IsUniqueBarcodeAsync(context.Message.Code);
+            var exited = await _productRepository.IsUniqueBarcodeAsync(context.Message.ProductCode);
             if (!exited)
             {
                 await _productRepository.AddAsync(context.Message);

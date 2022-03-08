@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.DTOs.F5seconds;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
@@ -24,6 +25,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
         string rabbitHost = "";
         string rabbitvHost = "";
         string voucherTransactionQueue = "";
+        string channelUpdateStateQueue = "";
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
@@ -40,12 +42,14 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
                 rabbitHost = _config[RabbitMqAppSettingConst.Host];
                 rabbitvHost = _config[RabbitMqAppSettingConst.Vhost];
                 voucherTransactionQueue = _config[RabbitMqAppSettingConst.voucherTransactionQueue];
+                channelUpdateStateQueue = _config[RabbitMqAppSettingConst.channelUpdateStateQueue];
             }
             if (_env.IsProduction())
             {
                 rabbitHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Host);
                 rabbitvHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Vhost);
                 voucherTransactionQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.voucherTransactionQueue);
+                channelUpdateStateQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.channelUpdateStateQueue);
             }
 
         }
@@ -76,6 +80,15 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
         public async Task<IActionResult> GetTransaction([FromQuery] GetVoucherTransFilterParameter filter)
         {
             return Ok(await Mediator.Send(new GetVoucherTransFilterQuery() { Cif = filter.Cif, State = filter.State,PageNumber = filter.PageNumber,PageSize = filter.PageSize,Search = filter.Search }));
+        }
+
+        [HttpPost("update-state")]
+        public async Task<IActionResult> PostUpdateState([FromBody] ChannelUpdateStateDto payload)
+        {
+            Uri uri = new Uri($"rabbitmq://{rabbitHost}/{rabbitvHost}/{channelUpdateStateQueue}");
+            var endPoint = await _bus.GetSendEndpoint(uri);
+            await endPoint.Send(payload);
+            return Ok(200);
         }
     }
 }

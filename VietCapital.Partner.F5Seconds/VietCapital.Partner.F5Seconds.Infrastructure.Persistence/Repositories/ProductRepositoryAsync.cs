@@ -26,7 +26,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
             return await _products
                 .Include(cp => cp.CategoryProducts)
                 .ThenInclude(c => c.Category)
-                .SingleOrDefaultAsync(x => x.Code.Equals(code.Trim()) && x.Status);
+                .SingleOrDefaultAsync(x => x.ProductCode.Equals(code.Trim()) && x.Status);
         }
 
         public async Task<IReadOnlyList<Product>> GetListAsync()
@@ -46,7 +46,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
                 EF.Functions.Like(x.Name, search) ||
                 EF.Functions.Like(x.Point, search) ||
                 EF.Functions.Like(x.BrandName, search) ||
-                EF.Functions.Like(x.Code, search)
+                EF.Functions.Like(x.ProductCode, search)
             );
         }
 
@@ -61,13 +61,13 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
 
         public async Task<bool> IsExitedByCode(string code)
         {
-            return await _products.AnyAsync(x => x.Code.Equals(code.Trim()));
+            return await _products.AnyAsync(x => x.ProductCode.Equals(code.Trim()));
         }
 
         public Task<bool> IsUniqueBarcodeAsync(string barcode)
         {
             return _products
-                .AnyAsync(p => p.Code == barcode);
+                .AnyAsync(p => p.ProductCode == barcode);
         }
     }
 }

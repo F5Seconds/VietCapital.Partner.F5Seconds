@@ -61,10 +61,11 @@ namespace VietCapital.Partner.F5Seconds.Application.DTOs.Gateway
 
     public class BuyVoucherPayload
     {
+        public string channel { get; set; } = "VIETCAPITAL";
         public string productCode { get; set; }
         public int quantity { get; set; } = 1;
         public string transactionId { get; set; } = Guid.NewGuid().ToString();
         public string customerId { get; set; }
-        public string customerPhone { get; set; } = "0979999067";
+        public string customerPhone { get; set; }
     }
 }

@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using QRCoder;
 using System;
@@ -13,6 +17,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
+using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
 using VietCapital.Partner.F5Seconds.WebMvc.Models;
 using VietCapital.Partner.F5Seconds.WebMvc.ModelView;
 
@@ -23,12 +28,17 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IGatewayHttpClientService _gatewayHttpClient;
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, IGatewayHttpClientService gatewayHttpClient)
+        private readonly IConfiguration _config;
+        private readonly IWebHostEnvironment _env;
+        private readonly IBus _bus;
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context, IGatewayHttpClientService gatewayHttpClient, IConfiguration config, IWebHostEnvironment env, IBus bus)
         {
             _logger = logger;
             _context = context;
             _gatewayHttpClient = gatewayHttpClient;
+            _config = config;
+            _env = env;
+            _bus = bus; 
         }
 
         [HttpGet]
@@ -46,7 +56,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
         public async Task<IActionResult> ProductDetail(string id)
         {
             if (string.IsNullOrEmpty(id)) return NotFound();
-            var product = await _context.Products.Include(cp => cp.CategoryProducts).ThenInclude(c => c.Category).SingleAsync(p => p.Code.Equals(id));
+            var product = await _context.Products.Include(cp => cp.CategoryProducts).ThenInclude(c => c.Category).SingleAsync(p => p.ProductCode.Equals(id));
             if(product is null) return NotFound();
             var pGatewayDetail = await _gatewayHttpClient.DetailProduct(id);
             if (!pGatewayDetail.Succeeded) return NotFound();
@@ -65,7 +75,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
         public async Task<IActionResult> Transaction(BuyVoucher buyVoucher)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var product = await _context.Products.Include(t => t.VoucherTransactions).SingleAsync(x => x.Code.Equals(buyVoucher.Code));
+            var product = await _context.Products.Include(t => t.VoucherTransactions).SingleAsync(x => x.ProductCode.Equals(buyVoucher.Code));
             if (product is null) return NotFound("Not found product");
             var payload = new Application.DTOs.Gateway.BuyVoucherPayload()
             {
@@ -154,6 +164,31 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet()]
+        public async Task<IActionResult> ProductSync()
+        {
+            var product = await _gatewayHttpClient.ListProduct();
+            if (product is not null && product.Succeeded)
+            {
+                string rabbitHost = _config[RabbitMqAppSettingConst.Host];
+                string rabbitvHost = _config[RabbitMqAppSettingConst.Vhost];
+                string productSyncQueue = _config[RabbitMqAppSettingConst.productSyncQueue];
+                if (_env.IsProduction())
+                {
+                    rabbitHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Host);
+                    rabbitvHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Vhost);
+                    productSyncQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.productSyncQueue);
+                }
+                Uri uri = new Uri($"rabbitmq://{rabbitHost}/{rabbitvHost}/{productSyncQueue}");
+                var endPoint = await _bus.GetSendEndpoint(uri);
+                foreach (var item in product.Data)
+                {
+                    await endPoint.Send(item);
+                }
+            }
+            return View();
         }
     }
 }

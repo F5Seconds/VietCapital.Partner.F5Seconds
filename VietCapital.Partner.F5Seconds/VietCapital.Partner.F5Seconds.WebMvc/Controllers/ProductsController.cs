@@ -80,7 +80,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
             
             var product = await _context.Products.Include(x => x.CategoryProducts).SingleAsync(p => p.Id.Equals(id));
             if (product is null) return NotFound();
-            var pGatewayDetail = await _gatewayHttpClient.DetailProduct(product.Code);
+            var pGatewayDetail = await _gatewayHttpClient.DetailProduct(product.ProductCode);
             if (!pGatewayDetail.Succeeded) return NotFound();
             if(pGatewayDetail.Data is null) return NotFound();
             if (product.Content is null) product.Content = pGatewayDetail.Data.productContent;

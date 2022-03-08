@@ -30,10 +30,10 @@
                         <a class="nav-link @(Model.State == 2 ? "active" : null)" asp-route-state="2" asp-route-cif="@Model.Cif">Đã sử dụng</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link @(Model.State == 4 ? "active" : null)" asp-route-state="4" asp-route-cif="@Model.Cif">Hủy</a>
+                        <a class="nav-link @(Model.State == 3 ? "active" : null)" asp-route-state="3" asp-route-cif="@Model.Cif">Hủy</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link @(Model.State == 5 ? "active" : null)" asp-route-state="5" asp-route-cif="@Model.Cif">Hết hạn sư dụng</a>
+                        <a class="nav-link @(Model.State == 4 ? "active" : null)" asp-route-state="4" asp-route-cif="@Model.Cif">Hết hạn sư dụng</a>
                         </li>
                     </ul>    
                     <hr/>
@@ -46,7 +46,7 @@
                             <div class="card-body">
                                 <div class="mb-2">
                                     <h6 class="font-weight-semibold mb-2"> 
-                                        <a href="@Url.Action("ProductDetail", "Home", new { id = @item.Product.Code })" class="text-default mb-2" data-abc="true">@item.Product.Name</a> 
+                                        <a href="@Url.Action("ProductDetail", "Home", new { id = @item.Product.ProductCode })" class="text-default mb-2" data-abc="true">@item.Product.Name</a> 
                                         </h6> <a href="#" class="text-muted" data-abc="true">@item.Product.BrandName</a>
                                 </div>
                                 <h6 class="mb-0 font-weight-semibold">Mã voucher: @item.VoucherCode </h6>
