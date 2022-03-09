@@ -15,7 +15,7 @@ namespace VietCapital.Partner.F5Seconds.Domain.Entities
         public float Price { get; set; }
         public float? Point { get; set; }
         public int Type { get; set; } = 1;
-        public int Size { get; set; } = 0;
+        public int? Size { get; set; } = 0;
         public string Partner { get; set; }
         public string BrandName { get; set; }
         public string BrandLogo { get; set; }

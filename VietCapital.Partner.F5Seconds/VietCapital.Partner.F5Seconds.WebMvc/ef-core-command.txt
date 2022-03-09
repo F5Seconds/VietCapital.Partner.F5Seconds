@@ -1,8 +1,14 @@
 ﻿dotnet ef database update --context IdentityContext --project CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.Gateway
 dotnet ef database update --context ApplicationDbContext --project CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.Gateway
 
+dotnet ef database update 20220309215919_ProductView --context ApplicationDbContext
+
 dotnet ef migrations add InitialCreate --context ApplicationDbContext --project CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.Gateway
 dotnet ef migrations remove --context ApplicationDbContext
+dotnet ef migrations list --context ApplicationDbContext
+
+dotnet ef migrations script AddNewTables AddAuditTable --context ApplicationDbContext
+dotnet ef migrations script InitialCreateTables --context ApplicationDbContext | out-file ./Migrations/Scripts/script.sql
 
 docker build . -t gateway.f5seconds.vn:v.1.0 -f CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.Gateway/Dockerfile
 docker build . -t gotit.f5seconds.vn:v.1.0 -f CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.GotIt/Dockerfile

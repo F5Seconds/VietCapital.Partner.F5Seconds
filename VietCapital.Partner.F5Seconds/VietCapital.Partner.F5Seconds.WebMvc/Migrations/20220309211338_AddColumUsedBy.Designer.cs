@@ -9,15 +9,15 @@ using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
 namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220307230538_InitialCreateTables")]
-    partial class InitialCreateTables
+    [Migration("20220309211338_AddColumUsedBy")]
+    partial class AddColumUsedBy
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.12");
+                .HasAnnotation("ProductVersion", "5.0.15");
 
             modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.Category", b =>
                 {
@@ -194,7 +194,10 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                     b.Property<string>("UsedBrand")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("UsedTime")
+                    b.Property<string>("UsedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("UsedTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("VoucherCode")

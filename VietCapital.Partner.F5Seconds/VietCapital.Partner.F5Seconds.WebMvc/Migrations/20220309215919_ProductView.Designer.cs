@@ -9,15 +9,15 @@ using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
 namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220308041553_ChangeDateTimIsNullUsedTime")]
-    partial class ChangeDateTimIsNullUsedTime
+    [Migration("20220309215919_ProductView")]
+    partial class ProductView
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.12");
+                .HasAnnotation("ProductVersion", "5.0.15");
 
             modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.Category", b =>
                 {
@@ -132,7 +132,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Size")
+                    b.Property<int?>("Size")
                         .HasColumnType("int");
 
                     b.Property<bool>("Status")
@@ -192,6 +192,9 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("UsedBrand")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UsedBy")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("UsedTime")

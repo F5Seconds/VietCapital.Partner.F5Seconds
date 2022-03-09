@@ -21,4 +21,5 @@ RUN dotnet publish "VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ADD VietCapital.Partner.F5Seconds/VietCapital.Partner.F5Seconds.WebMvc/Migrations/Scripts/CreateProductView.sql /app/Migrations/Scripts/
 ENTRYPOINT ["dotnet", "VietCapital.Partner.F5Seconds.WebMvc.dll"]

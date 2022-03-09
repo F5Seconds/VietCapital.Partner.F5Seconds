@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Infrastructure.Identity.Contexts;
+using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
 
 namespace VietCapital.Partner.F5Seconds.WebMvc
 {
@@ -13,7 +11,15 @@ namespace VietCapital.Partner.F5Seconds.WebMvc
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+            using (var scope = host.Services.CreateScope())
+            {
+                var applicationDb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var IdentityDb = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+                applicationDb.Database.Migrate();
+                IdentityDb.Database.Migrate();
+            }
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
