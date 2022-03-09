@@ -7,7 +7,7 @@ interface Props {
   label: string;
   form: any;
   type?: any;
-  rest?: any;
+  [x: string]: any;
   rules?: any;
   loading: boolean;
   placeholder?: string;

@@ -1,13 +1,17 @@
 import React, {useState} from 'react';
 import Header from '../../../layouts/Header';
-import {DataTable} from '../../../components/base';
+import {DataTable, DialogConfirm} from '../../../components/base';
 import {useLocation, useNavigate} from 'react-router';
 import queryString from 'query-string';
 import {useWindowDimensions} from '../../../hooks';
-import {Button, Stack} from '@mui/material';
+import {Button, IconButton, Stack} from '@mui/material';
 import DialogUser from './dialog-user';
 import accountApi, {Account} from '../../../apis/account-api';
 import {useSnackbar} from 'notistack';
+import LoadingOverlay from '../../../components/base/loading-overlay';
+import {Trash} from 'iconsax-react';
+import {colors} from '../../../theme';
+import {accountService} from '../../../services';
 
 const DanhSachUser = () => {
   const location = useLocation();
@@ -20,7 +24,8 @@ const DanhSachUser = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const {height} = useWindowDimensions();
-
+  const [isOpenDelete, setIsOpenDelete] = useState({visible: false, id: ''});
+  const [isDeleting, setIsDeleting] = useState(false);
   const [filters, setFilters] = React.useState({
     ...queryParams,
     search: queryParams.search,
@@ -41,43 +46,30 @@ const DanhSachUser = () => {
 
   const columns = [
     {
-      field: 'maNs',
-      headerName: 'Mã nhân sự',
-      width: 90,
+      field: 'maNhanVien',
+      headerName: 'Mã nhân viên',
     },
-    {field: 'hoTen', headerName: 'Người tạo yêu cầu', width: 130},
+    {field: 'tenNhanVien', headerName: 'Tên nhân viên'},
 
     {
-      field: 'loaiYeuCau',
-      headerName: 'Loại yêu cầu',
-      width: 90,
-    },
-    {
-      field: 'createdAt',
-      headerName: 'Ngày tạo',
-      width: 90,
-    },
-    {
-      field: 'tdv',
-      headerName: 'Trưởng đơn vị',
-
-      width: 130,
-    },
-    {
-      field: 'tienDo',
-      headerName: 'Tiến độ',
-      width: 90,
-    },
-
-    {
-      field: 'tinhTrang',
-      headerName: 'Tình trạng',
-      width: 130,
+      field: 'email',
+      headerName: 'Email',
     },
     {
       field: '',
       headerName: '',
-      width: 160,
+      renderCell: (row: any) => (
+        <IconButton
+          size="medium"
+          color="error"
+          onClick={e => {
+            e.stopPropagation();
+            setIsOpenDelete({visible: true, id: row.id});
+          }}
+        >
+          <Trash color={colors.error} />
+        </IconButton>
+      ),
     },
   ];
 
@@ -92,9 +84,19 @@ const DanhSachUser = () => {
       console.log(res);
     } catch (error) {
       console.log(error);
-      //   enqueueSnackbar(error?.message, {variant: 'error'});
+      enqueueSnackbar('Đã xảy ra lỗi', {variant: 'error'});
     }
   };
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    setIsOpenDelete(prev => ({...prev, open: false}));
+    // const res = await accountService.deleteRole(isOpenDelete.id);
+    // if (res) {
+    //   // getAllRole();
+    // }
+    setIsDeleting(false);
+  };
+
   return (
     <div>
       <Header title="Danh sách user" />
@@ -132,12 +134,22 @@ const DanhSachUser = () => {
           }}
         />
       </div>
-      <DialogUser
-        open={openDialog.open}
-        id={openDialog.id}
-        onSubmit={handleSubmitUser}
-        onClose={handleCloseDialog}
+      {openDialog.open && (
+        <DialogUser
+          open={openDialog.open}
+          id={openDialog.id}
+          onSubmit={handleSubmitUser}
+          onClose={handleCloseDialog}
+        />
+      )}
+      <DialogConfirm
+        open={isOpenDelete.visible}
+        title="Xác nhận"
+        content='Bạn có chắc chắn muốn xóa quyền này"'
+        onClose={() => setIsOpenDelete(prev => ({...prev, visible: false}))}
+        onAgree={handleDelete}
       />
+      <LoadingOverlay open={isDeleting} />
     </div>
   );
 };
