@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using VietCapital.Partner.F5Seconds.Domain.Entities;
 
 namespace VietCapital.Partner.F5Seconds.Application.DTOs.Gateway
 {
     public class ProductOutSideResponse : ProductInSideResponse
     {
+        public virtual ICollection<F5sVoucherOffice> StoreList { get; set; }
         public virtual ICollection<CategoryInsideResponse> Categories { get; set; }
     }
 

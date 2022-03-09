@@ -5,6 +5,6 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.De
     public class GetDetailProductParameter
     {
         [Required]
-        public string Code { get; set; }
+        public string ProductCode { get; set; }
     }
 }

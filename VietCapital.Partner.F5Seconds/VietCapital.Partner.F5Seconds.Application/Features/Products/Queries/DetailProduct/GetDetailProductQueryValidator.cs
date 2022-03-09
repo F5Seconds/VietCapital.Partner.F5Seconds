@@ -6,7 +6,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.De
     {
         public GetDetailProductQueryValidator()
         {
-            RuleFor(p => p.Code)
+            RuleFor(p => p.ProductCode)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull();
         }
