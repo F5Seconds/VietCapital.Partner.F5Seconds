@@ -6,6 +6,7 @@ import {selectAlert, setHiddenAlert} from './redux/slice/alertSlice';
 import {routes} from './routes';
 // import './App.css';
 import './theme/styles.css';
+
 const Noti = () => {
   const {enqueueSnackbar, closeSnackbar} = useSnackbar();
   const alert = useAppSelector(selectAlert);

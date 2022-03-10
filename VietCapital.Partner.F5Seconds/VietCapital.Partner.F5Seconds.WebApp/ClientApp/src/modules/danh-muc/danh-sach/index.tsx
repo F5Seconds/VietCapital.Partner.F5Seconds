@@ -5,15 +5,14 @@ import {useLocation, useNavigate} from 'react-router';
 import queryString from 'query-string';
 import {useWindowDimensions} from '../../../hooks';
 import {Button, IconButton, Stack} from '@mui/material';
-import DialogUser from './dialog-user';
-import accountApi, {Account} from '../../../apis/account-api';
+import {accountApi} from '../../../apis';
 import {useSnackbar} from 'notistack';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {Trash} from 'iconsax-react';
 import {colors} from '../../../theme';
 import {accountService} from '../../../services';
 
-const DanhSachUser = () => {
+const DanhSachDanhMucPage = () => {
   const location = useLocation();
   const {enqueueSnackbar} = useSnackbar();
   const queryParams = queryString.parse(location.search);
@@ -45,15 +44,14 @@ const DanhSachUser = () => {
   const handleCloseDialog = () => setOpenDialog(prev => ({...prev, open: false}));
 
   const columns = [
+    {field: 'image', headerName: 'Hình ảnh'},
     {
-      field: 'maNhanVien',
-      headerName: 'Mã nhân viên',
+      field: 'name',
+      headerName: 'Tên danh mục',
     },
-    {field: 'tenNhanVien', headerName: 'Tên nhân viên'},
-
     {
-      field: 'email',
-      headerName: 'Email',
+      field: 'status',
+      headerName: 'Trạng thái',
     },
     {
       field: '',
@@ -73,7 +71,7 @@ const DanhSachUser = () => {
     },
   ];
 
-  const handleSubmitUser = async (data: Account) => {
+  const handleSubmitUser = async (data: any) => {
     try {
       const res = await accountApi.register(data);
       if (res.succeeded) {
@@ -99,7 +97,7 @@ const DanhSachUser = () => {
 
   return (
     <div>
-      <Header title="Danh sách user" />
+      <Header title="Danh sách danh mục" />
       <div style={{padding: 16}}>
         <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
           <Button
@@ -109,7 +107,7 @@ const DanhSachUser = () => {
               setOpenDialog(prev => ({open: true}));
             }}
           >
-            Thêm user
+            Thêm danh mục
           </Button>
         </Stack>
         <DataTable
@@ -134,24 +132,10 @@ const DanhSachUser = () => {
           }}
         />
       </div>
-      {openDialog.open && (
-        <DialogUser
-          open={openDialog.open}
-          id={openDialog.id}
-          onSubmit={handleSubmitUser}
-          onClose={handleCloseDialog}
-        />
-      )}
-      <DialogConfirm
-        open={isOpenDelete.visible}
-        title="Xác nhận"
-        content='Bạn có chắc chắn muốn xóa quyền này"'
-        onClose={() => setIsOpenDelete(prev => ({...prev, visible: false}))}
-        onAgree={handleDelete}
-      />
+
       <LoadingOverlay open={isDeleting} />
     </div>
   );
 };
 
-export default DanhSachUser;
+export default DanhSachDanhMucPage;

@@ -26,6 +26,7 @@ const DialogUser: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
 
   const {
     handleSubmit,
+    getValues,
     formState: {isSubmitting},
   } = form;
   const [isLoading, setIsLoading] = useState(false);
@@ -107,6 +108,12 @@ const DialogUser: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
                   value: true,
                   message: 'Không được để trống',
                 },
+                validate: {
+                  match: (value: string) => {
+                    const {confirmPassword} = getValues();
+                    return value === confirmPassword || 'Mật khẩu không khớp.';
+                  },
+                },
               }}
             />
           </Grid>
@@ -120,6 +127,12 @@ const DialogUser: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
                 required: {
                   value: true,
                   message: 'Không được để trống',
+                },
+                validate: {
+                  match: (value: string) => {
+                    const {password} = getValues();
+                    return value === password || 'Mật khẩu không khớp.';
+                  },
                 },
               }}
             />

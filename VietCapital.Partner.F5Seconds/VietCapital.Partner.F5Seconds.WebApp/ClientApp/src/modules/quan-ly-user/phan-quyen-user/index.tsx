@@ -9,6 +9,7 @@ import {Role} from '../../../models';
 import {accountService} from '../../../services';
 import {colors} from '../../../theme';
 import DialogRole from './dialog-role';
+import DialogGanQuyen from './dialog-gan-quyen';
 
 const PhanQuyenUser = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +22,13 @@ const PhanQuyenUser = () => {
     open: false,
     id: null,
     roleName: '',
+  });
+  const [openDialogGanQuyen, setOpenDialogGanQuyen] = useState<{
+    open: boolean;
+    id?: string | null;
+  }>({
+    open: false,
+    id: null,
   });
   const [isOpenDelete, setIsOpenDelete] = useState({visible: false, id: ''});
   const [isDeleting, setIsDeleting] = useState(false);
@@ -64,6 +72,7 @@ const PhanQuyenUser = () => {
     },
   ];
   const handleCloseDialog = () => setOpenDialog(prev => ({...prev, open: false}));
+  const handleCloseDialogGanQuyen = () => setOpenDialogGanQuyen(prev => ({...prev, open: false}));
   const handleSubmit = async (data: {roleName: string}) => {
     setIsDeleting(true);
     const res = openDialog.id
@@ -77,7 +86,7 @@ const PhanQuyenUser = () => {
   };
   const handleDelete = async () => {
     setIsDeleting(true);
-    setOpenDialog(prev => ({...prev, open: false}));
+    setIsOpenDelete(prev => ({...prev, open: false}));
     const res = await accountService.deleteRole(isOpenDelete.id);
     if (res) {
       getAllRole();
@@ -104,7 +113,7 @@ const PhanQuyenUser = () => {
             color="info"
             sx={{marginRight: 1}}
             onClick={() => {
-              setOpenDialog(prev => ({open: true}));
+              setOpenDialogGanQuyen(prev => ({open: true}));
             }}
           >
             Gán quyền
@@ -134,6 +143,14 @@ const PhanQuyenUser = () => {
           open={openDialog.open}
           id={openDialog.id}
           onClose={handleCloseDialog}
+          onSubmit={handleSubmit}
+        />
+      )}
+      {openDialogGanQuyen.open && (
+        <DialogGanQuyen
+          open={openDialogGanQuyen.open}
+          id={openDialogGanQuyen.id}
+          onClose={handleCloseDialogGanQuyen}
           onSubmit={handleSubmit}
         />
       )}
