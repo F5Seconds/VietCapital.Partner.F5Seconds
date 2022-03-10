@@ -1,0 +1,104 @@
+﻿@using VietCapital.Partner.F5Seconds.Domain.Entities
+@model VietCapital.Partner.F5Seconds.WebMvc.Extensions.PagedResult<Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="row">
+    <div class="col-lg-12">
+        <nav class="float-right" aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link" asp-controller="Products" asp-action="Index" asp-route-page="1">First</a></li>
+            @for (var i = 1; i <= Model.PageCount; i++)
+           {
+            <li class="page-item @(Model.CurrentPage == i ? "active" : null)"><a class="page-link" asp-controller="Products" asp-action="Index" asp-route-page="@i">@i</a></li>   
+           }
+            
+            <li class="page-item"><a class="page-link" asp-controller="Products" asp-action="Index" asp-route-page="@Model.PageCount">Last</a></li>
+          </ul>
+        </nav>
+    </div>
+    <div class="col-lg-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Code
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Price
+                    </th>
+                    <th>
+                        Point
+                    </th>
+                    <th>
+                        Partner
+                    </th>
+                    <th>
+                        BrandName
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Results) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProductCode)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Point)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Partner)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BrandName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+    </div>
+    <div class="col-lg-12">
+        <nav class="float-right" aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link" asp-controller="Products" asp-action="Index" asp-route-page="1">First</a></li>
+            @for (var i = 1; i <= Model.PageCount; i++)
+           {
+            <li class="page-item @(Model.CurrentPage == i ? "active" : null)"><a class="page-link" asp-controller="Products" asp-action="Index" asp-route-page="@i">@i</a></li>   
+           }
+            
+            <li class="page-item"><a class="page-link" asp-controller="Products" asp-action="Index" asp-route-page="@Model.PageCount">Last</a></li>
+          </ul>
+        </nav>
+    </div>
+</div>
+

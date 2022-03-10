@@ -1,0 +1,51 @@
+﻿@using VietCapital.Partner.F5Seconds.WebMvc.ModelView
+@model ProductEditView
+
+@{
+    ViewData["Title"] = "ProductDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">@Model.Product.Name</h3>
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-6">
+                    <div class="white-box text-center"><img src="@Model.Product.Image" class="img-fluid"/></div>
+                    <h3 class="box-title mt-5">Địa điểm áp dụng</h3>
+                    <ul class="list-group">
+                        @foreach (var item in Model.StoreList)
+                        {
+                            <li class="list-group-item">@item.storeNm - @item.storeAddr</li>     
+                        }
+                    </ul>
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-6">
+                    <h4 class="box-title mt-5">Mô tả</h4>
+                    <p>@Html.Raw(Model.Product.Content)</p>
+                    <h2 class="mt-5">
+                        @Model.Product.Point<small class="text-success">điểm</small>
+                    </h2>
+                    <form asp-controller="Home" asp-action="transaction" class="form-inline" method="post">
+                        @Html.AntiForgeryToken()
+                        <label class="sr-only" for="inlineFormInputName2">CIF</label>
+                        <input type="text" class="form-control sr-only" name="Code" value="@Model.Product.ProductCode" />
+                        <input type="text" class="form-control mb-2 mr-sm-2" name="Cif" id="inlineFormInputName2" placeholder="Số CIF">
+                        <button type="submit" class="btn btn-primary btn-rounded mb-2">Đổi ngay</button>
+                    </form>
+                    <h4 class="box-title mt-5">Danh mục</h4>
+                    <div>
+                        @foreach(var cat in Model.Product.CategoryProducts)
+                        {
+                            <a href="@Url.Action("Category", "Home", new { id = @cat.Category.Id }) " class="btn btn-outline-secondary">@cat.Category.Name</a>    
+                        }
+                    </div>
+                    <h3 class="box-title mt-5">Chính sách</h3>
+                    <p>@Html.Raw(Model.Product.Term)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

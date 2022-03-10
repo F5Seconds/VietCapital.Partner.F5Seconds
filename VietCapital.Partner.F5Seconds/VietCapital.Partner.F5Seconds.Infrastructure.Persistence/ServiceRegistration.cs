@@ -14,24 +14,24 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
 {
     public static class ServiceRegistration
     {
-        public static void AddPersistenceInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static void AddPersistenceInfrastructure(this IServiceCollection services, IConfiguration configuration, bool isProduction)
         {
-            if (configuration.GetValue<bool>("UseInMemoryDatabase"))
+            string appConStr = configuration.GetConnectionString("DefaultConnection");
+            if (isProduction)
             {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseInMemoryDatabase("ApplicationDb"));
+                appConStr = Environment.GetEnvironmentVariable("DB_URI_APPLICATION");
             }
-            else
-            {
-                var serverVersion = new MySqlServerVersion(new Version(10, 5, 10));
-                services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseMySql(
-                   configuration.GetConnectionString("DefaultConnection"), serverVersion,
-                   b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-            }
+            var serverVersion = new MySqlServerVersion(new Version(10, 5, 10));
+            services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseMySql(
+                appConStr, serverVersion,
+                //b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                b => b.MigrationsAssembly("VietCapital.Partner.F5Seconds.WebMvc")));
             #region Repositories
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
             services.AddTransient<IProductRepositoryAsync, ProductRepositoryAsync>();
+            services.AddTransient<ICategoryRepositoryAsync, CategoryRepositoryAsync>();
+            services.AddTransient<IVoucherTransactionRepositoryAsync, VoucherTransactionRepositoryAsync>();
             #endregion
         }
     }

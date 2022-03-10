@@ -8,6 +8,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Wrappers
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public int PageCount { get; set; }
 
         public PagedResponse(T data, int pageNumber, int pageSize)
         {
