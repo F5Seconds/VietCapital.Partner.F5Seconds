@@ -45,6 +45,11 @@ const items = [
     icon: TaskSquare,
     title: 'Danh sách danh mục',
   },
+  {
+    href: '/don-hang',
+    icon: TaskSquare,
+    title: 'Quản lý đơn hàng',
+  },
 
   // {
   //   href: '/nhac-viec',
