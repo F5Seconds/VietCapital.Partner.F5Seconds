@@ -35,6 +35,16 @@ const items = [
       },
     ],
   },
+  {
+    href: '/san-pham',
+    icon: TaskSquare,
+    title: 'Danh sách sản phẩm',
+  },
+  {
+    href: '/danh-muc',
+    icon: TaskSquare,
+    title: 'Danh sách danh mục',
+  },
 
   // {
   //   href: '/nhac-viec',

@@ -8,7 +8,7 @@ interface Props {
     href: string;
     icon: any;
     title: string;
-    children: Array<any>;
+    children?: Array<any>;
   };
   rest?: any;
 }
@@ -30,7 +30,7 @@ const NavItem: FC<Props> = ({item, ...rest}) => {
     : false;
   // const active=
   const handleClickCollapse = () => {
-    if (!!children) {
+    if (children.length !== 0) {
       setChildrenActive(prev => !prev);
     } else {
       navigate(href);
@@ -73,7 +73,7 @@ const NavItem: FC<Props> = ({item, ...rest}) => {
             {Icon && <Icon size="20" color="#fff" />}
             <span>{title}</span>
           </Stack>
-          {!!children &&
+          {children.length !== 0 &&
             (childrenActive ? (
               <ArrowUp2 size="20" color="#fff" />
             ) : (
@@ -81,7 +81,7 @@ const NavItem: FC<Props> = ({item, ...rest}) => {
             ))}
         </Button>
       </ListItem>
-      {children && (
+      {children.length !== 0 && (
         <Collapse in={childrenActive}>
           {children.map(item => (
             <ListItem
