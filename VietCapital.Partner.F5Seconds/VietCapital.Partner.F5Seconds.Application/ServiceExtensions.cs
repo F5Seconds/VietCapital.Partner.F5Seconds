@@ -2,12 +2,8 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using VietCapital.Partner.F5Seconds.Application.Behaviours;
-using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.CreateProduct;
 
 namespace VietCapital.Partner.F5Seconds.Application
 {

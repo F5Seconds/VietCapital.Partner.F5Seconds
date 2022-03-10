@@ -1,0 +1,28 @@
+﻿@model IEnumerable<VietCapital.Partner.F5Seconds.Domain.Entities.Product>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="container">
+<div class="row">
+    @foreach (var item in Model)
+   {
+       <div class="col-md-3">
+            <div class="card mb-3 box-shadow">
+            <img class="card-img-top" data-src="@item.Image" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="@item.Image" data-holder-rendered="true">
+            <div class="card-body">
+                <div class="mb-2">
+                    <h6 class="font-weight-semibold mb-2"> 
+                        <a href="@Url.Action("ProductDetail", "Home", new { id = @item.ProductCode })" class="text-default mb-2" data-abc="true">@item.Name</a> 
+                        </h6> <a href="#" class="text-muted" data-abc="true">@item.BrandName</a>
+                </div>
+                <h5 class="mb-0 font-weight-semibold">@item.Point </h5>
+                <br/>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="@Url.Action("ProductDetail", "Home", new { id = @item.ProductCode }) " class="btn btn-outline-secondary btn-block">Chi tiết</a>
+                </div>
+            </div>
+            </div>
+        </div>
+   }
+</div>
+</div>

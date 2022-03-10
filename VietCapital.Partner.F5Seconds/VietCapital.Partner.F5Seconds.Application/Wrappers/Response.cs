@@ -9,6 +9,13 @@ namespace VietCapital.Partner.F5Seconds.Application.Wrappers
         public Response()
         {
         }
+        public Response(bool succeeded, T data, string message = null, List<string> error = null)
+        {
+            Succeeded = succeeded;
+            Message = message;
+            Data = data;
+            Errors = error;
+        }
         public Response(T data, string message = null)
         {
             Succeeded = true;
@@ -24,5 +31,12 @@ namespace VietCapital.Partner.F5Seconds.Application.Wrappers
         public string Message { get; set; }
         public List<string> Errors { get; set; }
         public T Data { get; set; }
+    }
+
+    public class ResponseBase
+    {
+        public bool Succeeded { get; set; }
+        public string Message { get; set; }
+        public List<string> Errors { get; set; }
     }
 }

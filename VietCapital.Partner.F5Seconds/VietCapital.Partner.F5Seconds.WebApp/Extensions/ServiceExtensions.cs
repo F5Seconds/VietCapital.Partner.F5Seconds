@@ -1,10 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GreenPipes;
+using MassTransit;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.Interfaces;
+using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
+using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
+using VietCapital.Partner.F5Seconds.WebApp.Consumer;
 
 namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
 {
@@ -60,7 +69,61 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
             .AddNewtonsoftJson(o => o.SerializerSettings.ReferenceLoopHandling =
                 Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
-        
+        public static void AddHttpClientExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
+        {
+            string gateWayUri = configuration["Gateway:Uri"];
+            if (env.IsProduction())
+            {
+                gateWayUri = Environment.GetEnvironmentVariable("GATEWAY_URI");
+            }
+            services.AddHttpClient<IGatewayHttpClientService, GatewayHttpClientRepository>(c => {
+                c.BaseAddress = new Uri(gateWayUri);
+            });
+        }
+        public static void AddRabbitMqExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
+        {
+            string rabbitHost = configuration[RabbitMqAppSettingConst.Host];
+            string rabbitvHost = configuration[RabbitMqAppSettingConst.Vhost];
+            string rabbitUser = configuration[RabbitMqAppSettingConst.User];
+            string rabbitPass = configuration[RabbitMqAppSettingConst.Pass];
+            string voucherTransactionQueue = configuration[RabbitMqAppSettingConst.voucherTransactionQueue];
+            string channelUpdateStateQueue = configuration[RabbitMqAppSettingConst.channelUpdateStateQueue];
+            if (env.IsProduction())
+            {
+                rabbitHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Host);
+                rabbitvHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Vhost);
+                rabbitUser = Environment.GetEnvironmentVariable(RabbitMqEnvConst.User);
+                rabbitPass = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Pass);
+                voucherTransactionQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.voucherTransactionQueue);
+                channelUpdateStateQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.channelUpdateStateQueue);
+            }
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<VoucherTransactionConsumer>();
+                x.AddConsumer<ChannelUpdateStateConsumer>();
+                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+                {
+                    config.Host(rabbitHost, rabbitvHost, h =>
+                    {
+                        h.Username(rabbitUser);
+                        h.Password(rabbitPass);
+                    });
+                    config.ReceiveEndpoint(voucherTransactionQueue, ep =>
+                    {
+                        ep.PrefetchCount = 16;
+                        ep.UseMessageRetry(r => r.Interval(2, 100));
+                        ep.ConfigureConsumer<VoucherTransactionConsumer>(provider);
+                    });
+                    config.ReceiveEndpoint(channelUpdateStateQueue, ep =>
+                    {
+                        ep.PrefetchCount = 16;
+                        ep.UseMessageRetry(r => r.Interval(2, 100));
+                        ep.ConfigureConsumer<ChannelUpdateStateConsumer>(provider);
+                    });
+                }));
+            });
+            services.AddMassTransitHostedService();
+        }
         public static void AddApiVersioningExtension(this IServiceCollection services)
         {
             services.AddApiVersioning(config =>

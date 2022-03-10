@@ -1,0 +1,24 @@
+﻿dotnet ef database update --context IdentityContext --project CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.Gateway
+dotnet ef database update --context ApplicationDbContext --project CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.Gateway
+
+dotnet ef database update 20220309215919_ProductView --context ApplicationDbContext
+
+dotnet ef migrations add InitialCreate --context ApplicationDbContext --project CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.Gateway
+dotnet ef migrations remove --context ApplicationDbContext
+dotnet ef migrations list --context ApplicationDbContext
+
+dotnet ef migrations script AddNewTables AddAuditTable --context ApplicationDbContext
+dotnet ef migrations script InitialCreateTables --context ApplicationDbContext | out-file ./Migrations/Scripts/script.sql
+
+docker build . -t gateway.f5seconds.vn:v.1.0 -f CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.Gateway/Dockerfile
+docker build . -t gotit.f5seconds.vn:v.1.0 -f CoreLoyalty.F5Seconds\CoreLoyalty.F5Seconds.GotIt/Dockerfile
+
+netstat -ano -p TCP | find /I "5001"
+taskkill /F /PID 43656
+
+docker run -d -p 5051:5051 --name gotit_f5s --network gateway_core_loyalty giabaodocker/gotit.f5seconds.vn:v.1.0
+docker run -d -p 5052:5052 --name urbox_f5s --network gateway_core_loyalty giabaodocker/urbox.f5seconds.vn:v.1.0
+docker run -d -p 5053:5053 --name gateway_f5s --network gateway_core_loyalty -e DB_URI_APPLICATION="server=loyalty_mysql;port=3306;database=CoreLoyalty;uid=root;password=f5seconds" -e DB_URI_IDENTITY="server=loyalty_mysql;port=3306;database=CoreLoyalty;uid=root;password=f5seconds" -e RABBITMQ_HOST=f5s_gateway_mq -e RABBITMQ_VHOST=gateway -e RABBITMQ_USER=f5s -e RABBITMQ_PASS=F5seconds2021 -e RABBITMQ_PRODUCTSYNC=productSyncQueue -e PARTNER_URI_GOTIT=http://gotit_f5s:5051 -e PARTNER_URI_URBOX=http://urbox_f5s:5052 -e SCHEDULE_PRODUCTSYNC="0 0 0 * * *" giabaodocker/gateway.f5seconds.vn:v.1.0
+docker network create -d bridge gateway_core_loyalty
+docker network connect gateway_core_loyalty loyalty_mysql
+docker network connect gateway_core_loyalty f5s_gateway_mq

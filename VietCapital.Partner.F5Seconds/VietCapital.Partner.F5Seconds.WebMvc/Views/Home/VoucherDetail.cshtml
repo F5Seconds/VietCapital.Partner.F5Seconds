@@ -1,0 +1,38 @@
+﻿@model VietCapital.Partner.F5Seconds.WebMvc.ModelView.DetailVoucher
+@{
+    ViewData["Title"] = "VoucherDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">@Model.Voucher.Product.Name</h3>
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-6">
+                    <div class="white-box text-center"><img src="@String.Format("data:image/png;base64,{0}", Convert.ToBase64String(Model.QrCodeVoucher))" class="img-fluid"/></div>
+                    <h4 class="box-title text-center mt-0">@Model.Voucher.VoucherCode</h4>
+                    <h6 class="text-center">Ngày hết hạng: @Model.Voucher.ExpiryDate.ToString("dd/MM/yyyy")</h6>
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-6">
+                    <h4 class="box-title mt-5">Mô tả</h4>
+                    <p>@Html.Raw(Model.Voucher.Product.Content)</p>
+                    <h2 class="mt-5">
+                        @Model.Voucher.Product.Point<small class="text-success">điểm</small>
+                    </h2>
+                    <h4 class="box-title mt-5">Danh mục</h4>
+                    <div>
+                        @foreach(var cat in Model.Voucher.Product.CategoryProducts)
+                        {
+                            <a href="@Url.Action("Category", "Home", new { id = @cat.Category.Id }) " class="btn btn-outline-secondary">@cat.Category.Name</a>    
+                        }
+                    </div>
+                    <h4 class="box-title mt-5">Nhà cung cấp</h4>
+                    <a href="#" class="btn btn-outline-secondary">@Model.Voucher.Product.BrandName</a>    
+                    <h3 class="box-title mt-5">Chính sách</h3>
+                    <p>@Html.Raw(Model.Voucher.Product.Term)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
