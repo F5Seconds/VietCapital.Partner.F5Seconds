@@ -5,11 +5,11 @@ using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 
 namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands
 {
-    public class CreateTransactionCommandValidator : AbstractValidator<CreateTransactionCommand> 
+    public class CreateVoucherTransactionCommandValidator : AbstractValidator<CreateVoucherTransactionCommand> 
     {
         private readonly IVoucherTransactionRepositoryAsync _voucherTransaction;
         private readonly IProductRepositoryAsync _productRepository;
-        public CreateTransactionCommandValidator(
+        public CreateVoucherTransactionCommandValidator(
             IVoucherTransactionRepositoryAsync voucherTransaction,
             IProductRepositoryAsync productRepository)
         {

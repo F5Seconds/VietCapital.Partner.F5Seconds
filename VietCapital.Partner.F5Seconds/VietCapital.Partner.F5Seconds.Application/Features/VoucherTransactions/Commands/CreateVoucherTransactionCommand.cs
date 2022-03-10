@@ -10,7 +10,7 @@ using VietCapital.Partner.F5Seconds.Application.Wrappers;
 
 namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands
 {
-    public class CreateTransactionCommand : IRequest<Response<List<F5sVoucherCode>>>
+    public class CreateVoucherTransactionCommand : IRequest<Response<List<F5sVoucherCode>>>
     {
         public int productId { get; set; }
         public string productCode { get; set; }
@@ -19,17 +19,17 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Comman
         public string transactionId { get; set; }
         public string customerId { get; set; }
         public string customerPhone { get; set; }
-        public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, Response<List<F5sVoucherCode>>>
+        public class CreateVoucherTransactionCommandHandler : IRequestHandler<CreateVoucherTransactionCommand, Response<List<F5sVoucherCode>>>
         {
             private readonly IGatewayHttpClientService _gatewayHttpClient;
             private readonly IMapper _mapper;
-            public CreateTransactionCommandHandler(IGatewayHttpClientService gatewayHttpClient, IMapper mapper)
+            public CreateVoucherTransactionCommandHandler(IGatewayHttpClientService gatewayHttpClient, IMapper mapper)
             {
                 _gatewayHttpClient = gatewayHttpClient;
                 _mapper = mapper;
             }
 
-            public async Task<Response<List<F5sVoucherCode>>> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
+            public async Task<Response<List<F5sVoucherCode>>> Handle(CreateVoucherTransactionCommand request, CancellationToken cancellationToken)
             {
                 request.quantity = 1;
                 var trans = await _gatewayHttpClient.BuyProduct(_mapper.Map<BuyVoucherPayload>(request));

@@ -23,9 +23,9 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.Ge
             }
             public async Task<Response<IEnumerable<Product>>> Handle(GetProductByNameQuery query, CancellationToken cancellationToken)
             {
-                var product = await _productRepository.GetByNameAsync(query.Name);
-                if (product == null) throw new ApiException($"Product Not Found.");
-                return new Response<IEnumerable<Product>>(product);
+                //var product = await _productRepository.GetByNameAsync(query.Name);
+                //if (product == null) throw new ApiException($"Product Not Found.");
+                return new Response<IEnumerable<Product>>(null);
             }
         }
     }

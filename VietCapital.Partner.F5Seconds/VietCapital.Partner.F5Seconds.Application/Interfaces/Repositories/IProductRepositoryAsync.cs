@@ -13,5 +13,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories
         Task<Product> FindByCodeAsync(string code);
         Task<bool> IsExitedByCode(string code);
         Task<bool> IsUniqueBarcodeAsync(string barcode);
+        // Task<List<Product>> GetByNameAsync();
+        
     }
 }

@@ -29,9 +29,12 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
                 b => b.MigrationsAssembly("VietCapital.Partner.F5Seconds.WebMvc")));
             #region Repositories
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
+            services.AddTransient(typeof(IGatewayHttpClientService), typeof(GatewayHttpClientRepository));
+
             services.AddTransient<IProductRepositoryAsync, ProductRepositoryAsync>();
             services.AddTransient<ICategoryRepositoryAsync, CategoryRepositoryAsync>();
             services.AddTransient<IVoucherTransactionRepositoryAsync, VoucherTransactionRepositoryAsync>();
+
             #endregion
         }
     }

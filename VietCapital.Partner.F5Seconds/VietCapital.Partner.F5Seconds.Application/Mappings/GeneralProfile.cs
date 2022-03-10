@@ -15,7 +15,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Mappings
     {
         public GeneralProfile()
         {
-            CreateMap<CreateTransactionCommand, BuyVoucherPayload>();
+            CreateMap<CreateVoucherTransactionCommand, BuyVoucherPayload>();
             CreateMap<F5sVoucherCode, VoucherTransaction>()
                 .ForMember(d => d.ProductPrice, m => m.MapFrom(s => s.productPrice))
                 .ForMember(d => d.TransactionId, m => m.MapFrom(s => s.transactionId))
