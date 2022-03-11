@@ -40,12 +40,6 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         {
             return Ok(await Mediator.Send(command));
         }
-        //[HttpPost("list")]
-        //[Authorize]
-        //public async Task<IActionResult> PostList(CreateProductCommand command)
-        //{
-        //    return Ok(await Mediator.Send(command));
-        //}
         // PUT api/<controller>/5
         [HttpPut("{id}")]
         // [Authorize]

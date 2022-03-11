@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
+using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetAllVoucherTransactions;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
@@ -54,6 +55,14 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
         public async Task<VoucherTransaction> GetVoucherByTransId(string transId)
         {
             return await _voucherTransactions.SingleOrDefaultAsync(x=> x.TransactionId.Equals(transId.Trim()));
+        }
+
+        public async Task<PagedList<VoucherTransaction>> GetAllPagedListAsync(GetAllVoucherTransactionsParameter parameter)
+        {
+            var trans = _voucherTransactions
+                .Include(p => p.Product).AsQueryable();
+            Search(ref trans,parameter.Search);
+            return await PagedList<VoucherTransaction>.ToPagedList(trans.OrderByDescending(x => x.Id).AsNoTracking(), parameter.PageNumber, parameter.PageSize);
         }
     }
 }
