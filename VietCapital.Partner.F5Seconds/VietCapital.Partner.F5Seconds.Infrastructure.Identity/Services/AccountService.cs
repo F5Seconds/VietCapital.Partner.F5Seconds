@@ -527,6 +527,21 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             return new { clams = arr };
         }
 
+        public object GetAllUser()
+        {
+            var listUser =  _userManager.Users.ToList();
+            var list  = new List<Employee>();
+            foreach(var item in listUser){
+                var emp  = new Employee();
+                emp.Name = item.FirstName + " " + item.LastName;
+                emp.Email = item.Email;
+                emp.Username = item.UserName;
+                list.Add(emp);
+            }
+            return new {
+                listUser = list
+            };
+        }
     }
 
 }

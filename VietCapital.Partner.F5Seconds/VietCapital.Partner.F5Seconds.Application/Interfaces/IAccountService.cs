@@ -18,6 +18,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces
         Task<Response<string>> ResetPassword(ResetPasswordRequest model);
         Task<object> CreateRole(string name);
         Task<object> GetAllRoles();
+        object GetAllUser();
         Task<object> AddUserToRole(string username, string name);
         Task<object> AddUsersToRole(List<SelectNhanVien> listuser, string name);
 
