@@ -1,65 +1,26 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands;
-using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.CreateProduct;
-using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.DeleteProductById;
-using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.UpdateProduct;
-using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
-using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetProductById;
-using VietCapital.Partner.F5Seconds.Application.Filters;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.DetailProduct;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
 {
     [ApiVersion("1.0")]
+    [Route("v{version:apiVersion}/product")]
     public class ProductController : BaseApiController
     {
-        // GET: api/<controller>
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetAllProductsParameter filter)
+        [HttpGet("list")]
+        public async Task<IActionResult> GetListProduct([FromQuery] GetListProductParameter filter)
         {
-
-            return Ok(await Mediator.Send(new GetAllProductsQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+            return Ok(await Mediator.Send(new GetListProductQuery() { PageNumber = filter.PageNumber,PageSize = filter.PageSize,Search = filter.Search}));
         }
 
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("detail")]
+        public async Task<IActionResult> GetDetailProduct([FromQuery] GetDetailProductParameter parameter)
         {
-            return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));
-        }
-
-        // POST api/<controller>
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Post(CreateProductCommand command)
-        {
-            return Ok(await Mediator.Send(command));
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Put(int id, UpdateProductCommand command)
-        {
-            if (id != command.Id)
-            {
-                return BadRequest();
-            }
-            return Ok(await Mediator.Send(command));
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Delete(int id)
-        {
-            return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
+            return Ok(await Mediator.Send(new GetDetailProductQuery() { ProductCode = parameter.ProductCode }));
         }
     }
 }

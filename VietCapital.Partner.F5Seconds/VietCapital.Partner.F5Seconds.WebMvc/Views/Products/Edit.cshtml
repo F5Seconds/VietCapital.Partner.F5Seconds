@@ -1,0 +1,112 @@
+﻿@using VietCapital.Partner.F5Seconds.WebMvc.ModelView
+@model ProductEditView
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Product</h4>
+<hr />
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="row">
+    <div class="col-md-4">
+            
+            <div class="form-group">
+                <label asp-for="Product.ProductCode" class="control-label"></label>
+                <input asp-for="Product.ProductCode" class="form-control" readonly="@(true)"/>
+                <span asp-validation-for="Product.ProductCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Name" class="control-label"></label>
+                <input asp-for="Product.Name" class="form-control" />
+                <span asp-validation-for="Product.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Image" class="control-label"></label>
+                <input asp-for="Product.Image" class="form-control" />
+                <span asp-validation-for="Product.Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Cửa hàng áp dụng</label>
+                <ul class="list-group">
+                    @foreach (var item in Model.StoreList)
+                   {
+                        <li class="list-group-item">@item.storeNm - @item.storeAddr</li>     
+                   }
+                </ul>
+            </div>
+    </div>
+    <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Product.Price" class="control-label"></label>
+                <input asp-for="Product.Price" class="form-control" readonly="@(true)"/>
+                <span asp-validation-for="Product.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Type" class="control-label"></label>
+                <input asp-for="Product.Type" class="form-control" readonly="@(true)"/>
+                <span asp-validation-for="Product.Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Partner" class="control-label"></label>
+                <input asp-for="Product.Partner" class="form-control" readonly="@(true)"/>
+                <span asp-validation-for="Product.Partner" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.BrandName" class="control-label"></label>
+                <input asp-for="Product.BrandName" class="form-control" readonly="@(true)"/>
+                <span asp-validation-for="Product.BrandName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Content" class="control-label"></label>
+                <textarea asp-for="Product.Content" rows="5" class="form-control"></textarea>
+                <span asp-validation-for="Product.Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Term" class="control-label"></label>
+                <textarea asp-for="Product.Term" rows="5" class="form-control"></textarea>
+                <span asp-validation-for="Product.Term" class="text-danger"></span>
+            </div>
+    </div>
+    <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Product.BrandLogo" class="control-label"></label>
+                <input asp-for="Product.BrandLogo" class="form-control" readonly="@(true)"/>
+                <span asp-validation-for="Product.BrandLogo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Point" class="control-label"></label>
+                <input asp-for="Product.Point" class="form-control" />
+                <span asp-validation-for="Product.Point" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Thumbnail" class="control-label"></label>
+                <input asp-for="Product.Thumbnail" class="form-control" />
+                <span asp-validation-for="Product.Thumbnail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.CategoryProducts" class="control-label"></label>
+                <select  asp-for="SelectedCategories" asp-items="Model.CategoryList" class="form-control"></select>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Product.Status" /> @Html.DisplayNameFor(model => model.Product.Status)
+                </label>
+            </div>
+            <input type="hidden" asp-for="Product.Id" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+    </div>
+</div>
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

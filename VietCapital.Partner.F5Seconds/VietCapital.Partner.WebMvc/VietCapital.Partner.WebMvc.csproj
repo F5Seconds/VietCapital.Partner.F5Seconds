@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VietCapital.Partner.F5Seconds.Application\VietCapital.Partner.F5Seconds.Application.csproj" />
+    <ProjectReference Include="..\VietCapital.Partner.F5Seconds.Infrastructure.Identity\VietCapital.Partner.F5Seconds.Infrastructure.Identity.csproj" />
+    <ProjectReference Include="..\VietCapital.Partner.F5Seconds.Infrastructure.Persistence\VietCapital.Partner.F5Seconds.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\VietCapital.Partner.F5Seconds.Infrastructure.Shared\VietCapital.Partner.F5Seconds.Infrastructure.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
