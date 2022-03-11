@@ -58,7 +58,7 @@ export const routes: RouteObject[] = [
             element: <ChiTietSanPhamPage />,
           },
           {
-            path: 'sua-san-pham',
+            path: 'sua-san-pham/:id',
             element: <ChiTietSanPhamPage />,
           },
         ],
@@ -76,7 +76,7 @@ export const routes: RouteObject[] = [
             element: <ChiTietDanhMucPage />,
           },
           {
-            path: 'sua-danh-muc',
+            path: 'sua-danh-muc/:id',
             element: <ChiTietDanhMucPage />,
           },
         ],

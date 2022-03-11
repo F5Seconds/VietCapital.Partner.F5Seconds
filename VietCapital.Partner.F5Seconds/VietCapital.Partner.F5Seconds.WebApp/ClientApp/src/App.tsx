@@ -10,7 +10,9 @@ import './theme/styles.css';
 const Noti = () => {
   const {enqueueSnackbar, closeSnackbar} = useSnackbar();
   const alert = useAppSelector(selectAlert);
-
+  console.log('====================================');
+  console.log(alert);
+  console.log('====================================');
   useEffect(() => {
     if (alert.open) {
       enqueueSnackbar(alert.message, {variant: alert.type, autoHideDuration: 3000});

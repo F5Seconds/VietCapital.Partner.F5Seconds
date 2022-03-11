@@ -3,10 +3,16 @@ using System;
 using System.Globalization;
 using System.Linq;
 using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
+using VietCapital.Partner.F5Seconds.Application.Features.Categories.Commands.CreateCategory;
+using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.GetAllCategories;
 using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.ListCategory;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.CreateProduct;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllCategories;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
+using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetAllVoucherTransactions;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
 
 namespace VietCapital.Partner.F5Seconds.Application.Mappings
@@ -32,7 +38,9 @@ namespace VietCapital.Partner.F5Seconds.Application.Mappings
                     Image = c.Category.Image,
                     Status = c.Category.Status
                 })));
-            
+            CreateMap<CreateProductCommand, Product>();
+            CreateMap<Product, GetAllProductsViewModel>().ReverseMap();
+            CreateMap<GetAllProductsQuery, GetAllProductsParameter>();
             #endregion
 
             #region Transaction
@@ -53,6 +61,9 @@ namespace VietCapital.Partner.F5Seconds.Application.Mappings
                     Thumbnail = s.Product.Thumbnail,
                     Type = s.Product.Type
                 }));
+            CreateMap<CreateVoucherTransactionCommand, VoucherTransaction>();
+            CreateMap<VoucherTransaction, GetAllVoucherTransactionsViewModel>().ReverseMap();
+            CreateMap<GetAllVoucherTransactionsQuery, GetAllVoucherTransactionsParameter>();
             #endregion
 
             #region Category
@@ -73,6 +84,9 @@ namespace VietCapital.Partner.F5Seconds.Application.Mappings
                     Thumbnail = p.Product.Thumbnail,
                     Type = p.Product.Type
                 })));
+            CreateMap<CreateCategoriesCommand, Category>();
+            CreateMap<Category, GetAllCategoriesViewModel>().ReverseMap();
+            CreateMap<GetAllCategoriesQuery, GetAllCategoriesParameter>();
             #endregion
         }
     }

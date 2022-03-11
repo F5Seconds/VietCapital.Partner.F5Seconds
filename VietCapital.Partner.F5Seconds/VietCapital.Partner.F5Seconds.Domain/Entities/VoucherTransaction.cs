@@ -15,7 +15,7 @@ namespace VietCapital.Partner.F5Seconds.Domain.Entities
         public DateTime ExpiryDate { get; set; }
         public DateTime? UsedTime { get; set; }
         public string UsedBrand { get; set; }
-        public string  UsedBy { get; set; }
+        // public string  UsedBy { get; set; }
         public virtual Product Product { get; set; }
     }
 }

@@ -72,6 +72,11 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
             string username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _accountService.InfoUser(username));
         }
+         [HttpGet("getAllUser")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            return Ok(_accountService.GetAllUser());
+        }
         //role
         [HttpGet("role")]
         // [Authorize(Policy = "adminPolicy")]

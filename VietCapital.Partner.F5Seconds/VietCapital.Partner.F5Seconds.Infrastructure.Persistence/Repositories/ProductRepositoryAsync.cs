@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Filters;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
@@ -69,8 +70,14 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
             return _products
                 .AnyAsync(p => p.ProductCode == barcode);
         }
-            
 
-        
+        public async Task<PagedList<Product>> GetAllPagedListAsync(GetAllProductsParameter parameter)
+        {
+            var products = _products.Include(cp => cp.CategoryProducts)
+                .ThenInclude(c => c.Category)
+                .Where(p => p.Status).AsQueryable();
+            Search(ref products,parameter.Search);
+            return await PagedList<Product>.ToPagedList(products.OrderByDescending(x => x.Id), parameter.PageNumber, parameter.PageSize);
+        }
     }
 }
