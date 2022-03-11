@@ -52,10 +52,11 @@ const LoginPage = () => {
     accountApi
       .login(data.username, data.password)
       .then(res => {
-        if (res.data.succeeded) {
+        console.log(res);
+        if (res.succeeded) {
           enqueueSnackbar('Đăng nhập thành công', {variant: 'success'});
-          localStorage.setItem('jwt', res.data?.data?.jwToken);
-          dispatch(setAuth(res.data?.data));
+          localStorage.setItem('jwt', res?.data?.jwToken);
+          dispatch(setAuth(res?.data));
           navigate('/', {replace: true});
         }
       })

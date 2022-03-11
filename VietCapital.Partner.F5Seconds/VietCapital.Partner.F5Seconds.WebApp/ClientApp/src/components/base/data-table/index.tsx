@@ -18,7 +18,7 @@ interface Column {
   type?: 'text' | 'number';
   valueGetter?: (row: any) => void;
   renderCell?: (row: any) => void;
-  center?: 'center' | 'left';
+  center?: boolean;
 }
 interface Props {
   columns: Array<Column>;

@@ -6,8 +6,20 @@ export interface ResponseData {
 }
 
 export interface PaginationParams {
-  page: number;
+  currentPage: number;
+  totalPages: number;
   pageSize: number;
-  totalPage: number;
-  search: string;
+  totalCount: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}
+
+export interface QueryParams {
+  search?: string;
+  pageNumber?: number | string;
+  pageSize?: number | string;
+}
+
+export interface ResultData<T> extends PaginationParams {
+  data: T[];
 }

@@ -9,7 +9,7 @@ export interface Account {
   confirmPassword: string;
 }
 const accountApi = {
-  login: (email: string, password: string) =>
+  login: (email: string, password: string): Promise<ResponseData> =>
     axiosClient.post('/account/authenticate', {
       email,
       password,

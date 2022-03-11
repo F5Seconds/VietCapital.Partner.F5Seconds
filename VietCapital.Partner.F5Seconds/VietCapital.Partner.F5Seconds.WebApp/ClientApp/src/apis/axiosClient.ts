@@ -11,6 +11,10 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config: AxiosRequestConfig) => {
+    if (config.url?.indexOf('account') === -1) {
+      config.baseURL = 'http://45.119.80.100:5055/v1';
+    }
+
     // const token = sessionStorage.getItem('token');
     // if (token) {
     //   config.headers.Authorization = `Bearer ${token}`;
