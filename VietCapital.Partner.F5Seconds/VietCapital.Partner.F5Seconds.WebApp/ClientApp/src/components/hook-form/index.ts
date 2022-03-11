@@ -1,2 +1,4 @@
-export {default as InputField} from './input-field';
 export {default as AutocompleteAsyncField} from './autocomplete-async-field';
+export {default as CheckboxField} from './checkbox-field';
+export {default as InputField} from './input-field';
+export {default as TextAreaField} from './text-area-field';

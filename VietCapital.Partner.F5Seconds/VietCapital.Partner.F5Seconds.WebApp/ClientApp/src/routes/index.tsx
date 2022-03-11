@@ -47,8 +47,12 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'san-pham',
-        element: <DanhSachSanPhamPage />,
+        element: <Outlet />,
         children: [
+          {
+            index: true,
+            element: <DanhSachSanPhamPage />,
+          },
           {
             path: 'them-san-pham',
             element: <ChiTietSanPhamPage />,
@@ -61,8 +65,12 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'danh-muc',
-        element: <DanhSachDanhMucPage />,
+        element: <Outlet />,
         children: [
+          {
+            index: true,
+            element: <DanhSachDanhMucPage />,
+          },
           {
             path: 'them-danh-muc',
             element: <ChiTietDanhMucPage />,

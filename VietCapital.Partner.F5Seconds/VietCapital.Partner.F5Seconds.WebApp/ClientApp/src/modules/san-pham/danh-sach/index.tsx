@@ -121,7 +121,7 @@ const DanhSachSanPhamPage = () => {
             variant="contained"
             color="success"
             onClick={() => {
-              setOpenDialog(prev => ({open: true}));
+              navigate('them-san-pham');
             }}
           >
             Thêm sản phẩm
