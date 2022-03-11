@@ -3,6 +3,9 @@ using System;
 using System.Globalization;
 using System.Linq;
 using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
+using VietCapital.Partner.F5Seconds.Application.Features.Categories.Commands;
+using VietCapital.Partner.F5Seconds.Application.Features.Categories.Commands.CreateCategory;
+using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.GetAllCategories;
 using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.ListCategory;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands;
@@ -73,6 +76,9 @@ namespace VietCapital.Partner.F5Seconds.Application.Mappings
                     Thumbnail = p.Product.Thumbnail,
                     Type = p.Product.Type
                 })));
+            CreateMap<CreateCategoriesCommand, Category>();
+            CreateMap<Category, GetAllCategoriesViewModel>().ReverseMap();
+            CreateMap<GetAllCategoriesQuery, GetAllCategoriesParameter>();
             #endregion
         }
     }
