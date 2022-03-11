@@ -1,16 +1,14 @@
-import React, {useState} from 'react';
-import Header from '../../../layouts/Header';
-import {DataTable, DialogConfirm} from '../../../components/base';
-import {useLocation, useNavigate} from 'react-router';
-import queryString from 'query-string';
-import {useWindowDimensions} from '../../../hooks';
-import {Button, IconButton, Stack, Box} from '@mui/material';
-import {accountApi} from '../../../apis';
+import {Box} from '@mui/material';
+import DialogDetail from 'modules/danh-muc/danh-sach/dialog-detail';
 import {useSnackbar} from 'notistack';
+import queryString from 'query-string';
+import React, {useState} from 'react';
+import {useLocation, useNavigate} from 'react-router';
+import {accountApi} from '../../../apis';
+import {DataTable} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
-import {Trash} from 'iconsax-react';
-import {colors} from '../../../theme';
-import {accountService} from '../../../services';
+import {useWindowDimensions} from '../../../hooks';
+import Header from '../../../layouts/Header';
 import {state, stateColor} from '../../../utils/state';
 
 const data = [
@@ -128,9 +126,9 @@ const DanhSachDonHangPage = () => {
   const {enqueueSnackbar} = useSnackbar();
   const queryParams = queryString.parse(location.search);
   const navigate = useNavigate();
-  const [openDialog, setOpenDialog] = useState<{open: boolean; id?: number | null}>({
+  const [openDialog, setOpenDialog] = useState<{open: boolean; row?: any}>({
     open: false,
-    id: null,
+    row: null,
   });
   const [isLoading, setIsLoading] = useState(false);
   const {height} = useWindowDimensions();
@@ -247,7 +245,7 @@ const DanhSachDonHangPage = () => {
           loading={isLoading}
           height={height - 200}
           onRowClick={row => {
-            setOpenDialog(prev => ({...prev, open: true, id: row.id}));
+            setOpenDialog(prev => ({...prev, open: true, row}));
           }}
           pagination={{
             show: true,
@@ -263,7 +261,9 @@ const DanhSachDonHangPage = () => {
           }}
         />
       </div>
-
+      {openDialog.open && (
+        <DialogDetail open={openDialog.open} row={openDialog.row} onClose={handleCloseDialog} />
+      )}
       <LoadingOverlay open={isDeleting} />
     </div>
   );
