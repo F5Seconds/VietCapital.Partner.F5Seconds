@@ -1,38 +1,35 @@
-import React, {useState} from 'react';
-import Header from '../../../layouts/Header';
-import {DataTable, DialogConfirm} from '../../../components/base';
-import {useLocation, useNavigate} from 'react-router';
-import queryString from 'query-string';
-import {useWindowDimensions} from '../../../hooks';
 import {Button, IconButton, Stack} from '@mui/material';
-import {accountApi} from '../../../apis';
-import {useSnackbar} from 'notistack';
-import LoadingOverlay from '../../../components/base/loading-overlay';
 import {Trash} from 'iconsax-react';
+import queryString from 'query-string';
+import React, {useEffect, useState} from 'react';
+import {useLocation, useNavigate} from 'react-router';
+import {DataTable, DialogConfirm} from '../../../components/base';
+import LoadingOverlay from '../../../components/base/loading-overlay';
+import {useWindowDimensions} from '../../../hooks';
+import Header from '../../../layouts/Header';
+import {PaginationParams, Product, QueryParams} from '../../../models';
+import {productService} from '../../../services';
 import {colors} from '../../../theme';
-import {accountService} from '../../../services';
 
 const DanhSachSanPhamPage = () => {
   const location = useLocation();
-  const {enqueueSnackbar} = useSnackbar();
-  const queryParams = queryString.parse(location.search);
+  const queryParams: any = queryString.parse(location.search);
   const navigate = useNavigate();
-  const [openDialog, setOpenDialog] = useState<{open: boolean; id?: number | null}>({
-    open: false,
-    id: null,
-  });
   const [isLoading, setIsLoading] = useState(false);
   const {height} = useWindowDimensions();
-  const [isOpenDelete, setIsOpenDelete] = useState({visible: false, id: ''});
+  const [isOpenDelete, setIsOpenDelete] = useState<{visible: boolean; id: number | string}>({
+    visible: false,
+    id: 0,
+  });
   const [isDeleting, setIsDeleting] = useState(false);
-  const [filters, setFilters] = React.useState({
+  const [listProduct, setListProduct] = useState<Product[]>([]);
+  const [filters, setFilters] = useState<QueryParams>({
     ...queryParams,
-    search: queryParams.search,
+    search: queryParams.search ?? '',
     pageNumber: queryParams.pageNumber ?? 1,
     pageSize: queryParams.pageSize ?? 10,
-    tinhTrang: undefined,
   });
-  const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useState<PaginationParams>({
     currentPage: 1,
     totalPages: 1,
     pageSize: 10,
@@ -40,8 +37,6 @@ const DanhSachSanPhamPage = () => {
     hasPrevious: false,
     hasNext: false,
   });
-
-  const handleCloseDialog = () => setOpenDialog(prev => ({...prev, open: false}));
 
   const columns = [
     {
@@ -63,12 +58,8 @@ const DanhSachSanPhamPage = () => {
       headerName: 'Đối tác',
     },
     {
-      field: 'branchName',
+      field: 'brandName',
       headerName: 'Thương hiệu',
-    },
-    {
-      field: 'status',
-      headerName: 'Trạng thái',
     },
     {
       field: '',
@@ -88,30 +79,29 @@ const DanhSachSanPhamPage = () => {
     },
   ];
 
-  const handleSubmitUser = async (data: any) => {
-    try {
-      const res = await accountApi.register(data);
-      if (res.succeeded) {
-        enqueueSnackbar('Thêm mới user thành công', {variant: 'success'});
-      } else {
-        enqueueSnackbar(res.message, {variant: 'error'});
-      }
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar('Đã xảy ra lỗi', {variant: 'error'});
-    }
-  };
   const handleDelete = async () => {
     setIsDeleting(true);
-    setIsOpenDelete(prev => ({...prev, open: false}));
-    // const res = await accountService.deleteRole(isOpenDelete.id);
-    // if (res) {
-    //   // getAllRole();
-    // }
+    setIsOpenDelete(prev => ({...prev, visible: false}));
+    const res = await productService.delete(isOpenDelete.id);
+    if (res) {
+      setFilters(prev => ({...prev, pageNumber: 1}));
+    }
     setIsDeleting(false);
   };
+  useEffect(() => {
+    const getList = async () => {
+      setIsLoading(true);
+      const res = await productService.getAll(filters);
+      if (res) {
+        const {currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious} = res;
 
+        setListProduct(res.data);
+        setPagination({currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious});
+      }
+      setIsLoading(false);
+    };
+    getList();
+  }, [filters]);
   return (
     <div>
       <Header title="Danh sách sản phẩm" />
@@ -129,11 +119,11 @@ const DanhSachSanPhamPage = () => {
         </Stack>
         <DataTable
           columns={columns}
-          rows={[]}
+          rows={listProduct}
           loading={isLoading}
           height={height - 200}
-          onRowClick={row => {
-            setOpenDialog(prev => ({...prev, open: true, id: row.id}));
+          onRowClick={(row: Product) => {
+            navigate(`sua-san-pham/${row.id}`);
           }}
           pagination={{
             show: true,
@@ -149,7 +139,13 @@ const DanhSachSanPhamPage = () => {
           }}
         />
       </div>
-
+      <DialogConfirm
+        open={isOpenDelete.visible}
+        title="Xác nhận"
+        content="Bạn có chắc chắn muốn xóa sản phẩm này?"
+        onClose={() => setIsOpenDelete(prev => ({...prev, visible: false}))}
+        onAgree={handleDelete}
+      />
       <LoadingOverlay open={isDeleting} />
     </div>
   );

@@ -3,7 +3,7 @@ import axiosClient from './axiosClient';
 
 const productApi = {
   getAll: (params: QueryParams): Promise<ResponseData<ResultData<Product>>> => {
-    const url = '/product/list';
+    const url = '/product';
     return axiosClient.get(url, {params});
   },
   getOne: (id: number | string): Promise<ResponseData<Product>> => {
