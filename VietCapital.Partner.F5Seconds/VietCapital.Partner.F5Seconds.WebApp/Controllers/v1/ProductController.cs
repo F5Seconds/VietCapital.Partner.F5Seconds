@@ -1,26 +1,67 @@
-﻿// using Microsoft.AspNetCore.Mvc;
-// using System.Threading.Tasks;
-// using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.DetailProduct;
-// using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.CreateProduct;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.DeleteProductByIdCommand;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.UpdateProductCommand;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
+using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetProductById;
 
-// // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
+{
+    [ApiVersion("1.0")]
+    [Authorize]
+    public class ProductController : BaseApiController
+    {
+        // GET: api/<controller>
+        [HttpGet]
+        [AllowAnonymous]
 
-// namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
-// {
-//     [ApiVersion("1.0")]
-//     [Route("v{version:apiVersion}/product")]
-//     public class ProductController : BaseApiController
-//     {
-//         [HttpGet("list")]
-//         public async Task<IActionResult> GetListProduct([FromQuery] GetListProductParameter filter)
-//         {
-//             return Ok(await Mediator.Send(new GetListProductQuery() { PageNumber = filter.PageNumber,PageSize = filter.PageSize,Search = filter.Search}));
-//         }
+        public async Task<IActionResult> Get([FromQuery] GetAllProductsParameter filter)
+        {
 
-//         [HttpGet("detail")]
-//         public async Task<IActionResult> GetDetailProduct([FromQuery] GetDetailProductParameter parameter)
-//         {
-//             return Ok(await Mediator.Send(new GetDetailProductQuery() { ProductCode = parameter.ProductCode }));
-//         }
-//     }
-// }
+            return Ok(await Mediator.Send(new GetAllProductsQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber ,Search = filter.Search}));
+        }
+        // GET api/<controller>/5
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> Get(int id)
+        {
+            return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));
+        }
+        // POST api/<controller>
+        [HttpPost]
+        // [Authorize]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> Post(CreateProductCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+        // PUT api/<controller>/5
+        [HttpPut("{id}")]
+        // [Authorize]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> Put(int id, UpdateProductCommand command)
+        {
+           if (id != command.Id)
+           {
+               return BadRequest();
+           }
+           return Ok(await Mediator.Send(command));
+        }
+
+        // DELETE api/<controller>/5
+        [HttpDelete("{id}")]
+        // [Authorize]
+        [AllowAnonymous]
+
+        public async Task<IActionResult> Delete(int id)
+        {
+           return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
+        }
+    }
+}

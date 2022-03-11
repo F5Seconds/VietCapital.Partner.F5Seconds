@@ -1,9 +1,10 @@
-﻿using System;
-using VietCapital.Partner.F5Seconds.Domain.Common;
+using System;
+using System.Collections.Generic;
+using VietCapital.Partner.F5Seconds.Domain.Entities;
 
-namespace VietCapital.Partner.F5Seconds.Domain.Entities
+namespace VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetAllVoucherTransactions
 {
-    public class VoucherTransaction : AuditableBaseEntity
+    public class GetAllVoucherTransactionsViewModel
     {
         public int ProductId { get; set; }
         public string TransactionId { get; set; }
@@ -15,7 +16,7 @@ namespace VietCapital.Partner.F5Seconds.Domain.Entities
         public DateTime ExpiryDate { get; set; }
         public DateTime? UsedTime { get; set; }
         public string UsedBrand { get; set; }
-        // public string  UsedBy { get; set; }
+        public string  UsedBy { get; set; }
         public virtual Product Product { get; set; }
     }
 }
