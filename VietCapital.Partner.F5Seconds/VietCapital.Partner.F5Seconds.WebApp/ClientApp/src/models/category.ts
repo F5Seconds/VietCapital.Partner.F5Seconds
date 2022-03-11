@@ -1,7 +1,7 @@
 import {Product} from './product';
 
 export interface Category {
-  id: number;
+  id: number | string;
   name: string;
   image: string;
   status: boolean;

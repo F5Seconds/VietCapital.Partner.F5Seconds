@@ -1,11 +1,9 @@
 import {Button, IconButton, Stack} from '@mui/material';
 import {Trash} from 'iconsax-react';
-import {useSnackbar} from 'notistack';
 import queryString from 'query-string';
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router';
-import {accountApi} from '../../../apis';
-import {DataTable} from '../../../components/base';
+import {DataTable, DialogConfirm, SearchBar} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
 import Header from '../../../layouts/Header';
@@ -15,16 +13,11 @@ import {colors} from '../../../theme';
 
 const DanhSachDanhMucPage = () => {
   const location = useLocation();
-  const {enqueueSnackbar} = useSnackbar();
   const queryParams: QueryParams = queryString.parse(location.search);
   const navigate = useNavigate();
-  const [openDialog, setOpenDialog] = useState<{open: boolean; id?: number | null}>({
-    open: false,
-    id: null,
-  });
   const [isLoading, setIsLoading] = useState(false);
   const {height} = useWindowDimensions();
-  const [isOpenDelete, setIsOpenDelete] = useState<{visible: boolean; id: number}>({
+  const [isOpenDelete, setIsOpenDelete] = useState<{visible: boolean; id: number | string}>({
     visible: false,
     id: 0,
   });
@@ -45,10 +38,12 @@ const DanhSachDanhMucPage = () => {
     hasNext: false,
   });
 
-  const handleCloseDialog = () => setOpenDialog(prev => ({...prev, open: false}));
-
   const columns = [
-    {field: 'image', headerName: 'Hình ảnh'},
+    {
+      field: 'image',
+      headerName: 'Hình ảnh',
+      renderCell: (row: Category) => <img src={row.image} width={50} height={50} alt={row.name} />,
+    },
     {
       field: 'name',
       headerName: 'Tên danh mục',
@@ -56,6 +51,7 @@ const DanhSachDanhMucPage = () => {
     {
       field: 'status',
       headerName: 'Trạng thái',
+      valueGetter: (row: Category) => (row.status ? 'true' : 'false'),
     },
     {
       field: '',
@@ -75,45 +71,36 @@ const DanhSachDanhMucPage = () => {
     },
   ];
 
-  const handleSubmitUser = async (data: any) => {
-    try {
-      const res = await accountApi.register(data);
-      if (res.succeeded) {
-        enqueueSnackbar('Thêm mới user thành công', {variant: 'success'});
-      } else {
-        enqueueSnackbar(res.message, {variant: 'error'});
-      }
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar('Đã xảy ra lỗi', {variant: 'error'});
-    }
-  };
   const handleDelete = async () => {
     setIsDeleting(true);
-    setIsOpenDelete(prev => ({...prev, open: false}));
-    // const res = await accountService.deleteRole(isOpenDelete.id);
-    // if (res) {
-    //   // getAllRole();
-    // }
+    setIsOpenDelete(prev => ({...prev, visible: false}));
+    const res = await categoryService.delete(isOpenDelete.id);
+    if (res) {
+      setFilters(prev => ({...prev, pageNumber: 1}));
+    }
     setIsDeleting(false);
   };
   useEffect(() => {
     const getList = async () => {
+      setIsLoading(true);
       const res = await categoryService.getAll(filters);
       if (res) {
         const {currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious} = res;
+
         setListCategory(res.data);
         setPagination({currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious});
       }
+      setIsLoading(false);
     };
     getList();
-  });
+  }, [filters]);
   return (
     <div>
       <Header title="Danh sách danh mục" />
       <div style={{padding: 16}}>
-        <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
+        <Stack direction="row" justifyContent="space-between" marginBottom={2}>
+          <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
+
           <Button
             variant="contained"
             color="success"
@@ -124,13 +111,14 @@ const DanhSachDanhMucPage = () => {
             Thêm danh mục
           </Button>
         </Stack>
+
         <DataTable
           columns={columns}
           rows={listCategory}
           loading={isLoading}
           height={height - 200}
-          onRowClick={row => {
-            setOpenDialog(prev => ({...prev, open: true, id: row.id}));
+          onRowClick={(row: Category) => {
+            navigate(`sua-danh-muc/${row.id}`);
           }}
           pagination={{
             show: true,
@@ -141,12 +129,18 @@ const DanhSachDanhMucPage = () => {
               setFilters(prev => ({...prev, pageNumber: page + 1}));
             },
             onRowsPerPageChange: value => {
-              setFilters(prev => ({...prev, pageSize: value, pageNumber: 0}));
+              setFilters(prev => ({...prev, pageSize: value, pageNumber: 1}));
             },
           }}
         />
       </div>
-
+      <DialogConfirm
+        open={isOpenDelete.visible}
+        title="Xác nhận"
+        content="Bạn có chắc chắn muốn xóa danh mục này?"
+        onClose={() => setIsOpenDelete(prev => ({...prev, visible: false}))}
+        onAgree={handleDelete}
+      />
       <LoadingOverlay open={isDeleting} />
     </div>
   );
