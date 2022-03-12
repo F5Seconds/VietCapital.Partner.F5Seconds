@@ -1,5 +1,5 @@
 import {productApi} from '../apis';
-import {Product, QueryParams, ResultData} from '../models';
+import {Category, Product, QueryParams, ResultData} from '../models';
 import {setShowAlert} from '../redux/slice/alertSlice';
 import store from '../redux/store';
 
@@ -35,7 +35,10 @@ const productService = {
       store.dispatch(setShowAlert({type: 'error', message: 'Đã xảy ra lỗi'}));
     }
   },
-  update: async (id: number | string, data: Partial<Product>): Promise<number | undefined> => {
+  update: async (
+    id: number | string,
+    data: Partial<Product & {categoryProducts?: Category[]}>
+  ): Promise<number | undefined> => {
     try {
       const res = await productApi.update(id, data);
       if (res.succeeded) {

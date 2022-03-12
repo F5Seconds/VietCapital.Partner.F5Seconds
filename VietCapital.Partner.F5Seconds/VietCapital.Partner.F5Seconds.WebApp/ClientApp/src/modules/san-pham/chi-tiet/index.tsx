@@ -5,7 +5,12 @@ import {useForm} from 'react-hook-form';
 import {useNavigate, useParams} from 'react-router-dom';
 import {CardBase} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
-import {AutocompleteAsyncField, InputField, TextAreaField} from '../../../components/hook-form';
+import {
+  AutocompleteAsyncField,
+  CheckboxField,
+  InputField,
+  TextAreaField,
+} from '../../../components/hook-form';
 import Header from '../../../layouts/Header';
 import {Category, Product} from '../../../models';
 import {categoryService, productService} from '../../../services';
@@ -39,9 +44,16 @@ const ChiTietSanPhamPage = () => {
     formState: {isSubmitting},
   } = form;
 
-  const onSubmit = async (data: Partial<Product>) => {
+  const onSubmit = async (data: Partial<Product & {categoryProducts?: any}>) => {
+    console.log('====================================');
+    console.log(data);
+    console.log('====================================');
     if (id) {
-      await productService.update(id, {id, ...data});
+      await productService.update(id, {
+        id,
+        ...data,
+        categoryProducts: data?.categoryProducts || [],
+      });
     } else {
       const res = await productService.create(data);
       if (res) {
@@ -55,16 +67,29 @@ const ChiTietSanPhamPage = () => {
     const res = await categoryService.getAll({search: value, pageNumber: 1, pageSize: 100});
 
     if (res) {
+      console.log('====================================');
+      console.log(res);
+      console.log('====================================');
       setCategories(res.data);
     }
     setLoadingCategories(false);
   }, []);
-
+  useEffect(() => {
+    getCategories('');
+  }, []);
   useEffect(() => {
     const getDetail = async () => {
       const res: any = await productService.getOne(id);
       if (res) {
-        Object.keys(defaultValues).forEach((item: any) => setValue(item, res[item]));
+        Object.keys(defaultValues).forEach((item: any) => {
+          if (item === 'categoryProducts') {
+            setValue(item, {label: res[item].name, value: res[item].id});
+          } else if (typeof res[item] === 'number') {
+            setValue(item, res[item] + '');
+          } else {
+            setValue(item, res[item]);
+          }
+        });
       }
     };
     id && getDetail();
@@ -113,7 +138,7 @@ const ChiTietSanPhamPage = () => {
                   <AutocompleteAsyncField
                     multiple
                     loading={loadingCategories}
-                    items={categories.map(item => ({label: item?.name, value: item?.id}))}
+                    items={categories?.map(item => ({label: item?.name, value: item?.id, ...item}))}
                     onSubmit={value => getCategories(value)}
                     form={form}
                     name="categoryProducts"
@@ -126,6 +151,9 @@ const ChiTietSanPhamPage = () => {
 
                 <Grid item xs={12} md={6} lg={4}>
                   <InputField form={form} name="thumbnail" label="Đường dẫn ảnh sản phẩm thu nhỏ" />
+                </Grid>
+                <Grid item xs={12} md={6} lg={4}>
+                  <CheckboxField form={form} name="status" label="Trạng thái" />
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                   <Typography component="div" color="text.secondary">

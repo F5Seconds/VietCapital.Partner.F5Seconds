@@ -75,18 +75,18 @@ const PhanQuyenUser = () => {
   const handleCloseDialogGanQuyen = () => setOpenDialogGanQuyen(prev => ({...prev, open: false}));
   const handleSubmit = async (data: {roleName: string}) => {
     setIsDeleting(true);
+    setOpenDialog(prev => ({...prev, open: false}));
     const res = openDialog.id
       ? await accountService.updateRole(openDialog.id, data.roleName)
       : await accountService.createRole(data.roleName);
     if (res) {
-      setOpenDialog(prev => ({...prev, open: false}));
       getAllRole();
     }
     setIsDeleting(false);
   };
   const handleDelete = async () => {
     setIsDeleting(true);
-    setIsOpenDelete(prev => ({...prev, open: false}));
+    setIsOpenDelete(prev => ({...prev, visible: false}));
     const res = await accountService.deleteRole(isOpenDelete.id);
     if (res) {
       getAllRole();

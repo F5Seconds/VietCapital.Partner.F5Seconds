@@ -3,7 +3,7 @@ import {Trash} from 'iconsax-react';
 import queryString from 'query-string';
 import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router';
-import {DataTable, DialogConfirm} from '../../../components/base';
+import {DataTable, DialogConfirm, SearchBar} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
 import Header from '../../../layouts/Header';
@@ -106,7 +106,9 @@ const DanhSachSanPhamPage = () => {
     <div>
       <Header title="Danh sách sản phẩm" />
       <div style={{padding: 16}}>
-        <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
+        <Stack direction="row" justifyContent="space-between" marginBottom={2}>
+          <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
+
           <Button
             variant="contained"
             color="success"

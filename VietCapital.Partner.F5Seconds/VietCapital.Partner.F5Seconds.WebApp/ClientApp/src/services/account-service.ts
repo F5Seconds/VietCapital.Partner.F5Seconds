@@ -9,6 +9,14 @@ const accountService = {
       await accountApi.login(email, password);
     } catch (error) {}
   },
+  getAllUser: async (): Promise<any[] | undefined> => {
+    try {
+      const res = await accountApi.getAllUser();
+      return res;
+    } catch (error) {
+      console.log('Lỗi get all user');
+    }
+  },
   //role
   getAllRole: async (): Promise<Role[] | undefined> => {
     try {

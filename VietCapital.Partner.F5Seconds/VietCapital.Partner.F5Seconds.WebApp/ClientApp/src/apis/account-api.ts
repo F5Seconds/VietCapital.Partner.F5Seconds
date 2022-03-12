@@ -1,21 +1,14 @@
-import {ResponseData, Role} from '../models';
+import {Account, ResponseData, Role} from '../models';
 import axiosClient from './axiosClient';
-export interface Account {
-  firstName: string;
-  lastName: string;
-  email: string;
-  userName: string;
-  password: string;
-  confirmPassword: string;
-}
+
 const accountApi = {
-  login: (email: string, password: string): Promise<ResponseData> =>
+  login: (email: string, password: string): Promise<any> =>
     axiosClient.post('/account/authenticate', {
       email,
       password,
     }),
-  register: (data: Account): Promise<ResponseData> => axiosClient.post('/account/register', data),
-
+  register: (data: Account): Promise<any> => axiosClient.post('/account/register', data),
+  getAllUser: (): Promise<any> => axiosClient.get('/account/getAllUser'),
   //role
   getAllRole: (): Promise<Role[]> => axiosClient.get('/account/role'),
   createRole: (roleName: string): Promise<{result?: string; error?: string}> => {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Header from '../../../layouts/Header';
 import {DataTable, DialogConfirm} from '../../../components/base';
 import {useLocation, useNavigate} from 'react-router';
@@ -6,12 +6,13 @@ import queryString from 'query-string';
 import {useWindowDimensions} from '../../../hooks';
 import {Button, IconButton, Stack} from '@mui/material';
 import DialogUser from './dialog-user';
-import accountApi, {Account} from '../../../apis/account-api';
+import accountApi from '../../../apis/account-api';
 import {useSnackbar} from 'notistack';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {Trash} from 'iconsax-react';
 import {colors} from '../../../theme';
 import {accountService} from '../../../services';
+import {Account} from '../../../models';
 
 const DanhSachUser = () => {
   const location = useLocation();
@@ -24,6 +25,7 @@ const DanhSachUser = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const {height} = useWindowDimensions();
+  const [listUser, setListUser] = useState([]);
   const [isOpenDelete, setIsOpenDelete] = useState({visible: false, id: ''});
   const [isDeleting, setIsDeleting] = useState(false);
   const [filters, setFilters] = React.useState({
@@ -46,10 +48,11 @@ const DanhSachUser = () => {
 
   const columns = [
     {
-      field: 'maNhanVien',
+      field: 'id',
       headerName: 'Mã nhân viên',
     },
-    {field: 'tenNhanVien', headerName: 'Tên nhân viên'},
+    {field: 'name', headerName: 'Tên nhân viên'},
+    {field: 'username', headerName: 'Tên đăng nhập'},
 
     {
       field: 'email',
@@ -74,6 +77,7 @@ const DanhSachUser = () => {
   ];
 
   const handleSubmitUser = async (data: Account) => {
+    setOpenDialog(prev => ({...prev, open: false}));
     try {
       const res = await accountApi.register(data);
       if (res.succeeded) {
@@ -89,14 +93,25 @@ const DanhSachUser = () => {
   };
   const handleDelete = async () => {
     setIsDeleting(true);
-    setIsOpenDelete(prev => ({...prev, open: false}));
-    // const res = await accountService.deleteRole(isOpenDelete.id);
-    // if (res) {
-    //   // getAllRole();
-    // }
+    setIsOpenDelete(prev => ({...prev, visible: false}));
+    const res = await accountService.deleteRole(isOpenDelete.id);
+    if (res) {
+      getList();
+    }
     setIsDeleting(false);
   };
-
+  const getList = async () => {
+    const res = await accountService.getAllUser();
+    if (res) {
+      console.log('====================================');
+      console.log(res.listUser);
+      console.log('====================================');
+      setListUser(res.listUser);
+    }
+  };
+  useEffect(() => {
+    getList();
+  }, []);
   return (
     <div>
       <Header title="Danh sách user" />
@@ -114,7 +129,7 @@ const DanhSachUser = () => {
         </Stack>
         <DataTable
           columns={columns}
-          rows={[]}
+          rows={listUser}
           loading={isLoading}
           height={height - 200}
           onRowClick={row => {
