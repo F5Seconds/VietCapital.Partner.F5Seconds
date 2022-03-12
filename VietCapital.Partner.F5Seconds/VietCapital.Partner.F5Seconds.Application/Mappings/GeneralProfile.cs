@@ -10,7 +10,7 @@ using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.Creat
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllCategories;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
-using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands;
+using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands.CreateVoucherTransactionCommand;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
 using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetAllVoucherTransactions;
 using VietCapital.Partner.F5Seconds.Domain.Entities;

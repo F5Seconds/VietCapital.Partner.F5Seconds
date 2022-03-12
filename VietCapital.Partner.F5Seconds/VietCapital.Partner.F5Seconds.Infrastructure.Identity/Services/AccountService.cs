@@ -533,6 +533,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             var list  = new List<Employee>();
             foreach(var item in listUser){
                 var emp  = new Employee();
+                emp.Id = item.Id;
                 emp.Name = item.FirstName + " " + item.LastName;
                 emp.Email = item.Email;
                 emp.Username = item.UserName;

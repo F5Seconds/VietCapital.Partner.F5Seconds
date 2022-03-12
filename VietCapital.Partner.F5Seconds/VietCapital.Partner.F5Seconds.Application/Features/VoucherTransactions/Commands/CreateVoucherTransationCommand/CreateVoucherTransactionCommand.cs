@@ -8,7 +8,7 @@ using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
 
-namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands
+namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands.CreateVoucherTransactionCommand
 {
     public class CreateVoucherTransactionCommand : IRequest<Response<List<F5sVoucherCode>>>
     {

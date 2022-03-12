@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 
-namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands
+namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands.CreateVoucherTransactionCommand
 {
     public class CreateVoucherTransactionCommandValidator : AbstractValidator<CreateVoucherTransactionCommand> 
     {

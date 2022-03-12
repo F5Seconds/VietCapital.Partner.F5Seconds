@@ -15,7 +15,6 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories
         Task<Category> FindCategoryById(int id);
         Task<PagedList<Category>> GetPagedListAsync(GetListCategoryParameter parameter);
         Task<PagedList<Category>> GetAllPagedListAsync(GetAllCategoriesParameter parameter);
-
         Task<List<Category>> GetByNameAsync(string Name);
 
 
