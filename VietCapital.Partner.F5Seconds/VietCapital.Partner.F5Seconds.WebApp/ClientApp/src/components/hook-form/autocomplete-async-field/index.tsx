@@ -74,7 +74,7 @@ const AutocompleteAsyncField: FC<Props> = props => {
             field.onChange(newValue);
             onChange && onChange(newValue);
           }}
-          getOptionLabel={option => option.label}
+          getOptionLabel={option => option.label || ''}
           loading={loading}
           loadingText="Đợi tí..."
           fullWidth

@@ -9,12 +9,29 @@ const accountService = {
       await accountApi.login(email, password);
     } catch (error) {}
   },
-  getAllUser: async (): Promise<any[] | undefined> => {
+  getAllUser: async (): Promise<any> => {
     try {
       const res = await accountApi.getAllUser();
       return res;
     } catch (error) {
       console.log('Lỗi get all user');
+    }
+  },
+  getAllUsersByRole: async (params: any): Promise<any> => {
+    try {
+      const res = await accountApi.getAllUsersByRole(params);
+      return res;
+    } catch (error) {
+      console.log('Lỗi get all user');
+    }
+  },
+
+  addUsersToRole: async (params: any, data: any): Promise<any> => {
+    try {
+      const res = await accountApi.addUsersToRole(params, data);
+      return res;
+    } catch (error) {
+      console.log('Lỗi gán quyền');
     }
   },
   //role

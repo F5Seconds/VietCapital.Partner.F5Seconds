@@ -84,6 +84,21 @@ const PhanQuyenUser = () => {
     }
     setIsDeleting(false);
   };
+  const handleSubmitGanQuyen = async (data: any) => {
+    setIsDeleting(true);
+    setOpenDialogGanQuyen(prev => ({...prev, open: false}));
+    const newData = data?.user?.map((item: any) => ({
+      maNhanVien: item?.id,
+      tenNhanVien: item?.name,
+      email: item?.email,
+    }));
+    const res = await accountService.addUsersToRole({roleName: data?.role?.name}, newData);
+    if (res) {
+      getAllRole();
+    }
+    console.log(data);
+    setIsDeleting(false);
+  };
   const handleDelete = async () => {
     setIsDeleting(true);
     setIsOpenDelete(prev => ({...prev, visible: false}));
@@ -151,7 +166,7 @@ const PhanQuyenUser = () => {
           open={openDialogGanQuyen.open}
           id={openDialogGanQuyen.id}
           onClose={handleCloseDialogGanQuyen}
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmitGanQuyen}
         />
       )}
       <DialogConfirm
