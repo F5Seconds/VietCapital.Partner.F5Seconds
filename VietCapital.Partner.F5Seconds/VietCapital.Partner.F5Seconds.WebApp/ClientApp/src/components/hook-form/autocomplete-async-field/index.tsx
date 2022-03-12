@@ -13,6 +13,7 @@ interface Props {
   placeholder?: string;
   onSubmit?: (value: string) => void;
   onChange?: (value: string) => void;
+  multiple?: boolean;
   items: {label: string; value: string | number}[];
 }
 
@@ -27,6 +28,7 @@ const AutocompleteAsyncField: FC<Props> = props => {
     loading = false,
     onSubmit,
     onChange,
+    multiple = false,
     ...rest
   } = props;
   const {
@@ -60,8 +62,14 @@ const AutocompleteAsyncField: FC<Props> = props => {
           id={name}
           noOptionsText="Không có dữ liệu"
           options={items}
+          multiple={multiple}
           inputValue={search}
-          onInputChange={(e, value) => handleSearchDebounce(value)}
+          onInputChange={(e, value, reason) => {
+            multiple
+              ? reason === 'input' && handleSearchDebounce(value)
+              : handleSearchDebounce(value);
+          }}
+          value={field?.value || (multiple ? [] : '')}
           onChange={(e, newValue) => {
             field.onChange(newValue);
             onChange && onChange(newValue);

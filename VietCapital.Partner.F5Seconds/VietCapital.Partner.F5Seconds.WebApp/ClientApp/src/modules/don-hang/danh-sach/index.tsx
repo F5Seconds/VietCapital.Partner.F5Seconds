@@ -1,15 +1,14 @@
 import {Box} from '@mui/material';
-import DialogDetail from 'modules/danh-muc/danh-sach/dialog-detail';
-import {useSnackbar} from 'notistack';
 import queryString from 'query-string';
-import React, {useState} from 'react';
-import {useLocation, useNavigate} from 'react-router';
-import {accountApi} from '../../../apis';
+import React, {useEffect, useState} from 'react';
+import {useLocation} from 'react-router';
 import {DataTable} from '../../../components/base';
-import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
 import Header from '../../../layouts/Header';
+import {PaginationParams, QueryParams, Transaction} from '../../../models';
+import transactionService from '../../../services/transaction-service';
 import {state, stateColor} from '../../../utils/state';
+import DialogDetail from './dialog-detail';
 
 const data = [
   {
@@ -123,25 +122,26 @@ const data = [
 ];
 const DanhSachDonHangPage = () => {
   const location = useLocation();
-  const {enqueueSnackbar} = useSnackbar();
-  const queryParams = queryString.parse(location.search);
-  const navigate = useNavigate();
+
+  const queryParams: QueryParams = queryString.parse(location.search);
   const [openDialog, setOpenDialog] = useState<{open: boolean; row?: any}>({
     open: false,
     row: null,
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  const [list, setList] = useState<Transaction[]>([]);
+
   const {height} = useWindowDimensions();
-  const [isOpenDelete, setIsOpenDelete] = useState({visible: false, id: ''});
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [filters, setFilters] = React.useState({
+
+  const [filters, setFilters] = useState<QueryParams>({
     ...queryParams,
-    search: queryParams.search,
+    search: queryParams.search ?? '',
     pageNumber: queryParams.pageNumber ?? 1,
     pageSize: queryParams.pageSize ?? 10,
-    tinhTrang: undefined,
   });
-  const [pagination, setPagination] = useState({
+
+  const [pagination, setPagination] = useState<PaginationParams>({
     currentPage: 1,
     totalPages: 1,
     pageSize: 10,
@@ -195,29 +195,20 @@ const DanhSachDonHangPage = () => {
     // },
   ];
 
-  const handleSubmitUser = async (data: any) => {
-    try {
-      const res = await accountApi.register(data);
-      if (res.succeeded) {
-        enqueueSnackbar('Thêm mới user thành công', {variant: 'success'});
-      } else {
-        enqueueSnackbar(res.message, {variant: 'error'});
+  useEffect(() => {
+    const getList = async () => {
+      setIsLoading(true);
+      const res = await transactionService.getAll(filters);
+      if (res) {
+        const {currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious} = res;
+
+        setList(res.data);
+        setPagination({currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious});
       }
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar('Đã xảy ra lỗi', {variant: 'error'});
-    }
-  };
-  const handleDelete = async () => {
-    setIsDeleting(true);
-    setIsOpenDelete(prev => ({...prev, open: false}));
-    // const res = await accountService.deleteRole(isOpenDelete.id);
-    // if (res) {
-    //   // getAllRole();
-    // }
-    setIsDeleting(false);
-  };
+      setIsLoading(false);
+    };
+    getList();
+  }, [filters]);
 
   return (
     <div>
@@ -236,7 +227,7 @@ const DanhSachDonHangPage = () => {
         </Stack> */}
         <DataTable
           columns={columns}
-          rows={data.map(item => ({
+          rows={list.map(item => ({
             ...item,
             productCode: item.product.productCode,
             productName: item.product.name,
@@ -264,7 +255,6 @@ const DanhSachDonHangPage = () => {
       {openDialog.open && (
         <DialogDetail open={openDialog.open} row={openDialog.row} onClose={handleCloseDialog} />
       )}
-      <LoadingOverlay open={isDeleting} />
     </div>
   );
 };

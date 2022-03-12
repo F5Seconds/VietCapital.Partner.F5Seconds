@@ -13,7 +13,7 @@ import {
 import {TransitionProps} from '@mui/material/transitions';
 import React, {FC, useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {state, stateColor} from 'utils/state';
+import {state, stateColor} from '../../../../utils/state';
 import {DialogBase} from '../../../../components/base';
 import LoadingOverlay from '../../../../components/base/loading-overlay';
 import {InputField} from '../../../../components/hook-form';
