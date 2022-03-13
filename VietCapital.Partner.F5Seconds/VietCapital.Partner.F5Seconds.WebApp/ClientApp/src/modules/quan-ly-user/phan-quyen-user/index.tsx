@@ -4,12 +4,12 @@ import React, {useEffect, useState} from 'react';
 import {DataTable, DialogConfirm} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
-import Header from '../../../layouts/Header';
+import Page from '../../../layouts/Page';
 import {Role} from '../../../models';
 import {accountService} from '../../../services';
 import {colors} from '../../../theme';
-import DialogRole from './dialog-role';
 import DialogGanQuyen from './dialog-gan-quyen';
+import DialogRole from './dialog-role';
 
 const PhanQuyenUser = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -119,40 +119,37 @@ const PhanQuyenUser = () => {
     getAllRole();
   }, []);
   return (
-    <div>
-      <Header title="Phân quyền user" />
-      <div style={{padding: 16}}>
-        <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
-          <Button
-            variant="contained"
-            color="info"
-            sx={{marginRight: 1}}
-            onClick={() => {
-              setOpenDialogGanQuyen(prev => ({open: true}));
-            }}
-          >
-            Gán quyền
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              setOpenDialog(prev => ({open: true}));
-            }}
-          >
-            Thêm quyền
-          </Button>
-        </Stack>
-        <DataTable
-          columns={columns}
-          rows={listRole}
-          loading={isLoading}
-          height={height - 138}
-          onRowClick={row => {
-            setOpenDialog(prev => ({...prev, open: true, id: row.id, roleName: row.name}));
+    <Page title="Phân quyền user">
+      <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
+        <Button
+          variant="contained"
+          color="info"
+          sx={{marginRight: 1}}
+          onClick={() => {
+            setOpenDialogGanQuyen(prev => ({open: true}));
           }}
-        />
-      </div>
+        >
+          Gán quyền
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setOpenDialog(prev => ({open: true}));
+          }}
+        >
+          Thêm quyền
+        </Button>
+      </Stack>
+      <DataTable
+        columns={columns}
+        rows={listRole}
+        loading={isLoading}
+        height={height - 138}
+        onRowClick={row => {
+          setOpenDialog(prev => ({...prev, open: true, id: row.id, roleName: row.name}));
+        }}
+      />
+
       {openDialog.open && (
         <DialogRole
           open={openDialog.open}
@@ -177,7 +174,7 @@ const PhanQuyenUser = () => {
         onAgree={handleDelete}
       />
       <LoadingOverlay open={isDeleting} />
-    </div>
+    </Page>
   );
 };
 

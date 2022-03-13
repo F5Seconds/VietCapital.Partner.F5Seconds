@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import Header from '../../../layouts/Header';
-import {DataTable, DialogConfirm} from '../../../components/base';
-import {useLocation, useNavigate} from 'react-router';
-import queryString from 'query-string';
-import {useWindowDimensions} from '../../../hooks';
 import {Button, IconButton, Stack} from '@mui/material';
-import DialogUser from './dialog-user';
-import accountApi from '../../../apis/account-api';
-import {useSnackbar} from 'notistack';
-import LoadingOverlay from '../../../components/base/loading-overlay';
 import {Trash} from 'iconsax-react';
-import {colors} from '../../../theme';
-import {accountService} from '../../../services';
+import {useSnackbar} from 'notistack';
+import queryString from 'query-string';
+import React, {useEffect, useState} from 'react';
+import {useLocation, useNavigate} from 'react-router';
+import accountApi from '../../../apis/account-api';
+import {DataTable, DialogConfirm} from '../../../components/base';
+import LoadingOverlay from '../../../components/base/loading-overlay';
+import {useWindowDimensions} from '../../../hooks';
+import Page from '../../../layouts/Page';
 import {Account} from '../../../models';
+import {accountService} from '../../../services';
+import {colors} from '../../../theme';
+import DialogUser from './dialog-user';
 
 const DanhSachUser = () => {
   const location = useLocation();
@@ -113,42 +113,39 @@ const DanhSachUser = () => {
     getList();
   }, []);
   return (
-    <div>
-      <Header title="Danh sách user" />
-      <div style={{padding: 16}}>
-        <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              setOpenDialog(prev => ({open: true}));
-            }}
-          >
-            Thêm user
-          </Button>
-        </Stack>
-        <DataTable
-          columns={columns}
-          rows={listUser}
-          loading={isLoading}
-          height={height - 200}
-          onRowClick={row => {
-            setOpenDialog(prev => ({...prev, open: true, id: row.id}));
+    <Page title="Danh sách user">
+      <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setOpenDialog(prev => ({open: true}));
           }}
-          pagination={{
-            show: true,
-            page: pagination.currentPage - 1,
-            totalCount: pagination.totalCount,
-            rowsPerPage: pagination.pageSize,
-            onPageChange: page => {
-              setFilters(prev => ({...prev, pageNumber: page + 1}));
-            },
-            onRowsPerPageChange: value => {
-              setFilters(prev => ({...prev, pageSize: value, pageNumber: 0}));
-            },
-          }}
-        />
-      </div>
+        >
+          Thêm user
+        </Button>
+      </Stack>
+      <DataTable
+        columns={columns}
+        rows={listUser}
+        loading={isLoading}
+        height={height - 200}
+        onRowClick={row => {
+          setOpenDialog(prev => ({...prev, open: true, id: row.id}));
+        }}
+        pagination={{
+          show: true,
+          page: pagination.currentPage - 1,
+          totalCount: pagination.totalCount,
+          rowsPerPage: pagination.pageSize,
+          onPageChange: page => {
+            setFilters(prev => ({...prev, pageNumber: page + 1}));
+          },
+          onRowsPerPageChange: value => {
+            setFilters(prev => ({...prev, pageSize: value, pageNumber: 0}));
+          },
+        }}
+      />
+
       {openDialog.open && (
         <DialogUser
           open={openDialog.open}
@@ -165,7 +162,7 @@ const DanhSachUser = () => {
         onAgree={handleDelete}
       />
       <LoadingOverlay open={isDeleting} />
-    </div>
+    </Page>
   );
 };
 

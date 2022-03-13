@@ -12,6 +12,7 @@ import {
   TextAreaField,
 } from '../../../components/hook-form';
 import Header from '../../../layouts/Header';
+import Page from '../../../layouts/Page';
 import {Category, Product} from '../../../models';
 import {categoryService, productService} from '../../../services';
 
@@ -95,89 +96,87 @@ const ChiTietSanPhamPage = () => {
     id && getDetail();
   }, [id]);
   return (
-    <div>
-      <Header title="Chi tiết sản phẩm" />
-      <div style={{padding: 16}}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={12} lg={12}>
-            <CardBase
-              actions={
-                <Stack direction="row" justifyContent="flex-end" margin={2}>
-                  <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
-                    {id ? 'Cập nhật' : 'Thêm sản phẩm'}
-                  </Button>
-                </Stack>
-              }
-            >
-              <Grid container sx={{padding: 2}} spacing={2}>
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="productCode" label="Mã sản phẩm" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="type" label="Loại" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="price" label="Giá" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="brandName" label="Tên thương hiệu" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="brandLogo" label="Đường dẫn logo thương hiệu" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="partner" label="Nhà phân phối" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="name" label="Tên sản phẩm" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="point" label="Điểm" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <AutocompleteAsyncField
-                    multiple
-                    loading={loadingCategories}
-                    items={categories?.map(item => ({label: item?.name, value: item?.id, ...item}))}
-                    onSubmit={value => getCategories(value)}
-                    form={form}
-                    name="categoryProducts"
-                    label="Danh mục"
-                  />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="image" label="Đường dẫn ảnh sản phẩm" />
-                </Grid>
-
-                <Grid item xs={12} md={6} lg={4}>
-                  <InputField form={form} name="thumbnail" label="Đường dẫn ảnh sản phẩm thu nhỏ" />
-                </Grid>
-                <Grid item xs={12} md={6} lg={4}>
-                  <CheckboxField form={form} name="status" label="Trạng thái" />
-                </Grid>
-                <Grid item xs={12} md={12} lg={12}>
-                  <Typography component="div" color="text.secondary">
-                    Mô tả
-                  </Typography>
-                  <TextAreaField form={form} name="content" label="" />
-                </Grid>
-                <Grid item xs={12} md={12} lg={12}>
-                  <Typography component="div" color="text.secondary">
-                    Hướng dẫn
-                  </Typography>
-                  <TextAreaField form={form} name="term" label="" />
-                </Grid>
+    <Page title={id ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={12} lg={12}>
+          <CardBase
+            actions={
+              <Stack direction="row" justifyContent="flex-end" margin={2}>
+                <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
+                  {id ? 'Cập nhật' : 'Thêm sản phẩm'}
+                </Button>
+              </Stack>
+            }
+          >
+            <Grid container sx={{padding: 2}} spacing={2}>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="productCode" label="Mã sản phẩm" />
               </Grid>
-            </CardBase>
-          </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="type" label="Loại" />
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="price" label="Giá" />
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="brandName" label="Tên thương hiệu" />
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="brandLogo" label="Đường dẫn logo thương hiệu" />
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="partner" label="Nhà phân phối" />
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="name" label="Tên sản phẩm" />
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="point" label="Điểm" />
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <AutocompleteAsyncField
+                  multiple
+                  loading={loadingCategories}
+                  items={categories?.map(item => ({label: item?.name, value: item?.id, ...item}))}
+                  onSubmit={value => getCategories(value)}
+                  form={form}
+                  name="categoryProducts"
+                  label="Danh mục"
+                />
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="image" label="Đường dẫn ảnh sản phẩm" />
+              </Grid>
 
-          {/* <Grid item xs={12} md={12} lg={4}>
+              <Grid item xs={12} md={6} lg={4}>
+                <InputField form={form} name="thumbnail" label="Đường dẫn ảnh sản phẩm thu nhỏ" />
+              </Grid>
+              <Grid item xs={12} md={6} lg={4}>
+                <CheckboxField form={form} name="status" label="Trạng thái" />
+              </Grid>
+              <Grid item xs={12} md={12} lg={12}>
+                <Typography component="div" color="text.secondary">
+                  Mô tả
+                </Typography>
+                <TextAreaField form={form} name="content" label="" />
+              </Grid>
+              <Grid item xs={12} md={12} lg={12}>
+                <Typography component="div" color="text.secondary">
+                  Hướng dẫn
+                </Typography>
+                <TextAreaField form={form} name="term" label="" />
+              </Grid>
+            </Grid>
+          </CardBase>
+        </Grid>
+
+        {/* <Grid item xs={12} md={12} lg={4}>
             <CardBase title="Địa điểm áp dụng" headerShow></CardBase>
           </Grid> */}
-        </Grid>
-      </div>
+      </Grid>
+
       <LoadingOverlay open={isSubmitting} />
-    </div>
+    </Page>
   );
 };
 

@@ -8,14 +8,15 @@ interface PageProps {
   title: string;
 }
 
-const APP_BAR_MOBILE = 64;
-const APP_BAR_DESKTOP = 64;
+const APP_BAR_MOBILE = 44;
+const APP_BAR_DESKTOP = 44;
 
 const MainStyle = styled('div')(({theme}) => ({
   flexGrow: 1,
   overflow: 'auto',
   minHeight: '100%',
   paddingTop: APP_BAR_MOBILE,
+  paddingBottom: theme.spacing(2),
   [theme.breakpoints.up('lg')]: {
     paddingTop: APP_BAR_DESKTOP,
     paddingLeft: theme.spacing(2),

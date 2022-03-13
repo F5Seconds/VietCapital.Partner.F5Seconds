@@ -56,7 +56,6 @@ const DialogBase: FC<Props> = ({
           <LoadingButton
             disabled={isSubmitting}
             variant="outlined"
-            color="inherit"
             onClick={onClose}
             sx={{minWidth: 150}}
           >
@@ -66,7 +65,6 @@ const DialogBase: FC<Props> = ({
           <LoadingButton
             loading={isSubmitting}
             variant="contained"
-            color="success"
             onClick={onSubmit}
             sx={{minWidth: 150}}
           >

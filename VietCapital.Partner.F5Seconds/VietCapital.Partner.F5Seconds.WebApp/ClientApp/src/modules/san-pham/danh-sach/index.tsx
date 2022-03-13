@@ -7,6 +7,7 @@ import {DataTable, DialogConfirm, SearchBar} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
 import Header from '../../../layouts/Header';
+import Page from '../../../layouts/Page';
 import {PaginationParams, Product, QueryParams} from '../../../models';
 import {productService} from '../../../services';
 import {colors} from '../../../theme';
@@ -103,44 +104,41 @@ const DanhSachSanPhamPage = () => {
     getList();
   }, [filters]);
   return (
-    <div>
-      <Header title="Danh sách sản phẩm" />
-      <div style={{padding: 16}}>
-        <Stack direction="row" justifyContent="space-between" marginBottom={2}>
-          <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
+    <Page title="Danh sách sản phẩm">
+      <Stack direction="row" justifyContent="space-between" marginBottom={2}>
+        <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
 
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              navigate('them-san-pham');
-            }}
-          >
-            Thêm sản phẩm
-          </Button>
-        </Stack>
-        <DataTable
-          columns={columns}
-          rows={listProduct}
-          loading={isLoading}
-          height={height - 200}
-          onRowClick={(row: Product) => {
-            navigate(`sua-san-pham/${row.id}`);
+        <Button
+          variant="contained"
+          onClick={() => {
+            navigate('them-san-pham');
           }}
-          pagination={{
-            show: true,
-            page: pagination.currentPage - 1,
-            totalCount: pagination.totalCount,
-            rowsPerPage: pagination.pageSize,
-            onPageChange: page => {
-              setFilters(prev => ({...prev, pageNumber: page + 1}));
-            },
-            onRowsPerPageChange: value => {
-              setFilters(prev => ({...prev, pageSize: value, pageNumber: 0}));
-            },
-          }}
-        />
-      </div>
+        >
+          Thêm sản phẩm
+        </Button>
+      </Stack>
+      <DataTable
+        columns={columns}
+        rows={listProduct}
+        loading={isLoading}
+        height={height - 200}
+        onRowClick={(row: Product) => {
+          navigate(`sua-san-pham/${row.id}`);
+        }}
+        pagination={{
+          show: true,
+          page: pagination.currentPage - 1,
+          totalCount: pagination.totalCount,
+          rowsPerPage: pagination.pageSize,
+          onPageChange: page => {
+            setFilters(prev => ({...prev, pageNumber: page + 1}));
+          },
+          onRowsPerPageChange: value => {
+            setFilters(prev => ({...prev, pageSize: value, pageNumber: 0}));
+          },
+        }}
+      />
+
       <DialogConfirm
         open={isOpenDelete.visible}
         title="Xác nhận"
@@ -149,7 +147,7 @@ const DanhSachSanPhamPage = () => {
         onAgree={handleDelete}
       />
       <LoadingOverlay open={isDeleting} />
-    </div>
+    </Page>
   );
 };
 

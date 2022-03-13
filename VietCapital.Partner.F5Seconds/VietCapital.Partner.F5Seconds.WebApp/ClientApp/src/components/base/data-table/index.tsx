@@ -43,7 +43,7 @@ const DataTable: FC<Props> = props => {
   const {
     columns,
     rows = [],
-    height,
+    height = 600,
     pagination = {
       show: false,
       page: 0,
@@ -66,7 +66,7 @@ const DataTable: FC<Props> = props => {
   console.log(pagination, {emptyRows, heightRow, heightRowRef});
 
   return (
-    <Card sx={{border: '1px solid rgba(0,0,0,0.2)', position: 'relative'}}>
+    <Card sx={{boxShadow: 'rgb(145 158 171 / 24%) 0px 1px 2px 0px', position: 'relative'}}>
       {loading && (
         <Stack
           justifyContent="center"
@@ -81,12 +81,13 @@ const DataTable: FC<Props> = props => {
           <CircularProgress />
         </Stack>
       )}
-      <TableContainer style={{overflowX: 'auto', minWidth: 800}}>
+      <TableContainer style={{overflowX: 'auto', height, minWidth: 800}}>
         <Table sx={{minWidth: 650}} stickyHeader>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{backgroundColor: 'white'}}>
               {columns.map((item: Column, index) => (
                 <TableCell
+                  sx={{backgroundColor: 'white'}}
                   align={item.center ? 'center' : item.type === 'number' ? 'right' : 'left'}
                   key={index.toString()}
                 >

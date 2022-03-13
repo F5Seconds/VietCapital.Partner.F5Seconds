@@ -6,7 +6,7 @@ import {useLocation, useNavigate} from 'react-router';
 import {DataTable, DialogConfirm, SearchBar} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
-import Header from '../../../layouts/Header';
+import Page from '../../../layouts/Page';
 import {Category, PaginationParams, QueryParams} from '../../../models';
 import {categoryService} from '../../../services';
 import {colors} from '../../../theme';
@@ -58,14 +58,13 @@ const DanhSachDanhMucPage = () => {
       headerName: '',
       renderCell: (row: Category) => (
         <IconButton
-          size="medium"
           color="error"
           onClick={e => {
             e.stopPropagation();
             setIsOpenDelete({visible: true, id: row.id});
           }}
         >
-          <Trash color={colors.error} />
+          <Trash fontSize={20} color={colors.error} />
         </IconButton>
       ),
     },
@@ -95,45 +94,42 @@ const DanhSachDanhMucPage = () => {
     getList();
   }, [filters]);
   return (
-    <div>
-      <Header title="Danh sách danh mục" />
-      <div style={{padding: 16}}>
-        <Stack direction="row" justifyContent="space-between" marginBottom={2}>
-          <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
+    <Page title="Danh sách danh mục">
+      <Stack direction="row" justifyContent="space-between" marginBottom={2}>
+        <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
 
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              navigate('them-danh-muc');
-            }}
-          >
-            Thêm danh mục
-          </Button>
-        </Stack>
+        <Button
+          variant="contained"
+          onClick={() => {
+            navigate('them-danh-muc');
+          }}
+        >
+          Thêm danh mục
+        </Button>
+      </Stack>
 
-        <DataTable
-          columns={columns}
-          rows={listCategory}
-          loading={isLoading}
-          height={height - 200}
-          onRowClick={(row: Category) => {
-            navigate(`sua-danh-muc/${row.id}`);
-          }}
-          pagination={{
-            show: true,
-            page: pagination.currentPage - 1,
-            totalCount: pagination.totalCount,
-            rowsPerPage: pagination.pageSize,
-            onPageChange: page => {
-              setFilters(prev => ({...prev, pageNumber: page + 1}));
-            },
-            onRowsPerPageChange: value => {
-              setFilters(prev => ({...prev, pageSize: value, pageNumber: 1}));
-            },
-          }}
-        />
-      </div>
+      <DataTable
+        columns={columns}
+        rows={listCategory}
+        loading={isLoading}
+        height={height - 200}
+        onRowClick={(row: Category) => {
+          navigate(`sua-danh-muc/${row.id}`);
+        }}
+        pagination={{
+          show: true,
+          page: pagination.currentPage - 1,
+          totalCount: pagination.totalCount,
+          rowsPerPage: pagination.pageSize,
+          onPageChange: page => {
+            setFilters(prev => ({...prev, pageNumber: page + 1}));
+          },
+          onRowsPerPageChange: value => {
+            setFilters(prev => ({...prev, pageSize: value, pageNumber: 1}));
+          },
+        }}
+      />
+
       <DialogConfirm
         open={isOpenDelete.visible}
         title="Xác nhận"
@@ -142,7 +138,7 @@ const DanhSachDanhMucPage = () => {
         onAgree={handleDelete}
       />
       <LoadingOverlay open={isDeleting} />
-    </div>
+    </Page>
   );
 };
 
