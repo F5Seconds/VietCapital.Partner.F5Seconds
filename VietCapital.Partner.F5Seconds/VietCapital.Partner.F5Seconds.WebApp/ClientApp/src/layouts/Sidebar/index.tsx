@@ -9,11 +9,10 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import {KeyboardOpen, TaskSquare} from 'iconsax-react';
+import {Bag2, Firstline, KeyboardOpen, Logout, TaskSquare, UserOctagon} from 'iconsax-react';
 import {FC, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {useLocation, useNavigate} from 'react-router-dom';
-import {useAppSelector} from '../../redux/hooks';
 // import {authActions} from 'src/redux/slice/authSlice';
 // import {nhanSuService} from 'src/services';
 // import {avatar} from 'src/utils';
@@ -22,7 +21,7 @@ import NavItem from './NavItem';
 const items = [
   {
     href: '/quan-ly-user',
-    icon: TaskSquare,
+    icon: UserOctagon,
     title: 'Quản lý user',
     children: [
       {
@@ -42,13 +41,18 @@ const items = [
   },
   {
     href: '/san-pham',
-    icon: TaskSquare,
+    icon: Firstline,
     title: 'Danh sách sản phẩm',
   },
   {
     href: '/don-hang',
-    icon: TaskSquare,
+    icon: Bag2,
     title: 'Quản lý đơn hàng',
+  },
+  {
+    href: '/login',
+    icon: Logout,
+    title: 'Đăng xuất',
   },
 
   // {

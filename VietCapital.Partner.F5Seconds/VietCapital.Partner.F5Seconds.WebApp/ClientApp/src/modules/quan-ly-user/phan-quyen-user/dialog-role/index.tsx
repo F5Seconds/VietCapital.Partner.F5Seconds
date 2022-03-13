@@ -8,14 +8,15 @@ import {InputField} from '../../../../components/hook-form';
 interface Props {
   open: boolean;
   id?: number | string | null;
+  roleName?: string;
   onClose: () => void;
   onSubmit: (data: any) => void;
 }
 
-const DialogRole: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
+const DialogRole: FC<Props> = ({open = false, id, roleName = '', onClose, onSubmit}) => {
   const form = useForm({
     defaultValues: {
-      roleName: '',
+      roleName,
     },
   });
 

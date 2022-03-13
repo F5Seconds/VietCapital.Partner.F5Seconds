@@ -157,6 +157,7 @@ const PhanQuyenUser = () => {
         <DialogRole
           open={openDialog.open}
           id={openDialog.id}
+          roleName={openDialog.roleName}
           onClose={handleCloseDialog}
           onSubmit={handleSubmit}
         />
