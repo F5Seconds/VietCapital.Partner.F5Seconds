@@ -15,11 +15,12 @@ import {selectJWT} from '../redux/slice/auth';
 
 const Auth: FC<{children: React.ReactElement}> = ({children}) => {
   const jwt = useAppSelector(selectJWT);
+  const jwtStorage = localStorage.getItem('jwt');
+  if (jwtStorage || jwt) {
+    return children;
+  }
 
-  // if (!jwt) {
-  //   return <Navigate to="/login" />;
-  // }
-  return children;
+  return <Navigate to="/login" />;
 };
 export const routes: RouteObject[] = [
   {
@@ -30,7 +31,7 @@ export const routes: RouteObject[] = [
       </Auth>
     ),
     children: [
-      {index: true, element: <div>home</div>},
+      {index: true, element: <Navigate to="/quan-ly-user/danh-sach-user" />},
       {
         path: 'quan-ly-user',
         element: <Outlet />,

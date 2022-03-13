@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Divider,
   Drawer,
   Hidden,
@@ -13,6 +14,9 @@ import {KeyboardOpen, TaskSquare} from 'iconsax-react';
 import {FC, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {useLocation, useNavigate} from 'react-router-dom';
+import {useAppDispatch} from '../../redux/hooks';
+import {setAuth} from '../../redux/slice/auth';
+import {colors} from '../../theme';
 // import {authActions} from 'src/redux/slice/authSlice';
 // import {nhanSuService} from 'src/services';
 // import {avatar} from 'src/utils';
@@ -95,7 +99,7 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
   const location = useLocation();
   const navigate = useNavigate();
   // const {jwt, email} = useAppSelector(state => state.auth);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [user, setUser] = useState();
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -145,6 +149,7 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
                 '#133886 url(https://www.vietcapitalbank.com.vn/static/images/mask-logo.png) no-repeat right bottom',
             },
           }}
+          sx={{position: 'relative'}}
         >
           <Stack display="flex" alignItems="center" style={{padding: 20}}>
             {user ? (
@@ -197,8 +202,30 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
               />
             )}
           </Stack>
-          <Divider sx={{background: '#053E7A'}} />
+          <Divider sx={{background: colors.primaryDark}} />
           {content}
+          <Divider sx={{mb: 4, background: colors.primaryDark}} />
+
+          <div
+            style={{
+              // bottom: 10,
+              // position: 'absolute',
+              display: 'flex',
+              justifyContent: 'center',
+              width: '100%',
+            }}
+          >
+            <Button
+              color="error"
+              variant="contained"
+              onClick={() => {
+                dispatch(setAuth({}));
+                localStorage.removeItem('jwt');
+              }}
+            >
+              Đăng xuất
+            </Button>
+          </div>
         </Drawer>
       </Hidden>
     </>
