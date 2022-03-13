@@ -29,10 +29,16 @@ const accountService = {
   addUsersToRole: async (params: any, data: any): Promise<any> => {
     try {
       const res = await accountApi.addUsersToRole(params, data);
-      return res;
+      if (res.result) {
+        store.dispatch(setShowAlert({message: res.result, type: 'success'}));
+        return true;
+      } else {
+        store.dispatch(setShowAlert({message: res.error || '', type: 'error'}));
+      }
     } catch (error) {
       console.log('Lỗi gán quyền');
     }
+    return false;
   },
   //role
   getAllRole: async (): Promise<Role[] | undefined> => {

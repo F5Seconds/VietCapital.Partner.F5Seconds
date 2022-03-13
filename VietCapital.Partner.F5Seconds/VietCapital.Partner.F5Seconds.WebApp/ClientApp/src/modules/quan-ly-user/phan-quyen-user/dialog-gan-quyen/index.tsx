@@ -58,9 +58,12 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
   useEffect(() => {
     if (role) {
       accountService.getAllUsersByRole({roleId: role?.id}).then(res => {
+        console.log('====================================');
+        console.log(res);
+        console.log('====================================');
         const list = res?.listUser;
         const users = listUsers
-          ?.filter((item: any) => list?.includes(item?.email))
+          ?.filter((item: any) => list?.includes(item?.username))
           .map((item: any) => ({...item, label: item?.name, value: item?.email}));
 
         setValue<any>('user', users);
