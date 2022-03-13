@@ -20,21 +20,20 @@ const Header: FC<Props> = props => {
           backgroundColor: '#fff',
           display: 'flex',
           justifyContent: 'space-between',
-          minHeight: '48px',
+          minHeight: '64px',
         }}
       >
         <Stack direction="row" alignItems="center">
           <IconButton
             size="small"
             edge="start"
-            color="info"
             sx={{
               mr: 2,
               ml: 0,
               borderRadius: 1,
-              backgroundColor: colors.info,
+              backgroundColor: colors.primary,
               '&.MuiIconButton-root:hover': {
-                backgroundColor: colors.primary,
+                backgroundColor: colors.primaryDark,
               },
             }}
             onClick={() => navigate(-1)}

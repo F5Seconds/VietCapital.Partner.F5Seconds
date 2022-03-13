@@ -1,7 +1,8 @@
 import {Button, Collapse, ListItem, Stack} from '@mui/material';
-import {ArrowDown2, ArrowUp2, IconProps} from 'iconsax-react';
+import {ArrowDown2, ArrowUp2} from 'iconsax-react';
 import React, {FC, useState} from 'react';
 import {matchPath, NavLink as RouterLink, useLocation, useNavigate} from 'react-router-dom';
+import {colors} from '../../theme';
 
 interface Props {
   item: {
@@ -42,7 +43,7 @@ const NavItem: FC<Props> = ({item, ...rest}) => {
         disableGutters
         sx={{
           display: 'flex',
-          py: 0,
+          py: 0.5,
         }}
         {...rest}
       >
@@ -56,11 +57,11 @@ const NavItem: FC<Props> = ({item, ...rest}) => {
             py: 1.25,
             textTransform: 'none',
             '&:hover': {
-              backgroundColor: '#08488C',
+              backgroundColor: colors.primaryDark,
             },
             width: '100%',
             ...(active && {
-              backgroundColor: '#08488C',
+              backgroundColor: colors.primaryDark,
             }),
             '& svg': {
               mr: 1,
@@ -89,7 +90,7 @@ const NavItem: FC<Props> = ({item, ...rest}) => {
               disableGutters
               sx={{
                 display: 'flex',
-                py: 0,
+                py: 0.5,
               }}
               {...rest}
             >
@@ -104,14 +105,14 @@ const NavItem: FC<Props> = ({item, ...rest}) => {
                   py: 1.25,
                   textTransform: 'none',
                   '&:hover': {
-                    backgroundColor: '#08488C',
+                    backgroundColor: colors.primaryDark,
                   },
                   width: '100%',
                   // ...(active && {
                   //   backgroundColor: '#08488C',
                   // }),
                   backgroundColor: location.pathname.includes(item.href?.split('/')[2])
-                    ? '#08488C'
+                    ? colors.primaryDark
                     : null,
                   '& svg': {
                     mr: 1,

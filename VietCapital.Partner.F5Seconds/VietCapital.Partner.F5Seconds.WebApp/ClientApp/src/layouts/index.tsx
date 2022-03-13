@@ -18,7 +18,7 @@ const MainLayout = () => {
       <Box sx={{gridArea: 'sidebar'}}>
         <Sidebar />
       </Box>
-      <Box sx={{gridArea: 'main', padding: 0, backgroundColor: '#f4f6f8'}}>
+      <Box sx={{gridArea: 'main', padding: 0, backgroundColor: '#fafafa'}}>
         <Outlet />
       </Box>
     </Box>

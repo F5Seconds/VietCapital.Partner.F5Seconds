@@ -9,8 +9,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Box,
+  Card,
+  TableRowProps,
 } from '@mui/material';
-import React, {FC} from 'react';
+import React, {FC, useEffect, useLayoutEffect, useRef, useState} from 'react';
 
 interface Column {
   field: string;
@@ -50,8 +53,20 @@ const DataTable: FC<Props> = props => {
     onRowClick,
   } = props;
 
+  const [heightRow, setHeightRow] = useState(0);
+
+  const heightRowRef = useRef<any>(null);
+
+  useEffect(() => {
+    setHeightRow(heightRowRef.current?.clientHeight || 0);
+  });
+
+  const emptyRows = pagination.page > 0 ? Math.max(0, pagination.rowsPerPage - rows.length) : 0;
+
+  console.log(pagination, {emptyRows, heightRow, heightRowRef});
+
   return (
-    <Paper sx={{border: '1px solid rgba(0,0,0,0.2)', position: 'relative'}}>
+    <Card sx={{border: '1px solid rgba(0,0,0,0.2)', position: 'relative'}}>
       {loading && (
         <Stack
           justifyContent="center"
@@ -66,7 +81,7 @@ const DataTable: FC<Props> = props => {
           <CircularProgress />
         </Stack>
       )}
-      <TableContainer style={{height, overflowX: 'auto'}}>
+      <TableContainer style={{overflowX: 'auto', minWidth: 800}}>
         <Table sx={{minWidth: 650}} stickyHeader>
           <TableHead>
             <TableRow>
@@ -83,6 +98,7 @@ const DataTable: FC<Props> = props => {
           <TableBody>
             {rows.map((row, index) => (
               <TableRow
+                ref={index === 0 ? heightRowRef : null}
                 key={index.toString()}
                 sx={{
                   '&:last-child td, &:last-child th': {border: 0},
@@ -104,6 +120,11 @@ const DataTable: FC<Props> = props => {
                 ))}
               </TableRow>
             ))}
+            {emptyRows > 0 && (
+              <TableRow style={{height: heightRow * emptyRows}}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -122,7 +143,7 @@ const DataTable: FC<Props> = props => {
           onRowsPerPageChange={({target: {value}}) => pagination.onRowsPerPageChange?.(value)}
         />
       )}
-    </Paper>
+    </Card>
   );
 };
 

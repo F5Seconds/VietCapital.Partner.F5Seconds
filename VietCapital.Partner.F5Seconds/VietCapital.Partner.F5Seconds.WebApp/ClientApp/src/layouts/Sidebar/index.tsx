@@ -13,7 +13,6 @@ import {KeyboardOpen, TaskSquare} from 'iconsax-react';
 import {FC, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {useLocation, useNavigate} from 'react-router-dom';
-import {useAppSelector} from '../../redux/hooks';
 // import {authActions} from 'src/redux/slice/authSlice';
 // import {nhanSuService} from 'src/services';
 // import {avatar} from 'src/utils';
@@ -142,7 +141,8 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
           PaperProps={{
             sx: {
               width: 256,
-              backgroundColor: '#0c56a5',
+              background:
+                '#133886 url(https://www.vietcapitalbank.com.vn/static/images/mask-logo.png) no-repeat right bottom',
             },
           }}
         >

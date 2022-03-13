@@ -4,6 +4,8 @@ import {useRoutes} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from './redux/hooks';
 import {selectAlert, setHiddenAlert} from './redux/slice/alertSlice';
 import {routes} from './routes';
+import ThemeConfig from './theme';
+import GlobalStyles from './theme/globalStyles';
 // import './App.css';
 import './theme/styles.css';
 
@@ -24,17 +26,21 @@ const Noti = () => {
 function App() {
   const dispatch = useAppDispatch();
   return (
-    <SnackbarProvider
-      maxSnack={3}
-      onClose={(event, reason) => {
-        dispatch(setHiddenAlert());
-      }}
-    >
-      <div style={{minHeight: '100vh', backgroundColor: '#E3F1FD'}}>
-        {useRoutes(routes)}
-        <Noti />
-      </div>
-    </SnackbarProvider>
+    <ThemeConfig>
+      <GlobalStyles />
+
+      <SnackbarProvider
+        maxSnack={3}
+        onClose={(event, reason) => {
+          dispatch(setHiddenAlert());
+        }}
+      >
+        <div style={{minHeight: '100vh', backgroundColor: '#E3F1FD'}}>
+          {useRoutes(routes)}
+          <Noti />
+        </div>
+      </SnackbarProvider>
+    </ThemeConfig>
   );
 }
 
