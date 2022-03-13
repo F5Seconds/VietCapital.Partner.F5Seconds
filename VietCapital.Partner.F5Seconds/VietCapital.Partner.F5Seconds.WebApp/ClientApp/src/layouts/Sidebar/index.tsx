@@ -207,9 +207,9 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
               />
             )}
           </Stack>
-          <Divider sx={{background: colors.primaryDark}} />
+          <Divider sx={{background: colors.primary}} />
           {content}
-          <Divider sx={{mb: 4, background: colors.primaryDark}} />
+          <Divider sx={{mb: 4, background: colors.primary}} />
 
           <div
             style={{
