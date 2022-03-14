@@ -1,4 +1,3 @@
-import { merge } from 'lodash';
 import Card from './Card';
 import Lists from './Lists';
 import Paper from './Paper';
@@ -12,17 +11,17 @@ import Autocomplete from './Autocomplete';
 
 // ----------------------------------------------------------------------
 
-export default function ComponentsOverrides(theme) {
-  return merge(
-    Card(theme),
-    Lists(theme),
-    Paper(theme),
-    Input(theme),
-    Button(theme),
-    Tooltip(theme),
-    Backdrop(theme),
-    Typography(theme),
-    IconButton(theme),
-    Autocomplete(theme)
-  );
+export default function ComponentsOverrides(theme: any) {
+  return {
+    ...Card(theme),
+    ...Lists(theme),
+    ...Paper(),
+    ...Input(theme),
+    ...Button(theme),
+    ...Tooltip(theme),
+    ...Backdrop(theme),
+    ...Typography(theme),
+    ...IconButton(theme),
+    ...Autocomplete(theme),
+  };
 }

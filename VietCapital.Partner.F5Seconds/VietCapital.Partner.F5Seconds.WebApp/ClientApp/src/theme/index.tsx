@@ -68,7 +68,7 @@ export default function ThemeConfig({children}: ThemeConfigProps) {
     []
   );
 
-  const theme = createTheme(themeOptions);
+  const theme: any = createTheme(themeOptions);
   theme.components = componentsOverride(theme);
 
   return (
