@@ -11,9 +11,10 @@ interface Props {
     title: string;
     children?: Array<any>;
   };
+  onClick?: () => void;
   rest?: any;
 }
-const NavItem: FC<Props> = ({item, ...rest}) => {
+const NavItem: FC<Props> = ({item, onClick, ...rest}) => {
   const {href, icon: Icon, title, children = []} = item;
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,7 +32,9 @@ const NavItem: FC<Props> = ({item, ...rest}) => {
     : false;
   // const active=
   const handleClickCollapse = () => {
-    if (children.length !== 0) {
+    if (onClick) {
+      onClick();
+    } else if (children.length !== 0) {
       setChildrenActive(prev => !prev);
     } else {
       navigate(href);

@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   Divider,
   Drawer,
   Hidden,
@@ -12,7 +11,6 @@ import {
 } from '@mui/material';
 import {Bag2, Firstline, KeyboardOpen, Logout, TaskSquare, UserOctagon} from 'iconsax-react';
 import {FC, useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useAppDispatch} from '../../redux/hooks';
 import {setAuth} from '../../redux/slice/auth';
@@ -52,11 +50,6 @@ const items = [
     href: '/don-hang',
     icon: Bag2,
     title: 'Quản lý đơn hàng',
-  },
-  {
-    href: '/login',
-    icon: Logout,
-    title: 'Đăng xuất',
   },
 
   // {
@@ -118,6 +111,17 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
         {items.map(item => (
           <NavItem key={item.title} item={item} />
         ))}
+        <NavItem
+          onClick={() => {
+            dispatch(setAuth({}));
+            localStorage.removeItem('jwt');
+          }}
+          item={{
+            href: '/login',
+            icon: Logout,
+            title: 'Đăng xuất',
+          }}
+        />
       </List>
     </Box>
   );
@@ -209,28 +213,6 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
           </Stack>
           <Divider sx={{background: colors.primary}} />
           {content}
-          <Divider sx={{mb: 4, background: colors.primary}} />
-
-          <div
-            style={{
-              // bottom: 10,
-              // position: 'absolute',
-              display: 'flex',
-              justifyContent: 'center',
-              width: '100%',
-            }}
-          >
-            <Button
-              color="error"
-              variant="contained"
-              onClick={() => {
-                dispatch(setAuth({}));
-                localStorage.removeItem('jwt');
-              }}
-            >
-              Đăng xuất
-            </Button>
-          </div>
         </Drawer>
       </Hidden>
     </>

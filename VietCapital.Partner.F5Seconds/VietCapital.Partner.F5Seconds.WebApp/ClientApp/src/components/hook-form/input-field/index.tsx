@@ -34,6 +34,7 @@ const InputField: FC<Props> = ({name, rules, label, form, type, ...rest}) => {
           fullWidth
           error={!!errors[name]}
           helperText={errors[name]?.message}
+          InputLabelProps={{shrink: true}}
         />
       )}
     />

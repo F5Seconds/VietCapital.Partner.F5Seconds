@@ -60,7 +60,7 @@ const DanhMucSanPhamPage = () => {
       >
         <Grid container sx={{padding: 2}} spacing={2}>
           <Grid item xs={12} md={6} lg={4}>
-            <InputField form={form} name="name" label="Tên sản phẩm" />
+            <InputField form={form} name="name" label="Tên danh mục" />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <InputField form={form} name="image" label="Hình ảnh" />
