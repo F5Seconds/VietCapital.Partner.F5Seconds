@@ -15,9 +15,9 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.C
             RuleFor(p => p.ProductCode)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull();
-            RuleFor(p => p.ProductId)
-            .NotEmpty().WithMessage("{PropertyName} is required.")
-            .NotNull();
+            // RuleFor(p => p.ProductId)
+            // .NotEmpty().WithMessage("{PropertyName} is required.")
+            // .NotNull();
             RuleFor(p => p.Name)
              .NotEmpty().WithMessage("{PropertyName} is required.")
              .NotNull();

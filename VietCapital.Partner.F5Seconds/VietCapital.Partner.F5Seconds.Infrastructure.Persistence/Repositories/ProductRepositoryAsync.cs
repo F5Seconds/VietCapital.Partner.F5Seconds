@@ -74,8 +74,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
         public async Task<PagedList<Product>> GetAllPagedListAsync(GetAllProductsParameter parameter)
         {
             var products = _products.Include(cp => cp.CategoryProducts)
-                .ThenInclude(c => c.Category)
-                .Where(p => p.Status).AsQueryable();
+                .ThenInclude(c => c.Category).AsQueryable();
             Search(ref products,parameter.Search);
             return await PagedList<Product>.ToPagedList(products.OrderByDescending(x => x.Id), parameter.PageNumber, parameter.PageSize);
         }
