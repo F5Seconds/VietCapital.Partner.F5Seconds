@@ -12,13 +12,15 @@ import {
 import {Bag2, Firstline, KeyboardOpen, Logout, TaskSquare, UserOctagon} from 'iconsax-react';
 import {FC, useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import {useAppDispatch} from '../../redux/hooks';
-import {setAuth} from '../../redux/slice/auth';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {selectJWT, setAuth} from '../../redux/slice/auth';
+import {accountService} from '../../services';
 import {colors} from '../../theme';
 // import {authActions} from 'src/redux/slice/authSlice';
 // import {nhanSuService} from 'src/services';
 // import {avatar} from 'src/utils';
 import NavItem from './NavItem';
+import jwt_decode from 'jwt-decode';
 
 const items = [
   {
@@ -98,7 +100,10 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
   const navigate = useNavigate();
   // const {jwt, email} = useAppSelector(state => state.auth);
   const dispatch = useAppDispatch();
-  const [user, setUser] = useState();
+
+  const jwt = localStorage.getItem('jwt');
+  const auth: any = jwt && jwt_decode(jwt);
+
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
@@ -126,24 +131,6 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
     </Box>
   );
 
-  // useEffect(() => {
-  //   const isLogin = sessionStorage.getItem('user');
-  //   const getUser = async () => {
-  //     const res = await nhanSuService.getByEmail(email);
-  //     if (res) {
-  //       console.log(res);
-  //       setUser(res);
-  //       dispatch(authActions.setUser(res));
-  //       sessionStorage.setItem('user', JSON.stringify(res));
-  //     }
-  //   };
-  //   if (!!isLogin) {
-  //     setUser(JSON.parse(isLogin));
-  //     dispatch(authActions.setUser(JSON.parse(isLogin)));
-  //   } else {
-  //     email && getUser();
-  //   }
-  // }, [jwt]);
   return (
     <>
       <Hidden>
@@ -161,12 +148,12 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
           sx={{position: 'relative'}}
         >
           <Stack display="flex" alignItems="center" style={{padding: 20}}>
-            {user ? (
+            {auth ? (
               <Avatar
                 onClick={() => navigate('/thong-tin-ca-nhan')}
                 sx={{bgcolor: 'red', cursor: 'pointer'}}
               >
-                {'avatar.generateName(user?.hoTen)'}
+                {auth?.email[0]?.toUpperCase()}
               </Avatar>
             ) : (
               <Skeleton
@@ -177,9 +164,9 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
                 animation="wave"
               />
             )}
-            {user ? (
+            {auth ? (
               <Typography variant="h5" component="h5" color="#fff" marginTop={1} textAlign="center">
-                {'user?.hoTen'}
+                {auth?.email}
               </Typography>
             ) : (
               <Skeleton
@@ -190,7 +177,7 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
                 animation="wave"
               />
             )}
-            {user ? (
+            {/* {auth ? (
               <Typography
                 variant="body2"
                 component="p"
@@ -198,7 +185,7 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
                 marginTop={1}
                 textAlign="center"
               >
-                {'user?.chucVu'}
+                {auth?.roles}
               </Typography>
             ) : (
               <Skeleton
@@ -209,7 +196,7 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
                 color="inherit"
                 animation="wave"
               />
-            )}
+            )} */}
           </Stack>
           <Divider sx={{background: colors.primary}} />
           {content}
