@@ -3,6 +3,7 @@ using MediatR;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.DTOs.F5seconds;
 using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
@@ -39,7 +40,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.Ge
                 products.TotalCount,
                 products.HasPrevious,
                 products.HasNext,
-                Data = _mapper.Map<ICollection<ProductOutSideResponse>>(products),
+                Data = _mapper.Map<ICollection<F5ProductOutSideResponse>>(products),
             });
         }
     }

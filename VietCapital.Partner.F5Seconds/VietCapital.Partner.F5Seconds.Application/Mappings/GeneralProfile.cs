@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using VietCapital.Partner.F5Seconds.Application.DTOs.F5seconds;
 using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
 using VietCapital.Partner.F5Seconds.Application.Features.Categories.Commands.CreateCategory;
 using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.GetAllCategories;
@@ -31,6 +32,14 @@ namespace VietCapital.Partner.F5Seconds.Application.Mappings
             #region Product
             CreateMap<GetListProductQuery, GetListProductParameter>();
             CreateMap<Product, ProductOutSideResponse>()
+                .ForMember(d => d.Categories, m => m.MapFrom(s => s.CategoryProducts.Select(c => new CategoryInsideResponse()
+                {
+                    Id = c.Category.Id,
+                    Name = c.Category.Name,
+                    Image = c.Category.Image,
+                    Status = c.Category.Status
+                })));
+            CreateMap<Product, F5ProductOutSideResponse>()
                 .ForMember(d => d.Categories, m => m.MapFrom(s => s.CategoryProducts.Select(c => new CategoryInsideResponse()
                 {
                     Id = c.Category.Id,

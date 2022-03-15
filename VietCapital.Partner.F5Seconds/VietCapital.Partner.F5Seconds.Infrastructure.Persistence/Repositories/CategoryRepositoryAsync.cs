@@ -32,8 +32,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
         {
             var categories = _categories
                 .Include(cp => cp.CategoryProducts.Where(p => p.Product.Status))
-                .ThenInclude(p => p.Product)
-                .Where(c => c.Status).AsQueryable();
+                .ThenInclude(p => p.Product).AsQueryable();
             Search(ref categories,parameter.Search);
             return await PagedList<Category>.ToPagedList(categories.OrderByDescending(x => x.Id).AsNoTracking(), parameter.PageNumber, parameter.PageSize);
         }
