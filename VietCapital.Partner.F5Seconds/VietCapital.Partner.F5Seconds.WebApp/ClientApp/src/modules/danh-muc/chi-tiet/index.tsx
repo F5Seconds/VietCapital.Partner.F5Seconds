@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {Button, Grid, Stack} from '@mui/material';
-import React, {useEffect} from 'react';
+import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
+import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useNavigate, useParams} from 'react-router-dom';
 import {CardBase} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
-import {CheckboxField, InputField} from '../../../components/hook-form';
+import {CheckboxField, FilePickerField, InputField} from '../../../components/hook-form';
+import {storage} from '../../../firebase/config';
 import Page from '../../../layouts/Page';
 import {Category} from '../../../models';
 import {categoryService} from '../../../services';
@@ -13,22 +15,23 @@ import {categoryService} from '../../../services';
 const DanhMucSanPhamPage = () => {
   const {id = ''} = useParams();
   const navigate = useNavigate();
-  const form = useForm({
+  const form = useForm<{name: string; image: any; status: boolean}>({
     defaultValues: {
       name: '',
-      image: '',
+      image: new Blob(),
       status: true,
     },
   });
   const {
     setValue,
+    getValues,
     handleSubmit,
     formState: {isSubmitting},
   } = form;
-
+  const [urlUpload, setUrlUpload] = useState('');
   const onSubmit = async (data: Partial<Category>) => {
     if (id) {
-      await categoryService.update(id, {id, ...data});
+      await categoryService.update(id, {id, ...data, image: urlUpload});
     } else {
       const res = await categoryService.create(data);
       if (res) {
@@ -36,6 +39,25 @@ const DanhMucSanPhamPage = () => {
       }
     }
   };
+  const handleUpload = async () => {
+    console.log(getValues('image'));
+    try {
+      const storageRef = ref(storage, `images/categories/category_${Date.now()}.png`);
+      uploadBytes(storageRef, getValues('image'))
+        .then(async snapshot => {
+          console.log('Uploaded a blob or file!');
+          const url = await getDownloadURL(storageRef);
+          setUrlUpload(url);
+          alert('upload thành công');
+        })
+        .catch(error => {
+          alert('đã xảy ra lỗi');
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const getDetail = async () => {
       const res = await categoryService.getOne(id);
@@ -43,6 +65,7 @@ const DanhMucSanPhamPage = () => {
         setValue('name', res.name);
         setValue('image', res.image);
         setValue('status', res.status);
+        setUrlUpload(res.image);
       }
     };
     id && getDetail();
@@ -52,6 +75,9 @@ const DanhMucSanPhamPage = () => {
       <CardBase
         actions={
           <Stack direction="row" justifyContent="flex-end" margin={2}>
+            <Button variant="contained" color="primary" onClick={handleUpload}>
+              Upload
+            </Button>
             <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
               {id ? 'Cập nhật' : 'Thêm danh mục'}
             </Button>
@@ -63,7 +89,7 @@ const DanhMucSanPhamPage = () => {
             <InputField form={form} name="name" label="Tên danh mục" />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
-            <InputField form={form} name="image" label="Hình ảnh" />
+            <FilePickerField form={form} name="image" label="Hình ảnh" />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <CheckboxField form={form} name="status" label="Trạng thái" />
