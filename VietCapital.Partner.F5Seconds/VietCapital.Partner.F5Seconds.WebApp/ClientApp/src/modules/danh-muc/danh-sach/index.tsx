@@ -42,7 +42,9 @@ const DanhSachDanhMucPage = () => {
     {
       field: 'image',
       headerName: 'Hình ảnh',
-      renderCell: (row: Category) => <img src={row.image} width={50} height={50} alt={row.name} />,
+      renderCell: (row: Category) => (
+        <img src={row.image} width={50} height={50} alt={row.name} style={{objectFit: 'contain'}} />
+      ),
     },
     {
       field: 'name',

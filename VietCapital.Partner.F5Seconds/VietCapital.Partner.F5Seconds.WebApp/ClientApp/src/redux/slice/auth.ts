@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import type {RootState} from '../store';
+import jwt_decode from 'jwt-decode';
 
 // Define a type for the slice state
 interface CounterState {
@@ -31,6 +32,7 @@ export const counterSlice = createSlice({
     // Use the PayloadAction type to declare the contents of `action.payload`
     setAuth: (state, action: PayloadAction<CounterState>) => {
       const {email, id, isVerified, jwToken, refreshToken, roles, userName} = action.payload;
+      jwToken && jwt_decode(jwToken);
       state.email = email;
       state.isVerified = isVerified;
       state.jwToken = jwToken;
