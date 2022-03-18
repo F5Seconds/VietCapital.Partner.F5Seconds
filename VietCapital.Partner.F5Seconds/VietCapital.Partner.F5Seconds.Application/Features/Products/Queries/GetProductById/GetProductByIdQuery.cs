@@ -26,7 +26,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.Ge
 
         public async Task<Response<Product>> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
-            var product = await _productRepositoryAsync.GetByIdAsync(request.Id);
+            var product = await _productRepositoryAsync.GetProductByIdAsync(request.Id);
             if (product == null)  throw new ApiException($"Category Not Found.");
             return new Response<Product>(product);
         }

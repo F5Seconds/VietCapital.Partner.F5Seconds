@@ -39,7 +39,12 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repository
             await _dbContext.SaveChangesAsync();
             return entity;
         }
-
+        public async Task<List<T>> AddRangeAsync(List<T> entity)
+        {
+            await _dbContext.Set<T>().AddRangeAsync(entity);
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
         public async Task UpdateAsync(T entity)
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
@@ -57,6 +62,25 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repository
             return await _dbContext
                  .Set<T>()
                  .ToListAsync();
+        }
+
+        public async Task BeginTransactionAsync()
+        {
+            await _dbContext.Database.BeginTransactionAsync();
+        }
+        public async Task RollbackTransactionAsync()
+        {
+            await _dbContext.Database.RollbackTransactionAsync();
+        }
+        public async Task CommitTransactionAsync()
+        {
+            await _dbContext.Database.CommitTransactionAsync();
+        }
+
+        public async Task DeleteRangeAsync(List<T> entity)
+        {
+            _dbContext.Set<T>().RemoveRange(entity);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

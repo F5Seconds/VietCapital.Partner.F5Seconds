@@ -34,6 +34,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
             services.AddTransient<IProductRepositoryAsync, ProductRepositoryAsync>();
             services.AddTransient<ICategoryRepositoryAsync, CategoryRepositoryAsync>();
             services.AddTransient<IVoucherTransactionRepositoryAsync, VoucherTransactionRepositoryAsync>();
+            services.AddTransient<ICategoryProductRepositoryAsync, CategoryProductRepositoryAsync>();
 
             #endregion
         }

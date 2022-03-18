@@ -16,10 +16,13 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
     public class ProductRepositoryAsync : GenericRepositoryAsync<Product>, IProductRepositoryAsync
     {
         private readonly DbSet<Product> _products;
+        private readonly DbSet<CategoryProduct> _categoryProduct;
+
 
         public ProductRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
             _products = dbContext.Set<Product>();
+            _categoryProduct= dbContext.Set<CategoryProduct>();
         }
 
         public async Task<Product> FindByCodeAsync(string code)
@@ -77,6 +80,21 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
                 .ThenInclude(c => c.Category).AsQueryable();
             Search(ref products,parameter.Search);
             return await PagedList<Product>.ToPagedList(products.OrderByDescending(x => x.Id), parameter.PageNumber, parameter.PageSize);
+        }
+
+        public async Task<Product> GetProductByIdAsync(int id)
+        {
+           return await _products
+                .Include(cp => cp.CategoryProducts)
+                .ThenInclude(c => c.Category)
+                .FirstOrDefaultAsync(x => x.Id.Equals(id));
+        }
+
+        public async Task<List<CategoryProduct>> GetProductInCategoryByIdAsync(int id)
+        {
+            return await _categoryProduct.AsNoTracking()
+            .Where(p => p.ProductId.Equals(id))
+            .ToListAsync();
         }
     }
 }
