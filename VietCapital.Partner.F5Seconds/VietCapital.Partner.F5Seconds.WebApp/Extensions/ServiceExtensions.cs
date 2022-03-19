@@ -18,6 +18,14 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
 {
     public static class ServiceExtensions
     {
+        public static void AddRedisCacheExtension(this IServiceCollection services)
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+                options.InstanceName = "VietcapitalInstance";
+            });
+        }
         public static void AddSwaggerExtension(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>

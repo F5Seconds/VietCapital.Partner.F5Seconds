@@ -17,6 +17,14 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
 {
     public static class ServiceExtensions
     {
+        public static void AddRedisCacheExtension(this IServiceCollection services)
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+                options.InstanceName = "VietcapitalInstance";
+            });
+        }
         public static void AddHttpClientExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
             string gateWayUri = configuration["Gateway:Uri"];

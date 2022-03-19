@@ -5,11 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.DTOs.F5seconds;
-using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands;
+using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands.CreateVoucherTransactionCommand;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
@@ -54,7 +53,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
         }
 
         [HttpPost("buy")]
-        public async Task<IActionResult> PostBuyVoucher(CreateTransactionCommand command)
+        public async Task<IActionResult> PostBuyVoucher(CreateVoucherTransactionCommand command)
         {
             var result = await Mediator.Send(command);
             Uri uri = new Uri($"rabbitmq://{rabbitHost}/{rabbitvHost}/{voucherTransactionQueue}");
