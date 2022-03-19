@@ -1,10 +1,9 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Commands.DoiSoatTransactionCommand;
 using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Commands.UpdateVoucherTransactionCommand;
 using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetAllVoucherTransactions;
-using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetDoiSoatTransaction;
 using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetVoucherTransactionById;
 
 namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
@@ -45,10 +44,10 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         }
 
         [AllowAnonymous]
-        [HttpGet("doisoat")]
-        public async Task<IActionResult> DoiSoat([FromQuery] GetDoiSoatTransactionQuery query)
+        [HttpPost("doisoat")]
+        public async Task<IActionResult> DoiSoat(DoiSoatTransCommand command)
         {
-            return Ok(await Mediator.Send(new GetDoiSoatTransactionQuery() { NgayBatDau = query.NgayBatDau,NgayKetThuc = query.NgayKetThuc}));
+            return Ok(await Mediator.Send(command));
         }
     }
 }
