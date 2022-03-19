@@ -72,7 +72,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
            return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
         }
 
-        [HttpGet]
+        [HttpGet("sync")]
         public async Task<IActionResult> SyncProduct()
         {
             var result = await _productRepository.SyncProduct();

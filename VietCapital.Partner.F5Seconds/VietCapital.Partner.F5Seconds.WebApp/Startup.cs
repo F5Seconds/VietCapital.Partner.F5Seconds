@@ -33,6 +33,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             services.AddIdentityInfrastructure(_config,_env);
             services.AddPersistenceInfrastructure(_config,_env.IsProduction());
             services.AddSharedInfrastructure(_config);
+            services.AddRepositoryExtension();
             services.AddSwaggerExtension();
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);

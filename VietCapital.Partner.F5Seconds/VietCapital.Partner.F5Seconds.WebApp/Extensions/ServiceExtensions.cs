@@ -12,6 +12,7 @@ using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
 using VietCapital.Partner.F5Seconds.WebApp.Consumer;
+using VietCapital.Partner.F5Seconds.WebApp.Repositories;
 
 namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
 {
@@ -101,6 +102,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
             {
                 x.AddConsumer<VoucherTransactionConsumer>();
                 x.AddConsumer<ChannelUpdateStateConsumer>();
+                x.AddConsumer<GatewayProductConsumer>();
                 x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
                 {
                     config.Host(rabbitHost, rabbitvHost, h =>
@@ -141,6 +143,11 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
                 // Advertise the API versions supported for the particular endpoint
                 config.ReportApiVersions = true;
             });
+        }
+
+        public static void AddRepositoryExtension(this IServiceCollection services)
+        {
+            services.AddTransient<IProductRepository, ProductRepository>();
         }
     }
 }
