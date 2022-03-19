@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
@@ -286,7 +287,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
 
         public async Task<object> GetAllRoles()
         {
-            var roles = _roleManager.Roles.ToList();
+            var roles = await _roleManager.Roles.ToListAsync();
             return roles;
         }
 

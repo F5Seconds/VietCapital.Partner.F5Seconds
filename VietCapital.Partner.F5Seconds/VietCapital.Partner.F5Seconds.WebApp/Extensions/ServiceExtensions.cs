@@ -8,8 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
@@ -27,7 +25,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Clean Architecture - VietCapital.Partner.F5Seconds.WebApp",
+                    Title = "VietCapital.Partner.F5Seconds.WebApp",
                     Description = "This Api will be responsible for overall data distribution and authorization.",
                     Contact = new OpenApiContact
                     {
@@ -88,6 +86,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
             string rabbitPass = configuration[RabbitMqAppSettingConst.Pass];
             string voucherTransactionQueue = configuration[RabbitMqAppSettingConst.voucherTransactionQueue];
             string channelUpdateStateQueue = configuration[RabbitMqAppSettingConst.channelUpdateStateQueue];
+            string productSyncQueue = configuration[RabbitMqAppSettingConst.productSyncQueue];
             if (env.IsProduction())
             {
                 rabbitHost = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Host);
@@ -96,6 +95,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
                 rabbitPass = Environment.GetEnvironmentVariable(RabbitMqEnvConst.Pass);
                 voucherTransactionQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.voucherTransactionQueue);
                 channelUpdateStateQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.channelUpdateStateQueue);
+                productSyncQueue = Environment.GetEnvironmentVariable(RabbitMqEnvConst.productSyncQueue);
             }
             services.AddMassTransit(x =>
             {
@@ -119,6 +119,12 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
                         ep.PrefetchCount = 16;
                         ep.UseMessageRetry(r => r.Interval(2, 100));
                         ep.ConfigureConsumer<ChannelUpdateStateConsumer>(provider);
+                    });
+                    config.ReceiveEndpoint(productSyncQueue, ep =>
+                    {
+                        ep.PrefetchCount = 16;
+                        ep.UseMessageRetry(r => r.Interval(2, 100));
+                        ep.ConfigureConsumer<GatewayProductConsumer>(provider);
                     });
                 }));
             });

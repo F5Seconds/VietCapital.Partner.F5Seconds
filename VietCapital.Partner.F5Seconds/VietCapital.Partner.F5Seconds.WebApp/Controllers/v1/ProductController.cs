@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -7,6 +8,8 @@ using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.Delet
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.UpdateProductCommand;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetProductById;
+using VietCapital.Partner.F5Seconds.Application.Interfaces;
+using VietCapital.Partner.F5Seconds.WebApp.Repositories;
 
 namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
 {
@@ -14,6 +17,11 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
     [Authorize]
     public class ProductController : BaseApiController
     {
+        private readonly IProductRepository _productRepository;
+        public ProductController(IProductRepository productRepository)
+        {
+            _productRepository = productRepository;
+        }
         // GET: api/<controller>
         [HttpGet]
         [AllowAnonymous]
@@ -62,6 +70,14 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         public async Task<IActionResult> Delete(int id)
         {
            return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SyncProduct()
+        {
+            var result = await _productRepository.SyncProduct();
+            if (result > 0) return Ok(result);
+            return BadRequest();
         }
     }
 }
