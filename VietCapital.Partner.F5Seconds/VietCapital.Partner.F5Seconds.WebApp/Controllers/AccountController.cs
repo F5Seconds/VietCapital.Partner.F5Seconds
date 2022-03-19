@@ -18,7 +18,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-[AllowAnonymous]
+    [AllowAnonymous]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
@@ -47,7 +47,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
         //     var origin = Request.Headers["origin"];
         //     return Ok(await _accountService.ConfirmEmailAsync(userId, code));
         // }
-        
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
         {
@@ -72,8 +72,8 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
             string username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _accountService.InfoUser(username));
         }
-         [HttpGet("getAllUser")]
-        public async Task<IActionResult> GetAllUser()
+        [HttpGet("getAllUser")]
+        public IActionResult GetAllUser()
         {
             return Ok(_accountService.GetAllUser());
         }

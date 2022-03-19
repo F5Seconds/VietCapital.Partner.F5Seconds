@@ -3,7 +3,7 @@ using VietCapital.Partner.F5Seconds.Domain.Common;
 
 namespace VietCapital.Partner.F5Seconds.Domain.Entities
 {
-    public class VoucherTransaction : AuditableBaseEntity
+    public class VoucherTransactionsBvb : AuditableBaseEntity
     {
         public int ProductId { get; set; }
         public string TransactionId { get; set; }

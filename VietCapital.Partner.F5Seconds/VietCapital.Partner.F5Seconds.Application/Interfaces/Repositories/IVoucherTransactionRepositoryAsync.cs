@@ -15,9 +15,9 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories
         Task<IReadOnlyList<VoucherTransaction>> GetVoucherTransactionByFilter(string cif, int state);
         Task<PagedList<VoucherTransaction>> GetPagedVoucherTransByFilter(GetVoucherTransFilterParameter parameter);
         Task<VoucherTransaction> GetVoucherByTransId(string transId);
-
         Task<PagedList<VoucherTransaction>> GetAllPagedListAsync(GetAllVoucherTransactionsParameter parameter);
-
-        
+        Task<List<VoucherTransaction>> DoiSoatGiaoDichKhongKhopF5s(DateTime ngayBatDau, DateTime ngayKetThuc);
+        Task<List<VoucherTransaction>> DoiSoatGiaoDichKhongKhopBvb(DateTime ngayBatDau, DateTime ngayKetThuc);
+        Task<List<VoucherTransaction>> DoiSoatGiaoDichKhop(DateTime ngayBatDau, DateTime ngayKetThuc);
     }
 }

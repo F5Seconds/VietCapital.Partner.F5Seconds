@@ -208,6 +208,64 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                     b.ToTable("VoucherTransactions");
                 });
 
+            modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.VoucherTransactionsBvb", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CustomerPhone")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("ProductPrice")
+                        .HasColumnType("float");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UsedBrand")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UsedBy")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("UsedTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("VoucherCode")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("VoucherTransactionsBvb");
+                });
+
             modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.CategoryProduct", b =>
                 {
                     b.HasOne("VietCapital.Partner.F5Seconds.Domain.Entities.Category", "Category")
@@ -231,6 +289,17 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Migrations
                 {
                     b.HasOne("VietCapital.Partner.F5Seconds.Domain.Entities.Product", "Product")
                         .WithMany("VoucherTransactions")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("VietCapital.Partner.F5Seconds.Domain.Entities.VoucherTransactionsBvb", b =>
+                {
+                    b.HasOne("VietCapital.Partner.F5Seconds.Domain.Entities.Product", "Product")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

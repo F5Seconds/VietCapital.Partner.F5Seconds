@@ -25,8 +25,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(
                 appConStr, serverVersion,
-                //b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-                b => b.MigrationsAssembly("VietCapital.Partner.F5Seconds.WebMvc")));
+                b => b.MigrationsAssembly(isProduction ? typeof(ApplicationDbContext).Assembly.FullName : "VietCapital.Partner.F5Seconds.WebMvc")));
             #region Repositories
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
             services.AddTransient(typeof(IGatewayHttpClientService), typeof(GatewayHttpClientRepository));
@@ -34,6 +33,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
             services.AddTransient<IProductRepositoryAsync, ProductRepositoryAsync>();
             services.AddTransient<ICategoryRepositoryAsync, CategoryRepositoryAsync>();
             services.AddTransient<IVoucherTransactionRepositoryAsync, VoucherTransactionRepositoryAsync>();
+            services.AddTransient<IVoucherTransactionBvbRepositoryAsync, VoucherTransactionBvbRepositoryAsync>();
             services.AddTransient<ICategoryProductRepositoryAsync, CategoryProductRepositoryAsync>();
 
             #endregion

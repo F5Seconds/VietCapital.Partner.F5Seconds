@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,13 +36,18 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.U
         {
             private readonly IProductRepositoryAsync _productRepositoryAsync;
             private readonly ICategoryProductRepositoryAsync _CategoryProductRepositoryAsync;
-
+            private readonly ILogger<UpdateProductCommandHandler> _logger;
             private readonly IMapper _mapper;
-            public UpdateProductCommandHandler(IProductRepositoryAsync productRepositoryAsync,ICategoryProductRepositoryAsync CategoryProductRepositoryAsync, IMapper mapper)
+            public UpdateProductCommandHandler(
+                IProductRepositoryAsync productRepositoryAsync,
+                ICategoryProductRepositoryAsync CategoryProductRepositoryAsync, 
+                IMapper mapper,
+                ILogger<UpdateProductCommandHandler> logger)
             {
                 _productRepositoryAsync = productRepositoryAsync;
                 _CategoryProductRepositoryAsync = CategoryProductRepositoryAsync;
                 _mapper = mapper;
+                _logger = logger;
             }
 
             public async Task<Response<int>> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
@@ -84,6 +90,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.U
                 }
                 catch (Exception e)
                 {
+                    _logger.LogError(e.Message);
                     try
                     {
                         await _productRepositoryAsync.RollbackTransactionAsync();
@@ -92,7 +99,8 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.U
                     }
                     catch (Exception ex)
                     {
-                        throw new ApiException($"Lỗi");
+                        _logger.LogError(ex.Message);
+                        throw new ApiException(ex.Message);
                     }
                 }
             }

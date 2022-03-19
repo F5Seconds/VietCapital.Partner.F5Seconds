@@ -47,10 +47,10 @@ const DanhSachUser = () => {
   const handleCloseDialog = () => setOpenDialog(prev => ({...prev, open: false}));
 
   const columns = [
-    {
-      field: 'id',
-      headerName: 'Mã nhân viên',
-    },
+    // {
+    //   field: 'id',
+    //   headerName: 'Mã nhân viên',
+    // },
     {field: 'name', headerName: 'Tên nhân viên'},
     {field: 'username', headerName: 'Tên đăng nhập'},
 
