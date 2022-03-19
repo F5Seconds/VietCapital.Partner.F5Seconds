@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {Button, Grid, Stack} from '@mui/material';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
+import {useSnackbar} from 'notistack';
 import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useNavigate, useParams} from 'react-router-dom';
 import {CardBase} from '../../../components/base';
+import DialogMediaUpload from '../../../components/base/dialog-media-upload';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {CheckboxField, FilePickerField, InputField} from '../../../components/hook-form';
 import {storage} from '../../../firebase/config';
@@ -15,6 +17,8 @@ import {categoryService} from '../../../services';
 const DanhMucSanPhamPage = () => {
   const {id = ''} = useParams();
   const navigate = useNavigate();
+  const {enqueueSnackbar} = useSnackbar();
+  const [isUploading, setIsUploading] = useState(false);
   const form = useForm<{name: string; image: any; status: boolean}>({
     defaultValues: {
       name: '',
@@ -42,19 +46,20 @@ const DanhMucSanPhamPage = () => {
   const handleUpload = async () => {
     console.log(getValues('image'));
     try {
+      setIsUploading(true);
       const storageRef = ref(storage, `images/categories/category_${Date.now()}.png`);
-      uploadBytes(storageRef, getValues('image'))
-        .then(async snapshot => {
-          console.log('Uploaded a blob or file!');
-          const url = await getDownloadURL(storageRef);
-          setUrlUpload(url);
-          alert('upload thành công');
-        })
-        .catch(error => {
-          alert('đã xảy ra lỗi');
-        });
+      const resUpload = await uploadBytes(storageRef, getValues('image'));
+      console.log('Uploaded a blob or file!', resUpload);
+      const url = await getDownloadURL(storageRef);
+      setUrlUpload(url);
+      alert('upload thành công');
+      enqueueSnackbar('Upload thành công', {variant: 'success'});
     } catch (error) {
+      alert('đã xảy ra lỗi');
       console.log(error);
+      enqueueSnackbar('Đã xảy ra lỗi', {variant: 'error'});
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -78,6 +83,7 @@ const DanhMucSanPhamPage = () => {
             <Button variant="contained" color="primary" onClick={handleUpload}>
               Upload
             </Button>
+            <DialogMediaUpload open title="Upload" />
             <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
               {id ? 'Cập nhật' : 'Thêm danh mục'}
             </Button>
@@ -96,7 +102,7 @@ const DanhMucSanPhamPage = () => {
           </Grid>
         </Grid>
       </CardBase>
-
+      <LoadingOverlay open={isUploading} />
       <LoadingOverlay open={isSubmitting} />
     </Page>
   );

@@ -1,27 +1,25 @@
-import React, {useState} from 'react';
+import {Visibility, VisibilityOff} from '@mui/icons-material';
 import {
-  Card,
-  Typography,
   Button,
+  Card,
   CardActions,
   CardContent,
   Grid,
-  Avatar,
-  Stack,
-  CircularProgress,
-  InputAdornment,
   IconButton,
+  InputAdornment,
+  Stack,
+  Typography,
 } from '@mui/material';
-import {InputField} from '../../../components/hook-form';
-import {useForm} from 'react-hook-form';
-import {accountApi} from '../../../apis';
 import {useSnackbar} from 'notistack';
+import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
 import {Navigate, useNavigate} from 'react-router';
-import {useAppSelector, useAppDispatch} from '../../../redux/hooks';
-import {selectJWT, setAuth} from '../../../redux/slice/auth';
+import {accountApi} from '../../../apis';
 import logo from '../../../assets/images/logo.png';
 import {LoadingOverLay} from '../../../components/base';
-import {Visibility, VisibilityOff} from '@mui/icons-material';
+import {InputField} from '../../../components/hook-form';
+import {useAppDispatch, useAppSelector} from '../../../redux/hooks';
+import {selectJWT, setAuth} from '../../../redux/slice/auth';
 interface defaultValues {
   username: string;
   password: string;
@@ -86,7 +84,7 @@ const LoginPage = () => {
               <InputField
                 form={form}
                 name="username"
-                label="Tên đăng nhập"
+                label="Email"
                 rules={{
                   required: {
                     value: true,

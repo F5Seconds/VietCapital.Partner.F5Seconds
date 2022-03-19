@@ -46,14 +46,15 @@ const ChiTietSanPhamPage = () => {
   } = form;
 
   const onSubmit = async (data: Partial<Product & {categoryProducts?: any}>) => {
-    console.log('====================================');
+    // console.log('====================================');
     console.log(data);
-    console.log('====================================');
+    // console.log('====================================');
     if (id) {
       await productService.update(id, {
         id,
         ...data,
-        categoryProducts: data?.categoryProducts || [],
+        categoryProducts:
+          data.categoryProducts?.map((item: any) => ({categoryId: item.id, productId: id})) || [],
       });
     } else {
       const res = await productService.create(data);
@@ -66,11 +67,7 @@ const ChiTietSanPhamPage = () => {
   const getCategories = useCallback(async (value: any) => {
     setLoadingCategories(true);
     const res = await categoryService.getAll({search: value, pageNumber: 1, pageSize: 100});
-
     if (res) {
-      console.log('====================================');
-      console.log(res);
-      console.log('====================================');
       setCategories(res.data);
     }
     setLoadingCategories(false);
@@ -82,9 +79,12 @@ const ChiTietSanPhamPage = () => {
     const getDetail = async () => {
       const res: any = await productService.getOne(id);
       if (res) {
+        console.log(res, defaultValues);
         Object.keys(defaultValues).forEach((item: any) => {
+          console.log(item);
+
           if (item === 'categoryProducts') {
-            setValue(item, {label: res[item].name, value: res[item].id});
+            res[item] && setValue(item, {label: res[item].name, value: res[item].id});
           } else if (typeof res[item] === 'number') {
             setValue(item, res[item] + '');
           } else {
@@ -110,22 +110,27 @@ const ChiTietSanPhamPage = () => {
           >
             <Grid container sx={{padding: 2}} spacing={2}>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="productCode" label="Mã sản phẩm" />
+                <InputField form={form} name="productCode" label="Mã sản phẩm" disabled />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="type" label="Loại" />
+                <InputField form={form} name="type" label="Loại" disabled />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="price" label="Giá" />
+                <InputField form={form} name="price" label="Giá" disabled />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="brandName" label="Tên thương hiệu" />
+                <InputField form={form} name="brandName" label="Tên thương hiệu" disabled />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="brandLogo" label="Đường dẫn logo thương hiệu" />
+                <InputField
+                  form={form}
+                  name="brandLogo"
+                  label="Đường dẫn logo thương hiệu"
+                  disabled
+                />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="partner" label="Nhà phân phối" />
+                <InputField form={form} name="partner" label="Nhà phân phối" disabled />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
                 <InputField form={form} name="name" label="Tên sản phẩm" />

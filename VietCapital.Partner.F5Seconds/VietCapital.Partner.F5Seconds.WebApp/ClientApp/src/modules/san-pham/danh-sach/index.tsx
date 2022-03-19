@@ -108,14 +108,14 @@ const DanhSachSanPhamPage = () => {
       <Stack direction="row" justifyContent="space-between" marginBottom={2}>
         <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
 
-        <Button
+        {/* <Button
           variant="contained"
           onClick={() => {
             navigate('them-san-pham');
           }}
         >
           Thêm sản phẩm
-        </Button>
+        </Button> */}
       </Stack>
       <DataTable
         columns={columns}
