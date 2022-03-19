@@ -13,6 +13,7 @@ import {
   Card,
   TableRowProps,
 } from '@mui/material';
+import {height} from '@mui/system';
 import React, {FC, useEffect, useLayoutEffect, useRef, useState} from 'react';
 
 interface Column {
@@ -36,14 +37,14 @@ interface Props {
     show: boolean;
   };
   loading?: boolean;
-  onRowClick: (item: any, index: number) => void;
+  onRowClick?: (item: any, index: number) => void;
 }
 
 const DataTable: FC<Props> = props => {
   const {
     columns,
     rows = [],
-    height = 600,
+    height,
     pagination = {
       show: false,
       page: 0,
@@ -81,7 +82,7 @@ const DataTable: FC<Props> = props => {
           <CircularProgress />
         </Stack>
       )}
-      <TableContainer style={{overflowX: 'auto', height, minWidth: 800}}>
+      <TableContainer style={{overflowX: 'auto', height: height ? height : 'auto', minWidth: 800}}>
         <Table sx={{minWidth: 650}} stickyHeader>
           <TableHead>
             <TableRow sx={{backgroundColor: 'white'}}>
@@ -103,7 +104,7 @@ const DataTable: FC<Props> = props => {
                 key={index.toString()}
                 sx={{
                   '&:last-child td, &:last-child th': {border: 0},
-                  cursor: !!onRowClick && 'pointer',
+                  cursor: !!onRowClick ? 'pointer' : '',
                 }}
                 onClick={() => onRowClick && onRowClick(row, index)}
               >

@@ -62,22 +62,22 @@ const DanhSachSanPhamPage = () => {
       field: 'brandName',
       headerName: 'Thương hiệu',
     },
-    {
-      field: '',
-      headerName: '',
-      renderCell: (row: any) => (
-        <IconButton
-          size="medium"
-          color="error"
-          onClick={e => {
-            e.stopPropagation();
-            setIsOpenDelete({visible: true, id: row.id});
-          }}
-        >
-          <Trash color={colors.error} />
-        </IconButton>
-      ),
-    },
+    // {
+    //   field: '',
+    //   headerName: '',
+    //   renderCell: (row: any) => (
+    //     <IconButton
+    //       size="medium"
+    //       color="error"
+    //       onClick={e => {
+    //         e.stopPropagation();
+    //         setIsOpenDelete({visible: true, id: row.id});
+    //       }}
+    //     >
+    //       <Trash color={colors.error} />
+    //     </IconButton>
+    //   ),
+    // },
   ];
 
   const handleDelete = async () => {
@@ -108,14 +108,14 @@ const DanhSachSanPhamPage = () => {
       <Stack direction="row" justifyContent="space-between" marginBottom={2}>
         <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
 
-        <Button
+        {/* <Button
           variant="contained"
           onClick={() => {
             navigate('them-san-pham');
           }}
         >
           Thêm sản phẩm
-        </Button>
+        </Button> */}
       </Stack>
       <DataTable
         columns={columns}
