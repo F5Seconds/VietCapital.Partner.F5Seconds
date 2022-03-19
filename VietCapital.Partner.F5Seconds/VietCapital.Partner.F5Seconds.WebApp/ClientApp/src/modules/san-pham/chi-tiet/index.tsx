@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {Button, Grid, Stack, Typography} from '@mui/material';
+import {Button, Card, Grid, List, ListItem, ListItemText, Stack, Typography} from '@mui/material';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useNavigate, useParams} from 'react-router-dom';
@@ -32,6 +32,7 @@ const defaultValues = {
 };
 const ChiTietSanPhamPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [diaDiems, setDiaDiems] = useState<any[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
 
   const {id = ''} = useParams<string>();
@@ -84,7 +85,10 @@ const ChiTietSanPhamPage = () => {
       if (res) {
         Object.keys(defaultValues).forEach((item: any) => {
           if (item === 'categoryProducts') {
-            setValue(item, {label: res[item].name, value: res[item].id});
+            setValue(
+              item,
+              item?.map((item: any) => ({label: res[item].name, value: res[item].id}))
+            );
           } else if (typeof res[item] === 'number') {
             setValue(item, res[item] + '');
           } else {
@@ -110,22 +114,27 @@ const ChiTietSanPhamPage = () => {
           >
             <Grid container sx={{padding: 2}} spacing={2}>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="productCode" label="Mã sản phẩm" />
+                <InputField disabled form={form} name="productCode" label="Mã sản phẩm" />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="type" label="Loại" />
+                <InputField disabled form={form} name="type" label="Loại" />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="price" label="Giá" />
+                <InputField disabled form={form} name="price" label="Giá" />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="brandName" label="Tên thương hiệu" />
+                <InputField disabled form={form} name="brandName" label="Tên thương hiệu" />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="brandLogo" label="Đường dẫn logo thương hiệu" />
+                <InputField
+                  disabled
+                  form={form}
+                  name="brandLogo"
+                  label="Đường dẫn logo thương hiệu"
+                />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="partner" label="Nhà phân phối" />
+                <InputField disabled form={form} name="partner" label="Nhà phân phối" />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
                 <InputField form={form} name="name" label="Tên sản phẩm" />
@@ -165,6 +174,28 @@ const ChiTietSanPhamPage = () => {
                   Hướng dẫn
                 </Typography>
                 <TextAreaField form={form} name="term" label="" />
+              </Grid>
+              <Grid item xs={12} md={12} lg={12}>
+                <Typography component="div" color="text.secondary">
+                  Cửa hàng áp dụng
+                </Typography>
+                <Card>
+                  <List>
+                    {diaDiems.length === 0 && (
+                      <ListItem>
+                        <ListItemText
+                          sx={{textAlign: 'center'}}
+                          primary="Chưa có cửa hàng áp dụng"
+                        />
+                      </ListItem>
+                    )}
+                    {diaDiems.map(item => (
+                      <ListItem>
+                        <ListItemText primary={item} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Card>
               </Grid>
             </Grid>
           </CardBase>

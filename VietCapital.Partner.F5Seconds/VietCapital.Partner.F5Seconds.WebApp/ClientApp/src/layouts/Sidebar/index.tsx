@@ -22,7 +22,7 @@ import {colors} from '../../theme';
 import NavItem from './NavItem';
 import jwt_decode from 'jwt-decode';
 
-const items = [
+export const items = [
   {
     href: '/quan-ly-user',
     icon: UserOctagon,

@@ -9,6 +9,7 @@ import {Role} from '../../../models';
 import {accountService} from '../../../services';
 import {colors} from '../../../theme';
 import DialogGanQuyen from './dialog-gan-quyen';
+import DialogPhanManHinh from './dialog-phan-man-hinh';
 import DialogRole from './dialog-role';
 
 const PhanQuyenUser = () => {
@@ -24,6 +25,13 @@ const PhanQuyenUser = () => {
     roleName: '',
   });
   const [openDialogGanQuyen, setOpenDialogGanQuyen] = useState<{
+    open: boolean;
+    id?: string | null;
+  }>({
+    open: false,
+    id: null,
+  });
+  const [openDialogPhanManHinh, setOpenDialogPhanManHinh] = useState<{
     open: boolean;
     id?: string | null;
   }>({
@@ -73,6 +81,8 @@ const PhanQuyenUser = () => {
   ];
   const handleCloseDialog = () => setOpenDialog(prev => ({...prev, open: false}));
   const handleCloseDialogGanQuyen = () => setOpenDialogGanQuyen(prev => ({...prev, open: false}));
+  const handleCloseDialogPhanManHinh = () =>
+    setOpenDialogPhanManHinh(prev => ({...prev, open: false}));
   const handleSubmit = async (data: {roleName: string}) => {
     setIsDeleting(true);
     setOpenDialog(prev => ({...prev, open: false}));
@@ -123,7 +133,17 @@ const PhanQuyenUser = () => {
       <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
         <Button
           variant="contained"
-          color="info"
+          color="primary"
+          sx={{marginRight: 1}}
+          onClick={() => {
+            setOpenDialogPhanManHinh(prev => ({open: true}));
+          }}
+        >
+          Phân màn hình
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
           sx={{marginRight: 1}}
           onClick={() => {
             setOpenDialogGanQuyen(prev => ({open: true}));
@@ -164,6 +184,14 @@ const PhanQuyenUser = () => {
           open={openDialogGanQuyen.open}
           id={openDialogGanQuyen.id}
           onClose={handleCloseDialogGanQuyen}
+          onSubmit={handleSubmitGanQuyen}
+        />
+      )}
+      {openDialogPhanManHinh.open && (
+        <DialogPhanManHinh
+          open={openDialogPhanManHinh.open}
+          id={openDialogPhanManHinh.id}
+          onClose={handleCloseDialogPhanManHinh}
           onSubmit={handleSubmitGanQuyen}
         />
       )}

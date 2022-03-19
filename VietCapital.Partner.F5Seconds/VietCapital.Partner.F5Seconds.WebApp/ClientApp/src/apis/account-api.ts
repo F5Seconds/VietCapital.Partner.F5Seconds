@@ -27,6 +27,11 @@ const accountApi = {
     const url = `/account/updateRole?roleId=${roleId}&roleName=${roleName}`;
     return axiosClient.put(url);
   },
+
+  //claim
+  addClaimToRole: (data: any): Promise<any> => axiosClient.post('/account/addClaimToRoles', data),
+  getAllClaimsInRole: (params: any): Promise<any> =>
+    axiosClient.get('/account/GetAllClaimsInRole', {params}),
 };
 
 export default accountApi;

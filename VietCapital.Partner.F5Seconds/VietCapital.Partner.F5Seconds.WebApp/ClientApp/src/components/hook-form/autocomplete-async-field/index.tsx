@@ -64,6 +64,7 @@ const AutocompleteAsyncField: FC<Props> = props => {
           options={items}
           multiple={multiple}
           inputValue={search}
+          filterOptions={options => options?.filter(item => item) || []}
           onInputChange={(e, value, reason) => {
             multiple
               ? reason === 'input' && handleSearchDebounce(value)
