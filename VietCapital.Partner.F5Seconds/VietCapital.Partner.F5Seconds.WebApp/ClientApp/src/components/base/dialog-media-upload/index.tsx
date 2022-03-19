@@ -1,23 +1,21 @@
 import {LoadingButton} from '@mui/lab';
 import {
   Button,
-  ButtonBase,
+  Checkbox,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogProps,
   DialogTitle,
   Divider,
-  Grid,
   Stack,
-  CircularProgress,
-  Checkbox,
 } from '@mui/material';
 import Slide from '@mui/material/Slide';
 import {TransitionProps} from '@mui/material/transitions';
 import {getDownloadURL, listAll, ref, uploadBytes} from 'firebase/storage';
 import {useSnackbar} from 'notistack';
-import React, {FC, useRef, useState} from 'react';
+import React, {FC, useState} from 'react';
 import FileUpload from 'react-material-file-upload';
 import {storage} from '../../../firebase/config';
 
@@ -30,27 +28,26 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-interface Props extends DialogProps {
+interface Props extends Omit<DialogProps, 'onSubmit'> {
   open: boolean;
   onClose?: () => void;
-  textCancel?: string;
-  textAccept?: string;
-  title: string;
   children?: React.ReactNode[] | React.ReactNode;
-  onSubmit?: () => void;
+  onSubmit?: (data: string[]) => void;
+  multiple?: boolean;
+  init?: string | undefined;
 }
 const DialogMediaUpload: FC<Props> = ({
   open,
   onClose,
   onSubmit,
-  textCancel,
-  textAccept,
-  title,
   children,
+  multiple = false,
+  init,
   ...rest
 }) => {
   const storageRef = ref(storage, 'images');
   const [listImage, setListImage] = useState<{url: string; name: string; checked: boolean}[]>([]);
+  const [listChecked, setListChecked] = useState<string[]>(init ? [init] : []);
   const {enqueueSnackbar} = useSnackbar();
   const [files, setFiles] = useState<File[]>([]);
   const [isUpload, setIsUpload] = useState(false);
@@ -69,18 +66,25 @@ const DialogMediaUpload: FC<Props> = ({
       );
       console.log(result);
       if (result.length > 0) {
+        setFiles([]);
         enqueueSnackbar('Upload thành công', {variant: 'success'});
+      } else {
+        enqueueSnackbar('Đã xảy ra lỗi upload', {variant: 'error'});
       }
       setIsSubmitting(false);
     } else {
-      console.log(listImage);
+      console.log(listImage, listChecked);
+      onSubmit && onSubmit(listChecked);
     }
     console.log(files);
   };
   React.useEffect(() => {
+    init && setListChecked([init]);
+  }, [init]);
+  React.useEffect(() => {
     const getAllImage = async () => {
       try {
-        // setIsLoading(true)
+        setIsLoading(true);
         const res = await listAll(storageRef);
         const listImg = await Promise.all(
           res.items.map(async itemRef => {
@@ -126,7 +130,7 @@ const DialogMediaUpload: FC<Props> = ({
       <DialogTitle
         sx={{fontSize: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}
       >
-        {title}
+        Upload
         <Button onClick={() => setIsUpload(prev => !prev)}>
           {isUpload ? 'Chọn hình ảnh' : 'Upload hình ảnh'}
         </Button>
@@ -179,11 +183,23 @@ const DialogMediaUpload: FC<Props> = ({
                 </span>
                 <Checkbox
                   sx={{position: 'absolute', top: -10, left: -10}}
-                  value={item.checked}
+                  checked={listChecked.indexOf(item.url) > -1}
                   onChange={(e, checked) => {
-                    const newList = [...listImage];
-                    newList[index] = {...newList[index], checked: true};
-                    setListImage(newList);
+                    let newList = [...listChecked];
+                    if (multiple) {
+                      if (checked) {
+                        newList.push(item.url);
+                      } else {
+                        newList = newList.filter(url => url !== item.url);
+                      }
+                      setListChecked(newList);
+                    } else {
+                      if (checked) {
+                        setListChecked([item.url]);
+                      } else {
+                        setListChecked([]);
+                      }
+                    }
                   }}
                 />
               </div>
