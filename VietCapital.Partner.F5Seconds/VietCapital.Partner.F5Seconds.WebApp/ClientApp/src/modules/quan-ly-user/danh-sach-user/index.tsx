@@ -141,7 +141,7 @@ const DanhSachUser = () => {
             setFilters(prev => ({...prev, pageNumber: page + 1}));
           },
           onRowsPerPageChange: value => {
-            setFilters(prev => ({...prev, pageSize: value, pageNumber: 0}));
+            setFilters(prev => ({...prev, pageSize: value, pageNumber: 1}));
           },
         }}
       />

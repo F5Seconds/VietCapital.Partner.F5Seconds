@@ -119,7 +119,7 @@ const DanhSachDonHangPage = () => {
           columns={columns.map(item => ({id: item.field, displayName: item.headerName}))}
           datas={datas}
         >
-          <Button variant="contained">Tải file csv</Button>
+          <Button variant="contained">Tải xuống file CSV</Button>
         </CsvDownloader>
       </Stack>
 
@@ -144,7 +144,7 @@ const DanhSachDonHangPage = () => {
             setFilters(prev => ({...prev, pageNumber: page + 1}));
           },
           onRowsPerPageChange: value => {
-            setFilters(prev => ({...prev, pageSize: value, pageNumber: 0}));
+            setFilters(prev => ({...prev, pageSize: value, pageNumber: 1}));
           },
         }}
       />
