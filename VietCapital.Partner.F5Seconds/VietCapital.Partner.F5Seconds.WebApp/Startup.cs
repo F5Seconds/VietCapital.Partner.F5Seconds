@@ -34,7 +34,10 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             services.AddPersistenceInfrastructure(_config,_env.IsProduction());
             services.AddSharedInfrastructure(_config);
             services.AddRepositoryExtension();
-            services.AddSwaggerExtension();
+            if (_env.IsDevelopment())
+            {
+                services.AddSwaggerExtension();
+            }
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);
            services.AddControllers().AddNewtonsoftJson(options =>
@@ -57,6 +60,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwaggerExtension();
             }
             else
             {
@@ -71,7 +75,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseSwaggerExtension();
+            
             app.UseErrorHandlingMiddleware();
             app.UseHealthChecks("/health");
             app.UseEndpoints(endpoints =>

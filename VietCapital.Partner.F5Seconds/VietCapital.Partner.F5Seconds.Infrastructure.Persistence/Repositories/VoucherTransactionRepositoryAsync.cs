@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -63,6 +64,21 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
                 .Include(p => p.Product).AsQueryable();
             Search(ref trans,parameter.Search);
             return await PagedList<VoucherTransaction>.ToPagedList(trans.OrderByDescending(x => x.Id).AsNoTracking(), parameter.PageNumber, parameter.PageSize);
+        }
+
+        public async Task<List<VoucherTransaction>> DoiSoatGiaoDichKhongKhopF5s(DateTime ngayBatDau, DateTime ngayKetThuc)
+        {
+            return await _voucherTransactions.FromSqlRaw($"CALL DoiSoatGiaoDichKhongKhopF5s('{ngayBatDau.ToString("yyyy-MM-dd")}','{ngayKetThuc.ToString("yyyy-MM-dd")}');").ToListAsync();
+        }
+
+        public async Task<List<VoucherTransaction>> DoiSoatGiaoDichKhongKhopBvb(DateTime ngayBatDau, DateTime ngayKetThuc)
+        {
+            return await _voucherTransactions.FromSqlRaw($"CALL DoiSoatGiaoDichKhongKhopBvb('{ngayBatDau.ToString("yyyy-MM-dd")}','{ngayKetThuc.ToString("yyyy-MM-dd")}');").ToListAsync();
+        }
+
+        public async Task<List<VoucherTransaction>> DoiSoatGiaoDichKhop(DateTime ngayBatDau, DateTime ngayKetThuc)
+        {
+            return await _voucherTransactions.FromSqlRaw($"CALL DoiSoatGiaoDichKhop('{ngayBatDau.ToString("yyyy-MM-dd")}','{ngayKetThuc.ToString("yyyy-MM-dd")}');").ToListAsync();
         }
     }
 }
