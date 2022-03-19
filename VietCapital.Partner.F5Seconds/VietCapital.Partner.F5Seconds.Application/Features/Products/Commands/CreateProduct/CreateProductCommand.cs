@@ -28,7 +28,6 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.C
         public string BrandLogo { get; set; }
         public bool Status { get; set; }
         public  List<CategoryProduct> CategoryProducts { get; set; }
-        public  List<VoucherTransaction> VoucherTransactions { get; set; }
         public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Response<int>>
         {
             private readonly IProductRepositoryAsync _productRepositoryAsync;

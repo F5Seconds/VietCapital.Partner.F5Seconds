@@ -60,7 +60,7 @@ export default function ThemeConfig({children}: ThemeConfigProps) {
   const themeOptions = useMemo(
     () => ({
       palette,
-      shape: {borderRadius: 8},
+      shape: {borderRadius: 6},
       typography,
       shadows,
       customShadows,

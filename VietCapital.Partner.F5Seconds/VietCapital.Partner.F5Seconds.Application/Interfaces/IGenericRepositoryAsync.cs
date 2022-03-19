@@ -11,7 +11,12 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces
         Task<IReadOnlyList<T>> GetAllAsync();
         Task<IReadOnlyList<T>> GetPagedReponseAsync(int pageNumber, int pageSize);
         Task<T> AddAsync(T entity);
+        Task<List<T>> AddRangeAsync(List<T> entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
+        Task BeginTransactionAsync();
+        Task RollbackTransactionAsync();
+        Task CommitTransactionAsync();
+        Task DeleteRangeAsync(List<T> entity);
     }
 }

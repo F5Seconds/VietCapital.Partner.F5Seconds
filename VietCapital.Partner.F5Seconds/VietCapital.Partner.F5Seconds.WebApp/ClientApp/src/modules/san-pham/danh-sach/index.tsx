@@ -62,22 +62,22 @@ const DanhSachSanPhamPage = () => {
       field: 'brandName',
       headerName: 'Thương hiệu',
     },
-    {
-      field: '',
-      headerName: '',
-      renderCell: (row: any) => (
-        <IconButton
-          size="medium"
-          color="error"
-          onClick={e => {
-            e.stopPropagation();
-            setIsOpenDelete({visible: true, id: row.id});
-          }}
-        >
-          <Trash color={colors.error} />
-        </IconButton>
-      ),
-    },
+    // {
+    //   field: '',
+    //   headerName: '',
+    //   renderCell: (row: any) => (
+    //     <IconButton
+    //       size="medium"
+    //       color="error"
+    //       onClick={e => {
+    //         e.stopPropagation();
+    //         setIsOpenDelete({visible: true, id: row.id});
+    //       }}
+    //     >
+    //       <Trash color={colors.error} />
+    //     </IconButton>
+    //   ),
+    // },
   ];
 
   const handleDelete = async () => {
