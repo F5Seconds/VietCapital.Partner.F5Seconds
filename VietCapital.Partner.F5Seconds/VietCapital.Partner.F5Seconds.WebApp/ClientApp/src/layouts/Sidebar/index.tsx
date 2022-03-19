@@ -52,6 +52,16 @@ export const items = [
     href: '/don-hang',
     icon: Bag2,
     title: 'Quản lý đơn hàng',
+    children: [
+      {
+        href: '/don-hang/danh-sach-don-hang',
+        title: 'Danh sách đơn hàng',
+      },
+      {
+        href: '/don-hang/doi-soat',
+        title: 'Đối soát',
+      },
+    ],
   },
 
   // {

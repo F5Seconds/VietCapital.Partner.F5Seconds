@@ -1,16 +1,16 @@
-import {Box, Button, Stack} from '@mui/material';
+import {Box, Stack} from '@mui/material';
 import queryString from 'query-string';
-import {useEffect, useState} from 'react';
-import CsvDownloader, {Datas} from 'react-csv-downloader';
+import React, {useEffect, useState} from 'react';
+import CSVReader from 'react-csv-reader';
 import {useLocation} from 'react-router';
 import {DataTable, SearchBar} from '../../../components/base';
 import Page from '../../../layouts/Page';
 import {PaginationParams, QueryParams, Transaction} from '../../../models';
 import transactionService from '../../../services/transaction-service';
 import {state, stateColor} from '../../../utils/state';
-import DialogDetail from './dialog-detail';
+import moment from 'moment';
 
-const DanhSachDonHangPage = () => {
+const DoiSoatPage = () => {
   const location = useLocation();
 
   const queryParams: QueryParams = queryString.parse(location.search);
@@ -90,56 +90,69 @@ const DanhSachDonHangPage = () => {
       if (res) {
         const {currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious} = res;
 
-        setList(res.data);
-        setPagination({currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious});
+        // setList(res.data);
+        // setPagination({currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious});
       }
       setIsLoading(false);
     };
     getList();
   }, [filters]);
 
-  const datas: Datas = list.map(item => ({
-    customerId: item.customerId,
-    productCode: item.product.productCode,
-    productName: item.product.name,
-    productPoint: item.product.point,
-    state: item.state,
-    expiryDate: new Date(item.expiryDate).toLocaleDateString('vi'),
-  }));
-
   return (
-    <Page title="Danh sách đơn hàng">
+    <Page title="Đối soát đơn hàng">
       <Stack direction="row" justifyContent="space-between" marginBottom={2}>
         <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
-        <CsvDownloader
-          filename="myfile"
-          extension=".csv"
-          separator=";"
-          wrapColumnChar=""
-          columns={columns.map(item => ({id: item.field, displayName: item.headerName}))}
-          datas={datas}
-        >
-          <Button variant="contained">Tải file csv</Button>
-        </CsvDownloader>
       </Stack>
+      <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
+        <CSVReader
+          cssClass="csv-reader-input"
+          label="Tải lên file csv"
+          onFileLoaded={(data, fileInfo, originalFile) =>
+            setList(prev => {
+              return data.map(item => {
+                let object: any = {};
 
+                // for(i in columns) {
+
+                // }
+                columns.forEach(i => {
+                  if (i.headerName === 'Ngày hết hạn') {
+                    Object.assign(object, {
+                      [i.field]: moment(item[`${i.headerName}`], 'DD/MM/YYYY').toDate(),
+                    });
+                    return;
+                  }
+                  Object.assign(object, {[i.field]: item[`${i.headerName}`]});
+                });
+                console.log(object);
+                return object;
+              });
+              // .flatMap(item => item);
+            })
+          }
+          onError={error => console.log(error)}
+          parserOptions={{
+            header: true,
+            dynamicTyping: true,
+            skipEmptyLines: true,
+            transformHeader: header => header,
+          }}
+          inputId="ObiWan"
+          inputName="ObiWan"
+        />
+      </Stack>
       <DataTable
         columns={columns}
-        rows={list.map(item => ({
-          ...item,
-          productCode: item.product.productCode,
-          productName: item.product.name,
-          productPoint: item.product.point,
-        }))}
+        rows={list}
         loading={isLoading}
         onRowClick={row => {
           setOpenDialog(prev => ({...prev, open: true, row}));
         }}
         pagination={{
-          show: true,
+          show: false,
           page: pagination.currentPage - 1,
           totalCount: pagination.totalCount,
-          rowsPerPage: pagination.pageSize,
+          rowsPerPage: list.length,
           onPageChange: page => {
             setFilters(prev => ({...prev, pageNumber: page + 1}));
           },
@@ -149,11 +162,11 @@ const DanhSachDonHangPage = () => {
         }}
       />
 
-      {openDialog.open && (
+      {/* {openDialog.open && (
         <DialogDetail open={openDialog.open} row={openDialog.row} onClose={handleCloseDialog} />
-      )}
+      )} */}
     </Page>
   );
 };
 
-export default DanhSachDonHangPage;
+export default DoiSoatPage;
