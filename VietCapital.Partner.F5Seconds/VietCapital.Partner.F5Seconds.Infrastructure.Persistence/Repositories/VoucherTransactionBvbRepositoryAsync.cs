@@ -14,14 +14,16 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
     public class VoucherTransactionBvbRepositoryAsync : GenericRepositoryAsync<VoucherTransactionsBvb>, IVoucherTransactionBvbRepositoryAsync
     {
         private readonly DbSet<VoucherTransactionsBvb> _voucherTransactionBvbs;
+        private readonly ApplicationDbContext _context;
         public VoucherTransactionBvbRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
             _voucherTransactionBvbs = dbContext.Set<VoucherTransactionsBvb>();
+            _context = dbContext;
         }
 
-        public Task TruncateTable()
+        public async Task TruncateTable()
         {
-            throw new NotImplementedException();
+            await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE VoucherTransactionsBvb");
         }
     }
 }
