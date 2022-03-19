@@ -34,7 +34,11 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             services.AddPersistenceInfrastructure(_config,_env.IsProduction());
             services.AddSharedInfrastructure(_config);
             services.AddSwaggerExtension();
-            services.AddControllers();
+            services.AddHttpClientExtension(_config,_env);
+            services.AddRabbitMqExtension(_config,_env);
+           services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddApiVersioningExtension();
             services.AddHealthChecks();
             services.AddControllersWithViews();

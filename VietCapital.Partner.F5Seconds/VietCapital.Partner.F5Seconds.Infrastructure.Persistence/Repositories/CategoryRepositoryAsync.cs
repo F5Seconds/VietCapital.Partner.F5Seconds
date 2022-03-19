@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.GetAllCategories;
 using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.ListCategory;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
@@ -25,6 +26,20 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
                 .Include(cp => cp.CategoryProducts)
                 .ThenInclude(p => p.Product).AsQueryable();
             return await cats.SingleOrDefaultAsync(x => x.Id.Equals(id) && x.Status);
+        }
+
+        public async Task<PagedList<Category>> GetAllPagedListAsync(GetAllCategoriesParameter parameter)
+        {
+            var categories = _categories
+                .Include(cp => cp.CategoryProducts.Where(p => p.Product.Status))
+                .ThenInclude(p => p.Product).AsQueryable();
+            Search(ref categories,parameter.Search);
+            return await PagedList<Category>.ToPagedList(categories.OrderByDescending(x => x.Id).AsNoTracking(), parameter.PageNumber, parameter.PageSize);
+        }
+
+        public async Task<List<Category>> GetByNameAsync(string Name)
+        {
+           return await _categories.Where(c =>c.Name.ToLower().Contains(Name??"".ToLower())).AsNoTracking().ToListAsync();
         }
 
         public async Task<IReadOnlyList<Category>> GetCategoryList()
