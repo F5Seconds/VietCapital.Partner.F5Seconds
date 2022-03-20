@@ -8,6 +8,7 @@ import LoadingOverlay from '../../../components/base/loading-overlay';
 import {
   AutocompleteAsyncField,
   CheckboxField,
+  ImagePickerField,
   InputField,
   TextAreaField,
 } from '../../../components/hook-form';
@@ -93,6 +94,9 @@ const ChiTietSanPhamPage = () => {
               );
           } else if (typeof res[item] === 'number') {
             setValue(item, res[item] + '');
+          } else if (item === 'status') {
+            console.log('status', res[item]);
+            setValue(item, res[item]);
           } else {
             setValue(item, res[item]);
           }
@@ -157,7 +161,8 @@ const ChiTietSanPhamPage = () => {
                 />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="image" label="Đường dẫn ảnh sản phẩm" />
+                {/* <InputField form={form} name="image" label="Đường dẫn ảnh sản phẩm" /> */}
+                <ImagePickerField form={form} name="image" label="Hình ảnh" />
               </Grid>
 
               <Grid item xs={12} md={6} lg={4}>

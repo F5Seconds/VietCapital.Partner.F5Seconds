@@ -1,4 +1,7 @@
-import {Box, Button, Stack} from '@mui/material';
+import {DateRange, LocalizationProvider} from '@mui/lab';
+import AdapterDate from '@mui/lab/AdapterMoment';
+import DateRangePicker from '@mui/lab/DateRangePicker';
+import {Box, Button, Stack, TextField} from '@mui/material';
 import queryString from 'query-string';
 import {useEffect, useState} from 'react';
 import CsvDownloader from 'react-csv-downloader';
@@ -114,10 +117,30 @@ const DanhSachDonHangPage = () => {
     expiryDate: new Date(item.expiryDate).toLocaleDateString('vi'),
   }));
 
+  const [dateRange, setDateRange] = useState<DateRange<Date>>([null, null]);
   return (
     <Page title="Danh sách đơn hàng">
-      <Stack direction="row" justifyContent="space-between" marginBottom={2}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" marginBottom={2}>
         <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
+
+        <LocalizationProvider dateAdapter={AdapterDate} locale={'vi'}>
+          <DateRangePicker
+            startText="Từ ngày"
+            toolbarPlaceholder="dd/mm/yyyy"
+            endText="Đến ngày"
+            value={dateRange}
+            onChange={newValue => {
+              setDateRange(newValue);
+            }}
+            renderInput={(startProps, endProps) => (
+              <>
+                <TextField {...startProps} margin="dense" InputLabelProps={{shrink: true}} />
+                <Box sx={{mx: 2}}> Đến </Box>
+                <TextField {...endProps} margin="dense" InputLabelProps={{shrink: true}} />
+              </>
+            )}
+          />
+        </LocalizationProvider>
         <CsvDownloader
           filename="myfile"
           extension=".csv"

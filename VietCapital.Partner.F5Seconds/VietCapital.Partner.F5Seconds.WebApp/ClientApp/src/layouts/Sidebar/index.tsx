@@ -9,7 +9,16 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import {Bag2, Firstline, KeyboardOpen, Logout, TaskSquare, UserOctagon} from 'iconsax-react';
+import {
+  Bag2,
+  Chart1,
+  Dash,
+  Firstline,
+  KeyboardOpen,
+  Logout,
+  TaskSquare,
+  UserOctagon,
+} from 'iconsax-react';
 import {FC, useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
@@ -23,6 +32,11 @@ import NavItem from './NavItem';
 import jwt_decode from 'jwt-decode';
 
 export const items = [
+  {
+    href: '/tong-quan',
+    icon: Chart1,
+    title: 'Tổng quan',
+  },
   {
     href: '/quan-ly-user',
     icon: UserOctagon,
