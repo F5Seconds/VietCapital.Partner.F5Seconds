@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Domain.Common;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
+using VietCapital.Partner.F5Seconds.Domain.Entities.Views;
 
 namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts
 {
@@ -28,6 +29,9 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts
         public DbSet<CategoryProduct> CategoryProducts { get; set; }
         public DbSet<VoucherTransaction> VoucherTransactions { get; set; }
         public DbSet<VoucherTransactionsBvb> VoucherTransactionsBvb { get; set; }
+        #region View
+        public DbSet<TrangThaiGiaoDichTheoNgayView> TrangThaiGiaoDichTheoNgayViews { get; set; }
+        #endregion
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<AuditableBaseEntity>())

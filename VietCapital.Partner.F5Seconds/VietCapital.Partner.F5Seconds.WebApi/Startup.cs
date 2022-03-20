@@ -29,11 +29,14 @@ namespace VietCapital.Partner.F5Seconds.WebApi
             services.AddPersistenceInfrastructure(_config, _env.IsProduction());
             services.AddSharedInfrastructure(_config);
             services.AddSwaggerExtension();
+            services.AddRedisCacheExtension();
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);
             services.AddControllers().AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
+                options.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+            });
             services.AddApiVersioningExtension();
             services.AddHealthChecks();
             services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();

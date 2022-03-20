@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetDoiSoatTransaction
+namespace VietCapital.Partner.F5Seconds.Application.Features.GiaoDichTheoNgayViews.Queries.GetByStartEndDate
 {
-    public class GetDoiSoatTransactionQueryValidator : AbstractValidator<GetDoiSoatTransactionQuery>
+    public class GetByStartEndDateQueryValildator : AbstractValidator<GetByStartEndDateQuery>
     {
-        public GetDoiSoatTransactionQueryValidator()
+        public GetByStartEndDateQueryValildator()
         {
             RuleFor(p => p.NgayBatDau)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
