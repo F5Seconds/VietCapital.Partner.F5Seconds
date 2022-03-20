@@ -1,7 +1,7 @@
 import {Box, Button, Stack} from '@mui/material';
 import queryString from 'query-string';
 import {useEffect, useState} from 'react';
-import CsvDownloader, {Datas} from 'react-csv-downloader';
+import CsvDownloader from 'react-csv-downloader';
 import {useLocation} from 'react-router';
 import {DataTable, SearchBar} from '../../../components/base';
 import Page from '../../../layouts/Page';
@@ -98,12 +98,19 @@ const DanhSachDonHangPage = () => {
     getList();
   }, [filters]);
 
-  const datas: Datas = list.map(item => ({
+  const datas: {
+    customerId: string;
+    productCode: string;
+    productName: string;
+    productPoint: string;
+    state: string;
+    expiryDate: string;
+  }[] = list.map(item => ({
     customerId: item.customerId,
     productCode: item.product.productCode,
     productName: item.product.name,
-    productPoint: item.product.point,
-    state: item.state,
+    productPoint: item.product.point + '',
+    state: item.state + '',
     expiryDate: new Date(item.expiryDate).toLocaleDateString('vi'),
   }));
 

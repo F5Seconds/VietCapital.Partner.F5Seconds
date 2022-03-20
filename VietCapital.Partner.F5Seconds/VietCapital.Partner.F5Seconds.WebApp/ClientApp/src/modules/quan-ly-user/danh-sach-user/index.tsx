@@ -85,7 +85,7 @@ const DanhSachUser = () => {
       } else {
         enqueueSnackbar(res.message, {variant: 'error'});
       }
-      console.log(res);
+      // console.log(res);
     } catch (error) {
       console.log(error);
       enqueueSnackbar('Đã xảy ra lỗi', {variant: 'error'});
@@ -103,9 +103,9 @@ const DanhSachUser = () => {
   const getList = async () => {
     const res = await accountService.getAllUser();
     if (res) {
-      console.log('====================================');
-      console.log(res.listUser);
-      console.log('====================================');
+      // console.log('====================================');
+      // console.log(res.listUser);
+      // console.log('====================================');
       setListUser(res.listUser);
     }
   };

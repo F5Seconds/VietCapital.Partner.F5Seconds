@@ -126,7 +126,7 @@ const DoiSoatPage = () => {
                     }
                     Object.assign(object, {[i.field]: item[`${i.headerName}`]});
                   });
-                  console.log(object);
+                  // console.log(object);
                   return object;
                 });
                 // .flatMap(item => item);

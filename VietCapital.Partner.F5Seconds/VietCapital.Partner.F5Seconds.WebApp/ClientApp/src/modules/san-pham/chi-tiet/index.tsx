@@ -24,10 +24,12 @@ const defaultValues = {
   partner: '',
   name: '',
   point: undefined,
-  categoryProducts: null,
+  categoryProducts: [],
   image: '',
   thumbnail: '',
   term: '',
+  content: '',
+  status: false,
 };
 const ChiTietSanPhamPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -47,7 +49,7 @@ const ChiTietSanPhamPage = () => {
 
   const onSubmit = async (data: Partial<Product & {categoryProducts?: any}>) => {
     // console.log('====================================');
-    console.log(data);
+    // console.log(data);
     // console.log('====================================');
     if (id) {
       await productService.update(id, {
@@ -79,15 +81,15 @@ const ChiTietSanPhamPage = () => {
     const getDetail = async () => {
       const res: any = await productService.getOne(id);
       if (res) {
-        console.log(res, defaultValues);
         Object.keys(defaultValues).forEach((item: any) => {
-          console.log(item);
-
           if (item === 'categoryProducts') {
             res[item] &&
               setValue(
                 item,
-                item?.map((item: any) => ({label: res[item].name, value: res[item].id}))
+                res[item]?.map((item: any) => ({
+                  label: item?.category?.name,
+                  value: item?.category?.id,
+                }))
               );
           } else if (typeof res[item] === 'number') {
             setValue(item, res[item] + '');
@@ -99,6 +101,7 @@ const ChiTietSanPhamPage = () => {
     };
     id && getDetail();
   }, [id]);
+
   return (
     <Page title={id ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}>
       <Grid container spacing={2}>
