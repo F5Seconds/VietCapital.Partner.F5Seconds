@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.DTOs.F5seconds;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Filters;
@@ -84,17 +85,11 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-           return await _products
+            return await _products
                 .Include(cp => cp.CategoryProducts)
                 .ThenInclude(c => c.Category)
-                .FirstOrDefaultAsync(x => x.Id.Equals(id));
-        }
-
-        public async Task<List<CategoryProduct>> GetProductInCategoryByIdAsync(int id)
-        {
-            return await _categoryProduct.AsNoTracking()
-            .Where(p => p.ProductId.Equals(id))
-            .ToListAsync();
+                .Where(p =>p.Id.Equals(id))
+                .FirstOrDefaultAsync();
         }
     }
 }
