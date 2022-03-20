@@ -37,7 +37,7 @@ const productService = {
   },
   update: async (
     id: number | string,
-    data: Partial<Product & {categoryProducts?: Category[]}>
+    data: Partial<Product & {categoryProducts?: any[]}>
   ): Promise<number | undefined> => {
     try {
       const res = await productApi.update(id, data);
