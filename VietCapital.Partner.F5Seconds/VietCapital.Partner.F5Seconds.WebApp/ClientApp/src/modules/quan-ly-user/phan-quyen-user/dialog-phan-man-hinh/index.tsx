@@ -1,9 +1,8 @@
 import {Button, CircularProgress, Grid, IconButton, Stack} from '@mui/material';
-import {Box} from '@mui/system';
-import {Trash} from 'iconsax-react';
-import React, {FC, useEffect, useState} from 'react';
+import {RowHorizontal, Trash} from 'iconsax-react';
+import {FC, useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {DataTable, DialogBase} from '../../../../components/base';
+import {DataTable, DialogBase, DialogConfirm} from '../../../../components/base';
 import LoadingOverlay from '../../../../components/base/loading-overlay';
 import {AutocompleteAsyncField, InputField} from '../../../../components/hook-form';
 import {items} from '../../../../layouts/Sidebar';
@@ -18,12 +17,11 @@ interface Props {
   onSubmit: (data: any) => void;
 }
 
-const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
+const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose}) => {
   const form = useForm({
     defaultValues: {
       role: null,
-      user: [],
-      claimName: null,
+      claim: null,
       value: '',
     },
   });
@@ -37,7 +35,12 @@ const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose, onSubmit}) => 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingRole, setIsLoadingRole] = useState(true);
   const [listRole, setListRole] = useState<Role[]>([]);
-  const [listUsers, setListUsers] = useState([]);
+  const [listClaim, setListClaim] = useState<any>([]);
+  const [isOpenDelete, setIsOpenDelete] = useState<{visible: boolean; row: any}>({
+    visible: false,
+    row: null,
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const getListRole = async () => {
@@ -47,43 +50,43 @@ const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose, onSubmit}) => 
       }
       setIsLoadingRole(false);
     };
-
-    const getUsers = async () => {
-      const res = await accountService.getAllUser();
-      if (res) {
-        setListUsers(res?.listUser);
-      }
-    };
-
     getListRole();
-    getUsers();
   }, []);
 
   const role: any = watch('role');
 
+  const getClaim = () => {
+    accountService.getAllClaimsInRole({roleName: role?.name}).then(res => {
+      console.log('====================================');
+      // console.log(res);
+      console.log('====================================');
+      const list = res?.clams;
+      list &&
+        setListClaim(
+          list.map(item => {
+            const claim = items.find(i => i.href === item)?.title;
+            return {
+              claim,
+              value: item,
+            };
+          })
+        );
+    });
+  };
   useEffect(() => {
     if (role) {
-      accountService.getAllUsersByRole({roleId: role?.id}).then(res => {
-        console.log('====================================');
-        // console.log(res);
-        console.log('====================================');
-        const list = res?.listUser;
-        const users = listUsers
-          ?.filter((item: any) => list?.includes(item?.username))
-          .map((item: any) => ({...item, label: item?.name, value: item?.email}));
-
-        setValue<any>('user', users);
-      });
+      getClaim();
     }
   }, [role]);
-  const claim: any = watch('claimName');
+
+  const claim: any = watch('claim');
   useEffect(() => {
     setValue<any>('value', claim?.href);
   }, [claim]);
 
   const columns = [
     {
-      field: 'claimName',
+      field: 'claim',
       headerName: 'Màn hình',
     },
     {
@@ -98,7 +101,7 @@ const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose, onSubmit}) => 
           color="error"
           onClick={e => {
             e.stopPropagation();
-            // setIsOpenDelete({visible: true, id: row.id});
+            setIsOpenDelete({visible: true, row});
           }}
         >
           <Trash fontSize={20} color={colors.error} />
@@ -106,13 +109,32 @@ const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose, onSubmit}) => 
       ),
     },
   ];
+
+  const onSubmit = (data: any) => {
+    accountService.addClaimToRole(data).then(() => getClaim());
+  };
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    setIsOpenDelete(prev => ({...prev, visible: false}));
+    const res = await accountService.removeClaimToRole({
+      ...isOpenDelete.row,
+      roleName: role?.name,
+      claimName: 'screens',
+    });
+    if (res) {
+      getClaim();
+    }
+    setIsDeleting(false);
+  };
+
   return (
     <DialogBase
       open={open}
       title="Phân màn hình"
       onClose={onClose}
       textPositive="Phân màn hình"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={() => {}}
+      hasSubmitButton={false}
     >
       {isLoading ? (
         <Stack direction="row" justifyContent="center">
@@ -138,7 +160,7 @@ const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose, onSubmit}) => 
           <Grid item xs={12}>
             <AutocompleteAsyncField
               form={form}
-              name="claimName"
+              name="claim"
               label="Tên màn hình *"
               items={items?.map(item => ({...item, label: item.title, value: item.href}))}
               rules={{
@@ -166,13 +188,15 @@ const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose, onSubmit}) => 
           </Grid>
           <Grid item xs={12}>
             <Stack direction="row" justifyContent="flex-end">
-              <Button>Phân màn hình</Button>
+              <Button variant="contained" onClick={handleSubmit(onSubmit)}>
+                Phân màn hình
+              </Button>
             </Stack>
           </Grid>
           <Grid item xs={12}>
             <DataTable
               columns={columns}
-              rows={[]}
+              rows={listClaim}
               loading={false}
               pagination={{
                 show: false,
@@ -186,6 +210,13 @@ const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose, onSubmit}) => 
           </Grid>
         </Grid>
       )}
+      <DialogConfirm
+        open={isOpenDelete.visible}
+        title="Xác nhận"
+        content="Bạn có chắc chắn muốn xóa?"
+        onClose={() => setIsOpenDelete(prev => ({...prev, visible: false}))}
+        onAgree={handleDelete}
+      />
       <LoadingOverlay open={isSubmitting} />
     </DialogBase>
   );

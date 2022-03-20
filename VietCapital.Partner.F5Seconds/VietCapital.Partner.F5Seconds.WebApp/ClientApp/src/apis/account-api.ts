@@ -1,6 +1,6 @@
-import {Account, ResponseData, Role} from '../models';
+import {Account, Role} from '../models';
 import axiosClient from './axiosClient';
-
+import queryString from 'query-string';
 const accountApi = {
   login: (email: string, password: string): Promise<any> =>
     axiosClient.post('/account/authenticate', {
@@ -29,9 +29,12 @@ const accountApi = {
   },
 
   //claim
-  addClaimToRole: (data: any): Promise<any> => axiosClient.post('/account/addClaimToRoles', data),
-  getAllClaimsInRole: (params: any): Promise<any> =>
+  addClaimToRole: (params: {roleName: string}): Promise<any> =>
+    axiosClient.post(`/account/addClaimToRoles?${queryString.stringify(params)}`),
+  getAllClaimsInRole: (params: any): Promise<{clams: string[]}> =>
     axiosClient.get('/account/GetAllClaimsInRole', {params}),
+  removeClaimToRole: (params: {roleName: string; claimName: string; value: string}): Promise<any> =>
+    axiosClient.delete(`/account/removeClaimToRole?${queryString.stringify(params)}`),
 };
 
 export default accountApi;

@@ -24,8 +24,9 @@ const DanhSachDonHangPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [list, setList] = useState<Transaction[]>([]);
+  const [dateRange, setDateRange] = useState<DateRange<Date>>([null, null]);
 
-  const [filters, setFilters] = useState<QueryParams>({
+  const [filters, setFilters] = useState<QueryParams & {from?: Date; to?: Date}>({
     ...queryParams,
     search: queryParams.search ?? '',
     pageNumber: queryParams.pageNumber ?? 1,
@@ -62,6 +63,11 @@ const DanhSachDonHangPage = () => {
       field: 'state',
       headerName: 'Trạng thái',
       renderCell: (row: any) => <Box sx={{color: stateColor(row.state)}}>{state(row.state)}</Box>,
+    },
+    {
+      field: 'created',
+      headerName: 'Ngày giao dịch',
+      renderCell: (row: any) => new Date(row.expiryDate).toLocaleDateString('vi'),
     },
     {
       field: 'expiryDate',
@@ -101,23 +107,38 @@ const DanhSachDonHangPage = () => {
     getList();
   }, [filters]);
 
+  useEffect(() => {
+    dateRange[0] &&
+      dateRange[1] &&
+      setFilters(prev => ({
+        ...prev,
+        from: dateRange[0] || undefined,
+        to: dateRange[1] || undefined,
+      }));
+  }, [dateRange]);
+
   const datas: {
+    transactionId: string;
     customerId: string;
-    productCode: string;
+    productId: string;
     productName: string;
     productPoint: string;
+    voucherCode: string;
     state: string;
+    created: string;
     expiryDate: string;
   }[] = list.map(item => ({
+    transactionId: item.transactionId + '',
     customerId: item.customerId,
-    productCode: item.product.productCode,
+    productId: item.productId + '',
     productName: item.product.name,
     productPoint: item.product.point + '',
+    voucherCode: item.voucherCode + '',
     state: item.state + '',
+    created: new Date(item.expiryDate).toLocaleDateString('vi'),
     expiryDate: new Date(item.expiryDate).toLocaleDateString('vi'),
   }));
 
-  const [dateRange, setDateRange] = useState<DateRange<Date>>([null, null]);
   return (
     <Page title="Danh sách đơn hàng">
       <Stack direction="row" alignItems="center" justifyContent="space-between" marginBottom={2}>
@@ -129,6 +150,7 @@ const DanhSachDonHangPage = () => {
             toolbarPlaceholder="dd/mm/yyyy"
             endText="Đến ngày"
             value={dateRange}
+            inputFormat={'DD/MM/YYYY'}
             onChange={newValue => {
               setDateRange(newValue);
             }}

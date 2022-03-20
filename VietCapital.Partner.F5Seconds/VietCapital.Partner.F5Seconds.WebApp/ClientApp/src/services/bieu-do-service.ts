@@ -1,6 +1,6 @@
 import moment from 'moment';
 import bieuDoApi from '../apis/bieu-do-api';
-import {BieuDo, QueryParams} from '../models';
+import {BieuDo} from '../models';
 
 const bieuDoService = {
   getGDTheoNgay: async (params: {

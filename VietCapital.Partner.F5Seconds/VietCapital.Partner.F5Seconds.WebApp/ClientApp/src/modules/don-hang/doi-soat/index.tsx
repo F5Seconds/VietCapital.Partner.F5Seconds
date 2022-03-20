@@ -10,6 +10,7 @@ import {useLocation} from 'react-router';
 import {DataTable, SearchBar} from '../../../components/base';
 import Page from '../../../layouts/Page';
 import {PaginationParams, QueryParams, Transaction} from '../../../models';
+import {transactionService} from '../../../services';
 import {state, stateColor} from '../../../utils/state';
 
 const Input = styled('input')({
@@ -26,7 +27,16 @@ const DoiSoatPage = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const [list, setList] = useState<Transaction[]>([]);
+  const [listUpload, setListUpload] = useState<Transaction[]>([]);
+  const [data, setData] = useState<{
+    doiSoatKhop: any[];
+    doiSoatKhongKhopF5s: any[];
+    doiSoatKhongKhopBvb: any[];
+  }>({
+    doiSoatKhop: [],
+    doiSoatKhongKhopF5s: [],
+    doiSoatKhongKhopBvb: [],
+  });
 
   const [filters, setFilters] = useState<QueryParams>({
     ...queryParams,
@@ -93,6 +103,27 @@ const DoiSoatPage = () => {
     setTab(newValue);
   };
 
+  const handleDoiSoat = () => {
+    if (listUpload.length && dateRange[0] && dateRange[1]) {
+      transactionService
+        .doiSoat({
+          ngayBatDau: moment(dateRange[0]).format('YYYY-MM-DD'),
+          ngayKetThuc: moment(dateRange[1]).format('YYYY-MM-DD'),
+          doiSoatTrans: listUpload.map(item => ({
+            transactionId: item.transactionId,
+            productId: item.productId,
+            voucherCode: item.voucherCode,
+            state: item.state,
+            customerId: item.customerId,
+            created: item.created,
+          })),
+        })
+        .then(res => {
+          if (res) setData(res);
+        });
+    }
+  };
+
   const renderTable = (list: any) => {
     return (
       <>
@@ -146,11 +177,11 @@ const DoiSoatPage = () => {
             <CSVReader
               cssClass="csv-reader-input"
               onFileLoaded={(data, fileInfo, originalFile) =>
-                setList(prev => {
+                setListUpload(prev => {
                   return data.map(item => {
                     let object: any = {};
                     columns.forEach(i => {
-                      if (i.headerName === 'Ngày hết hạn') {
+                      if (i.headerName === 'Ngày hết hạn' || i.headerName === 'Ngày giao dịch') {
                         Object.assign(object, {
                           [i.field]: moment(item[`${i.headerName}`], 'DD/MM/YYYY').toDate(),
                         });
@@ -174,12 +205,16 @@ const DoiSoatPage = () => {
             />
             <Button
               component="span"
-              variant="contained"
-              startIcon={list.length ? <TickCircle size="16" variant="Bulk" /> : null}
+              variant="outlined"
+              startIcon={listUpload.length ? <TickCircle size="16" variant="Bulk" /> : null}
             >
               Tải lên file CSV
             </Button>
           </label>
+
+          <Button variant="contained" onClick={handleDoiSoat}>
+            Đối soát{' '}
+          </Button>
         </Stack>
       </Card>
 
@@ -191,13 +226,13 @@ const DoiSoatPage = () => {
         </Tabs>
       </Box>
       <TabPanel value={tab} index={0}>
-        {renderTable(list)}
+        {renderTable(data.doiSoatKhop)}
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        Đối soát không khớp F5S
+        {renderTable(data.doiSoatKhongKhopF5s)}
       </TabPanel>
       <TabPanel value={tab} index={2}>
-        Đối soát không khớp Bản Việt
+        {renderTable(data.doiSoatKhongKhopBvb)}
       </TabPanel>
 
       {/* {openDialog.open && (
