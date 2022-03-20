@@ -80,7 +80,6 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Products.Commands.U
                         product.BrandName = command.BrandName;
                         product.BrandLogo = command.BrandLogo;
                         product.Status = command.Status;
-                        // product.CategoryProducts = command.CategoryProducts;
                         await _productRepositoryAsync.UpdateAsync(product);
                         await _CategoryProductRepositoryAsync.AddRangeAsync(command.CategoryProducts);
 

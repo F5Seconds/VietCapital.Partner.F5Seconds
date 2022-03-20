@@ -24,10 +24,12 @@ const defaultValues = {
   partner: '',
   name: '',
   point: undefined,
-  categoryProducts: null,
+  categories: null,
   image: '',
   thumbnail: '',
+  content: '',
   term: '',
+  status:false
 };
 const ChiTietSanPhamPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -54,7 +56,7 @@ const ChiTietSanPhamPage = () => {
         id,
         ...data,
         categoryProducts:
-          data.categoryProducts?.map((item: any) => ({categoryId: item.id, productId: id})) || [],
+          data.categories?.map((item: any) => ({categoryId: item.value, productId: id})) || [],
       });
     } else {
       const res = await productService.create(data);
@@ -81,13 +83,13 @@ const ChiTietSanPhamPage = () => {
       if (res) {
         console.log(res, defaultValues);
         Object.keys(defaultValues).forEach((item: any) => {
-          console.log(item);
+          
+          if (item === 'categories') {
 
-          if (item === 'categoryProducts') {
-            res[item] &&
+            res.categories &&
               setValue(
-                item,
-                item?.map((item: any) => ({label: res[item].name, value: res[item].id}))
+                'categories',
+                res.categories?.map((i: any) => ({label: i.name, value: i.id}))
               );
           } else if (typeof res[item] === 'number') {
             setValue(item, res[item] + '');
@@ -149,7 +151,7 @@ const ChiTietSanPhamPage = () => {
                   items={categories?.map(item => ({label: item?.name, value: item?.id, ...item}))}
                   onSubmit={value => getCategories(value)}
                   form={form}
-                  name="categoryProducts"
+                  name="categories"
                   label="Danh mục"
                 />
               </Grid>
