@@ -12,11 +12,21 @@ using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
 using VietCapital.Partner.F5Seconds.WebApi.Consumer;
+using VietCapital.Partner.F5Seconds.WebApi.HostedService;
 
 namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
 {
     public static class ServiceExtensions
     {
+        public static void AddHostedService(this IServiceCollection services)
+        {
+            services.AddHostedService<RedisCacheHostedService>();
+        }
+        public static void AddResponseCachingExtension(this IServiceCollection services)
+        {
+            services.AddResponseCaching();
+        }
+
         public static void AddRedisCacheExtension(this IServiceCollection services)
         {
             services.AddStackExchangeRedisCache(options =>
