@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,6 +45,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc
             services.AddHostedService();
             services.AddAuthorizeCookieExtension();
             services.AddSession();
+            services.AddMvcCore().AddMetricsCore();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddHttpClientExtension(_config,_env);

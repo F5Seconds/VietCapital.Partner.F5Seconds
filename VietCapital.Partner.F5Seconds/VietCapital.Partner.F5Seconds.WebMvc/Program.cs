@@ -1,3 +1,4 @@
+using App.Metrics.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,9 @@ namespace VietCapital.Partner.F5Seconds.WebMvc
     {
         public static void Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            var host = CreateHostBuilder(args)
+                .UseMetrics()
+                .Build();
             using (var scope = host.Services.CreateScope())
             {
                 var applicationDb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
