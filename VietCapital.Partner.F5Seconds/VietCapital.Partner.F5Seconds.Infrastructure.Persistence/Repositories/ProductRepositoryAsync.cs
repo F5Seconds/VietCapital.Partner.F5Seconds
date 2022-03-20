@@ -85,11 +85,17 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            return await _products
+           return await _products
                 .Include(cp => cp.CategoryProducts)
                 .ThenInclude(c => c.Category)
-                .Where(p =>p.Id.Equals(id))
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(x => x.Id.Equals(id));
+        }
+
+        public async Task<List<CategoryProduct>> GetProductInCategoryByIdAsync(int id)
+        {
+            return await _categoryProduct.AsNoTracking()
+            .Where(p => p.ProductId.Equals(id))
+            .ToListAsync();
         }
     }
 }
