@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using VietCapital.Partner.F5Seconds.Domain.Common;
 
-namespace VietCapital.Partner.F5Seconds.Application.DTOs.Gateway
+namespace VietCapital.Partner.F5Seconds.Domain.Entities
 {
-    public class TransactionOutSideResponse
+    public class VoucherTransactionDTO : AuditableBaseEntity
     {
         public int ProductId { get; set; }
         public string TransactionId { get; set; }
@@ -15,8 +14,10 @@ namespace VietCapital.Partner.F5Seconds.Application.DTOs.Gateway
         public int State { get; set; } = 1;
         public DateTime ExpiryDate { get; set; }
         public DateTime? UsedTime { get; set; }
-        public DateTime? Created { get; set; }
         public string UsedBrand { get; set; }
-        public virtual ProductInSideResponse Product { get; set; }
+        public DateTime? Created { get; set; }
+
+        // public string  UsedBy { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

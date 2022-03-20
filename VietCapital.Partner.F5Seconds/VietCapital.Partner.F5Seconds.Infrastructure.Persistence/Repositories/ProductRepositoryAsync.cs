@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Application.DTOs.F5seconds;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Filters;
@@ -77,6 +78,15 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
                 .ThenInclude(c => c.Category).AsQueryable();
             Search(ref products,parameter.Search);
             return await PagedList<Product>.ToPagedList(products.OrderByDescending(x => x.Id), parameter.PageNumber, parameter.PageSize);
+        }
+
+        public async Task<Product> GetProductByIdAsync(int id)
+        {
+            return await _products
+                .Include(cp => cp.CategoryProducts)
+                .ThenInclude(c => c.Category)
+                .Where(p =>p.Id.Equals(id))
+                .FirstOrDefaultAsync();
         }
     }
 }

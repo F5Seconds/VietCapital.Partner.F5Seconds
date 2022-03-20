@@ -19,7 +19,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         public async Task<IActionResult> Get([FromQuery] GetAllVoucherTransactionsParameter filter)
         {
 
-            return Ok(await Mediator.Send(new GetAllVoucherTransactionsQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber ,Search = filter.Search}));
+            return Ok(await Mediator.Send(new GetAllVoucherTransactionsQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber ,Search = filter.Search,From = filter.From,To = filter.To}));
         }
         // GET api/<controller>/5
         [HttpGet("{id}")]
