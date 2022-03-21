@@ -9,6 +9,11 @@ const accountApi = {
     }),
   register: (data: Account): Promise<any> => axiosClient.post('/account/register', data),
   getAllUser: (): Promise<any> => axiosClient.get('/account/getAllUser'),
+  getUserById: (id: string | number | null): Promise<any> =>
+    axiosClient.get(`/account/getUserById?id=${id}`),
+  updateUser: (id: string | number | null, data: Partial<Account>): Promise<any> =>
+    axiosClient.put(`/account/updateUser?id=${id}`, data),
+
   getAllUsersByRole: (params: any): Promise<any> =>
     axiosClient.get('/account/getAllUsersByRole', {params}),
   addUsersToRole: (params: any, data: any): Promise<any> =>

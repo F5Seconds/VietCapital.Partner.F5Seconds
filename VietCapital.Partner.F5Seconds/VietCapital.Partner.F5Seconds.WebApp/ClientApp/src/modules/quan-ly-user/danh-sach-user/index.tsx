@@ -27,7 +27,7 @@ const DanhSachUser = () => {
   const {height} = useWindowDimensions();
   const [listUser, setListUser] = useState([]);
   const [isOpenDelete, setIsOpenDelete] = useState({visible: false, id: ''});
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [updating, setIsUpdating] = useState(false);
   const [filters, setFilters] = React.useState({
     ...queryParams,
     search: queryParams.search,
@@ -78,34 +78,25 @@ const DanhSachUser = () => {
 
   const handleSubmitUser = async (data: Account) => {
     setOpenDialog(prev => ({...prev, open: false}));
-    try {
-      const res = await accountApi.register(data);
-      if (res.succeeded) {
-        enqueueSnackbar('Thêm mới user thành công', {variant: 'success'});
-      } else {
-        enqueueSnackbar(res.message, {variant: 'error'});
-      }
-      // console.log(res);
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar('Đã xảy ra lỗi', {variant: 'error'});
-    }
+    setIsUpdating(true);
+
+    openDialog.id
+      ? await accountService.updateUser(openDialog.id, data)
+      : await accountService.register(data);
+    setIsUpdating(false);
   };
   const handleDelete = async () => {
-    setIsDeleting(true);
+    setIsUpdating(true);
     setIsOpenDelete(prev => ({...prev, visible: false}));
     const res = await accountService.deleteRole(isOpenDelete.id);
     if (res) {
       getList();
     }
-    setIsDeleting(false);
+    setIsUpdating(false);
   };
   const getList = async () => {
     const res = await accountService.getAllUser();
     if (res) {
-      // console.log('====================================');
-      // console.log(res.listUser);
-      // console.log('====================================');
       setListUser(res.listUser);
     }
   };
@@ -161,7 +152,7 @@ const DanhSachUser = () => {
         onClose={() => setIsOpenDelete(prev => ({...prev, visible: false}))}
         onAgree={handleDelete}
       />
-      <LoadingOverlay open={isDeleting} />
+      <LoadingOverlay open={updating} />
     </Page>
   );
 };
