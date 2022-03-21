@@ -12,6 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using VietCapital.Partner.F5Seconds.Infrastructure.Identity.Models;
 
 namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
 {
@@ -153,6 +154,19 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
         {
             return Ok(await _accountService.GetAllClaimsInRole(roleName));
         }
+        [HttpGet("GetUserById")]
+        // [Authorize(Policy = "adminPolicy")]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            return Ok(await _accountService.GetUserById(id));
+        }
+        [HttpPut("UpdateUser")]
+        // [Authorize(Policy = "adminPolicy")]
+        public async Task<IActionResult> UpdateUser(string id,User data )
+        {
+            return Ok(await _accountService.UpdateUser(id,data));
+        }
+        
         // private string GenerateJsonWebToken(AuthenRequest userInfo)
         // {
         //     var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));

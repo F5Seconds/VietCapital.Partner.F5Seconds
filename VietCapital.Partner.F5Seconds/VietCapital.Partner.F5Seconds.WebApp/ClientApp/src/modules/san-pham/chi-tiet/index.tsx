@@ -50,7 +50,7 @@ const ChiTietSanPhamPage = () => {
 
   const onSubmit = async (data: Partial<Product & {categoryProducts?: any}>) => {
     // console.log('====================================');
-    // console.log(data);
+    console.log(data);
     // console.log('====================================');
     if (id) {
       await productService.update(id, {
@@ -163,7 +163,11 @@ const ChiTietSanPhamPage = () => {
               </Grid>
 
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="thumbnail" label="Đường dẫn ảnh sản phẩm thu nhỏ" />
+                <ImagePickerField
+                  form={form}
+                  name="thumbnail"
+                  label="Đường dẫn ảnh sản phẩm thu nhỏ"
+                />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
                 <CheckboxField form={form} name="status" label="Trạng thái" />
