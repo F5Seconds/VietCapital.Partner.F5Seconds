@@ -106,7 +106,7 @@ const PhanQuyenUser = () => {
     if (res) {
       getAllRole();
     }
-    console.log(data);
+    // console.log(data);
     setIsDeleting(false);
   };
   const handleDelete = async () => {

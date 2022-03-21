@@ -13,6 +13,7 @@ using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAll
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Commands.CreateVoucherTransactionCommand;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
+using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Commands.DoiSoatTransactionCommand;
 using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetAllVoucherTransactions;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
 
@@ -73,6 +74,8 @@ namespace VietCapital.Partner.F5Seconds.Application.Mappings
             CreateMap<CreateVoucherTransactionCommand, VoucherTransaction>();
             CreateMap<VoucherTransaction, GetAllVoucherTransactionsViewModel>().ReverseMap();
             CreateMap<GetAllVoucherTransactionsQuery, GetAllVoucherTransactionsParameter>();
+            CreateMap<DoiSoatTransInput, VoucherTransactionsBvb>();
+            CreateMap<VoucherTransaction, DoiSoatTransOutput>();
             #endregion
 
             #region Category

@@ -9,7 +9,7 @@
 			IN NgayKetThuc VARCHAR(255)
 		)
 		BEGIN
-			SELECT * FROM VoucherTransactions where TransactionId NOT IN(
+			SELECT * FROM VoucherTransactions where Created between NgayBatDau and NgayKetThuc AND TransactionId NOT IN(
 				SELECT TransactionId
 				FROM
 				 (
@@ -33,7 +33,7 @@
 			IN NgayKetThuc VARCHAR(255)
 		)
 		BEGIN
-			SELECT * FROM VoucherTransactionsBvb where TransactionId NOT IN(
+			SELECT * FROM VoucherTransactionsBvb where Created between NgayBatDau and NgayKetThuc AND TransactionId NOT IN(
 			SELECT TransactionId
 				FROM
 				 (
@@ -56,7 +56,7 @@
 			IN NgayKetThuc VARCHAR(255)
 		)
 		BEGIN
-			SELECT * FROM VoucherTransactionsBvb where TransactionId NOT IN(
+			SELECT * FROM VoucherTransactionsBvb where Created between NgayBatDau and NgayKetThuc AND TransactionId NOT IN(
 			SELECT TransactionId
 				FROM
 				 (

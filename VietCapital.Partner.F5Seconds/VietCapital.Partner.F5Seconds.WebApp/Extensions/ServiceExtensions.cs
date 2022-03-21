@@ -12,12 +12,25 @@ using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
 using VietCapital.Partner.F5Seconds.WebApp.Consumer;
+using VietCapital.Partner.F5Seconds.WebApp.HostedService;
 using VietCapital.Partner.F5Seconds.WebApp.Repositories;
 
 namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
 {
     public static class ServiceExtensions
     {
+        public static void AddHostedService(this IServiceCollection services)
+        {
+            services.AddHostedService<RedisCacheHostedService>();
+        }
+        public static void AddRedisCacheExtension(this IServiceCollection services)
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+                options.InstanceName = "VietcapitalInstance";
+            });
+        }
         public static void AddSwaggerExtension(this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>

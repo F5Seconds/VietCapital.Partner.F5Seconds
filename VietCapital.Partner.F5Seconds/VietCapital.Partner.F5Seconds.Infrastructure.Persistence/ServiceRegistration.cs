@@ -2,12 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
+using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories.Views;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repository;
 
 namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
@@ -35,7 +34,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence
             services.AddTransient<IVoucherTransactionRepositoryAsync, VoucherTransactionRepositoryAsync>();
             services.AddTransient<IVoucherTransactionBvbRepositoryAsync, VoucherTransactionBvbRepositoryAsync>();
             services.AddTransient<ICategoryProductRepositoryAsync, CategoryProductRepositoryAsync>();
-
+            services.AddTransient<IGiaoDichTheoNgayViewRepositoryAsync, GiaoDichTheoNgayViewRepositoryAsync>();
             #endregion
         }
     }

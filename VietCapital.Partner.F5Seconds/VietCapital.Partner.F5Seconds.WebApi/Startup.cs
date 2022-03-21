@@ -29,11 +29,15 @@ namespace VietCapital.Partner.F5Seconds.WebApi
             services.AddPersistenceInfrastructure(_config, _env.IsProduction());
             services.AddSharedInfrastructure(_config);
             services.AddSwaggerExtension();
+            services.AddRedisCacheExtension();
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);
+            services.AddResponseCachingExtension();
+            services.AddHostedService();
             services.AddControllers().AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             services.AddApiVersioningExtension();
             services.AddHealthChecks();
             services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
@@ -54,6 +58,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseResponseCaching();
             app.UseSwaggerExtension();
             app.UseErrorHandlingMiddleware();
             app.UseHealthChecks("/health");

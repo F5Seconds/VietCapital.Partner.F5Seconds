@@ -5,6 +5,11 @@ namespace VietCapital.Partner.F5Seconds.Domain.Entities
 {
     public class Product : AuditableBaseEntity
     {
+        public Product()
+        {
+            CategoryProducts = new HashSet<CategoryProduct>();
+            VoucherTransactions = new HashSet<VoucherTransaction>();
+        }
         public string ProductCode { get; set; }
         public int ProductId { get; set; }
         public string Name { get; set; }

@@ -89,6 +89,52 @@ const accountService = {
     }
     return false;
   },
+  addClaimToRole: async (data: any): Promise<any> => {
+    try {
+      const res = await accountApi.addClaimToRole({
+        ...data,
+        claimName: 'screens',
+        roleName: data?.role?.name,
+      });
+      if (res.result) {
+        store.dispatch(setShowAlert({message: res.result, type: 'success'}));
+        return true;
+      } else {
+        store.dispatch(setShowAlert({message: res.error || '', type: 'error'}));
+      }
+    } catch (error) {
+      console.log('Lỗi gán quyền');
+    }
+    return false;
+  },
+  getAllClaimsInRole: async (params: {
+    roleName: string;
+  }): Promise<{clams: string[]} | undefined> => {
+    try {
+      const res = await accountApi.getAllClaimsInRole(params);
+      return res;
+    } catch (error) {
+      console.log('Lỗi get all user');
+    }
+  },
+  removeClaimToRole: async (data: {
+    roleName: string;
+    claimName: string;
+    value: string;
+  }): Promise<any> => {
+    try {
+      const res = await accountApi.removeClaimToRole(data);
+      if (res.result) {
+        store.dispatch(setShowAlert({message: res.result, type: 'success'}));
+        return true;
+      } else {
+        store.dispatch(setShowAlert({message: res.error || '', type: 'error'}));
+      }
+    } catch (error) {
+      console.log('Lỗi gán quyền');
+    }
+    return false;
+  },
 };
 
 export default accountService;

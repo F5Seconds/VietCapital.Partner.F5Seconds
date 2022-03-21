@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.WebApp.Middlewares;
 
-namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
+namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
 {
     public static class AppExtensions
     {

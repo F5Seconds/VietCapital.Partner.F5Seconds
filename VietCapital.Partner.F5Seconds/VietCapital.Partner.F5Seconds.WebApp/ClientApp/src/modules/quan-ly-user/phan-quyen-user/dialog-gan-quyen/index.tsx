@@ -59,7 +59,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
     if (role) {
       accountService.getAllUsersByRole({roleId: role?.id}).then(res => {
         console.log('====================================');
-        console.log(res);
+        // console.log(res);
         console.log('====================================');
         const list = res?.listUser;
         const users = listUsers

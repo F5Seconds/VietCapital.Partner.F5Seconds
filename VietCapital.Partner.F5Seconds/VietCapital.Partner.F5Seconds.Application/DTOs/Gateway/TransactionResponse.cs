@@ -15,6 +15,7 @@ namespace VietCapital.Partner.F5Seconds.Application.DTOs.Gateway
         public int State { get; set; } = 1;
         public DateTime ExpiryDate { get; set; }
         public DateTime? UsedTime { get; set; }
+        public DateTime? Created { get; set; }
         public string UsedBrand { get; set; }
         public virtual ProductInSideResponse Product { get; set; }
     }

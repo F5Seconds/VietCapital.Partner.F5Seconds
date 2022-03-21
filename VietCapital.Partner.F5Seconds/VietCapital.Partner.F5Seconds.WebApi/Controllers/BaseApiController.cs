@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
-
+using System;
+using VietCapital.Partner.F5Seconds.Domain.Const;
 
 namespace VietCapital.Partner.F5Seconds.WebApi.Controllers
 {

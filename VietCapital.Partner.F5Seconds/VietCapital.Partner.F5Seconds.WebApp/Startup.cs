@@ -10,7 +10,6 @@ using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Identity;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared;
-using VietCapital.Partner.F5Seconds.WebApi.Extensions;
 using VietCapital.Partner.F5Seconds.WebApp.Extensions;
 using VietCapital.Partner.F5Seconds.WebApp.Services;
 
@@ -38,6 +37,8 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             {
                 services.AddSwaggerExtension();
             }
+            services.AddRedisCacheExtension();
+            services.AddHostedService();
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);
            services.AddControllers().AddNewtonsoftJson(options =>

@@ -28,9 +28,7 @@ const Page: FC<PageProps> = ({title, children}) => {
   return (
     <>
       <Header title={title} />
-      <MainStyle>
-        <Container maxWidth={'lg'}>{children}</Container>
-      </MainStyle>
+      <MainStyle>{children}</MainStyle>
     </>
   );
 };
