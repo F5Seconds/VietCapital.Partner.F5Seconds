@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace VietCapital.Partner.F5Seconds.WebApi.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = false)]
     public class MetaController : BaseApiController
     {
         [HttpGet("/info")]

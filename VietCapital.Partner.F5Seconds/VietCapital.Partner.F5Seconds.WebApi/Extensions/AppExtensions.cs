@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using VietCapital.Partner.F5Seconds.WebApi.Middlewares;
 
 namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
@@ -13,9 +14,10 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "VietCapital.Partner.F5Seconds.WebApi");
             });
         }
-        public static void UseErrorHandlingMiddleware(this IApplicationBuilder app)
+        public static void UseMiddlewareExtension(this IApplicationBuilder app, IConfiguration configuration)
         {
             app.UseMiddleware<ErrorHandlerMiddleware>();
+            app.UseMiddleware<AdminSafeListMiddleware>(configuration["AdminSafeList"]);
         }
     }
 }

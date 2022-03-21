@@ -1,4 +1,5 @@
-﻿using GreenPipes;
+﻿using AspNetCoreRateLimit;
+using GreenPipes;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,32 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
 {
     public static class ServiceExtensions
     {
-        public static void AddRedisCacheExtension(this IServiceCollection services)
+        public static void AddRateLimitExtension(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddMemoryCache();
+            services.Configure<ClientRateLimitOptions>(options =>
+            {
+                options.GeneralRules = new List<RateLimitRule>
+                {
+                    new RateLimitRule
+                    {
+                        Endpoint = "*",
+                        Period = "2s",
+                        Limit = 1,
+                    }
+                };
+            });
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+            services.AddInMemoryRateLimiting();
+        }
+        public static void AddRedisCacheExtension(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = "localhost:6379";
+                options.Configuration = configuration["ConnectionStrings:Redis"];
                 options.InstanceName = "VietcapitalInstance";
             });
         }
