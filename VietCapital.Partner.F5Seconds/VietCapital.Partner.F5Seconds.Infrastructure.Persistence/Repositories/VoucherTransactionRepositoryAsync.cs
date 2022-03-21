@@ -1,12 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Features.Transactions.Queries.GetVoucherTransFilter;
 using VietCapital.Partner.F5Seconds.Application.Features.VoucherTransactions.Queries.GetAllVoucherTransactions;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
+using VietCapital.Partner.F5Seconds.Domain.Const;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repository;
@@ -15,10 +19,15 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
 {
     public class VoucherTransactionRepositoryAsync : GenericRepositoryAsync<VoucherTransaction>, IVoucherTransactionRepositoryAsync
     {
+        private readonly IDistributedCache _distributedCache;
         private readonly DbSet<VoucherTransaction> _voucherTransactions;
-        public VoucherTransactionRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
+        string serializedTransList;
+        string[] transList;
+        byte[] redisTransList;
+        public VoucherTransactionRepositoryAsync(ApplicationDbContext dbContext, IDistributedCache distributedCache) : base(dbContext)
         {
             _voucherTransactions = dbContext.Set<VoucherTransaction>();
+            _distributedCache = distributedCache;
         }
 
         public async Task<PagedList<VoucherTransaction>> GetPagedVoucherTransByFilter(GetVoucherTransFilterParameter parameter)
@@ -79,6 +88,19 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
         public async Task<List<VoucherTransaction>> DoiSoatGiaoDichKhop(DateTime ngayBatDau, DateTime ngayKetThuc)
         {
             return await _voucherTransactions.FromSqlRaw($"CALL DoiSoatGiaoDichKhop('{ngayBatDau.ToString("yyyy-MM-dd")}','{ngayKetThuc.ToString("yyyy-MM-dd")}');").ToListAsync();
+        }
+
+        public async Task<string[]> GetAllTransaction()
+        {
+            return await _voucherTransactions.Select(x => x.TransactionId).ToArrayAsync();
+        }
+
+        public async Task LoadTransactionToCache()
+        {
+            transList = await GetAllTransaction();
+            serializedTransList = JsonConvert.SerializeObject(transList);
+            redisTransList = Encoding.UTF8.GetBytes(serializedTransList);
+            await _distributedCache.SetAsync(RedisCacheConst.TransactionKey, redisTransList, RedisCacheConst.CacheEntryOptions);
         }
     }
 }

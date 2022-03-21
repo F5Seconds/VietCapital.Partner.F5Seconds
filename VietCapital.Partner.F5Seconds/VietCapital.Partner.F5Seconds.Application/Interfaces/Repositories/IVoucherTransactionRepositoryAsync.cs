@@ -19,5 +19,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories
         Task<List<VoucherTransaction>> DoiSoatGiaoDichKhongKhopF5s(DateTime ngayBatDau, DateTime ngayKetThuc);
         Task<List<VoucherTransaction>> DoiSoatGiaoDichKhongKhopBvb(DateTime ngayBatDau, DateTime ngayKetThuc);
         Task<List<VoucherTransaction>> DoiSoatGiaoDichKhop(DateTime ngayBatDau, DateTime ngayKetThuc);
+        Task<string[]> GetAllTransaction();
+        Task LoadTransactionToCache();
     }
 }

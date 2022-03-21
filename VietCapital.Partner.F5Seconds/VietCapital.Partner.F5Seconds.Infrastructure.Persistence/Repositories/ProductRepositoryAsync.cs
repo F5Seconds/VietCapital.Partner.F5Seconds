@@ -1,12 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Filters;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
+using VietCapital.Partner.F5Seconds.Domain.Const;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Contexts;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repository;
@@ -17,12 +21,15 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
     {
         private readonly DbSet<Product> _products;
         private readonly DbSet<CategoryProduct> _categoryProduct;
-
-
-        public ProductRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
+        string[] productCodeList;
+        byte[] redisProductCodeList;
+        private string serializedProductCodeList;
+        private readonly IDistributedCache _distributedCache;
+        public ProductRepositoryAsync(ApplicationDbContext dbContext, IDistributedCache distributedCache) : base(dbContext)
         {
             _products = dbContext.Set<Product>();
             _categoryProduct= dbContext.Set<CategoryProduct>();
+            _distributedCache = distributedCache;
         }
 
         public async Task<Product> FindByCodeAsync(string code)
@@ -95,6 +102,19 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
             return await _categoryProduct.AsNoTracking()
             .Where(p => p.ProductId.Equals(id))
             .ToListAsync();
+        }
+
+        public async Task<string[]> GetAllProductCode()
+        {
+            return await _products.Select(x => x.ProductCode).ToArrayAsync();
+        }
+
+        public async Task LoadProductCodeToCache()
+        {
+            productCodeList = await GetAllProductCode();
+            serializedProductCodeList = JsonConvert.SerializeObject(productCodeList);
+            redisProductCodeList = Encoding.UTF8.GetBytes(serializedProductCodeList);
+            await _distributedCache.SetAsync(RedisCacheConst.ProductCodeKey, redisProductCodeList, RedisCacheConst.CacheEntryOptions);
         }
     }
 }

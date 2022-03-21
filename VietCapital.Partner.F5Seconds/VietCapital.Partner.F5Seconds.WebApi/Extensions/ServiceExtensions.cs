@@ -13,11 +13,17 @@ using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories;
 using VietCapital.Partner.F5Seconds.Infrastructure.Shared.Const;
 using VietCapital.Partner.F5Seconds.WebApi.Consumer;
+using VietCapital.Partner.F5Seconds.WebApi.HostedService;
 
 namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
 {
     public static class ServiceExtensions
     {
+        public static void AddHostedService(this IServiceCollection services)
+        {
+            services.AddHostedService<LoadTransactionIdToCacheHostedService>();
+            services.AddHostedService<LoadProductCodeToCacheHostedService>();
+        }
         public static void AddRateLimitExtension(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddMemoryCache();

@@ -17,6 +17,8 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories
         Task<bool> IsUniqueBarcodeAsync(string barcode);
         Task<PagedList<Product>> GetAllPagedListAsync(GetAllProductsParameter parameter);
         Task<List<CategoryProduct>> GetProductInCategoryByIdAsync(int id);
+        Task<string[]> GetAllProductCode();
+        Task LoadProductCodeToCache();
 
     }
 }
