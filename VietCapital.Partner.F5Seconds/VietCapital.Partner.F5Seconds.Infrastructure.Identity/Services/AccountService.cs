@@ -250,8 +250,8 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             var account = await _userManager.FindByEmailAsync(model.Email);
 
             // always return ok response to prevent email enumeration
-            if (account == null) 
-            return null;
+            if (account == null)
+                return null;
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(account);
             var route = "api/account/reset-password/";
@@ -264,7 +264,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             };
             await _emailService.SendAsync(emailRequest);
             return emailRequest;
-             
+
         }
 
         public async Task<Response<string>> ResetPassword(ResetPasswordRequest model)
@@ -530,20 +530,55 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
 
         public object GetAllUser()
         {
-            var listUser =  _userManager.Users.ToList();
-            var list  = new List<Employee>();
-            foreach(var item in listUser){
-                var emp  = new Employee();
+            var listUser = _userManager.Users.ToList();
+            var list = new List<Employee>();
+            foreach (var item in listUser)
+            {
+                var emp = new Employee();
                 emp.Id = item.Id;
                 emp.Name = item.FirstName + " " + item.LastName;
                 emp.Email = item.Email;
                 emp.Username = item.UserName;
                 list.Add(emp);
             }
-            return new {
+            return new
+            {
                 listUser = list
             };
         }
-    }
+        public async Task<object> GetUserById(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            return new
+            {
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                email = user.Email,
+                username = user.UserName
+            };
+        }
 
+        public async Task<object> UpdateUser(string id, User data)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is not null)
+            {
+                user.FirstName = data.FirstName;
+                user.LastName = data.LastName;
+                user.Email = data.Email;
+                user.UserName = data.UserName;
+                await _userManager.UpdateAsync(user);
+                return new
+                {
+                    firstName = user.FirstName,
+                    lastName = user.LastName,
+                    email = user.Email,
+                    username = user.UserName
+                };
+            }
+            return new { error = "Unable to find user" };
+
+
+        }
+    }
 }
