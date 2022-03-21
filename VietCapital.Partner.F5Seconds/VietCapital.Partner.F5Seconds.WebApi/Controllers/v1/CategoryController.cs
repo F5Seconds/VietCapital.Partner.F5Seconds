@@ -28,24 +28,5 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
         {
             return Ok(await Mediator.Send(new GetDetailCategoryQuery() { Id = parameter.Id }));
         }
-
-        [HttpGet("the-time")]
-        public string GetTheTime()
-        {
-            var cacheKey = "TheTime";
-            var currentTime = DateTime.Now.ToString();
-            var cachedTime = _distributedCache.GetString(cacheKey);
-            if (string.IsNullOrEmpty(cachedTime))
-            {
-                // cachedTime = "Expired";
-                // Cache expire trong 5s
-                var options = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(5));
-                // Nạp lại giá trị mới cho cache
-                _distributedCache.SetString(cacheKey, currentTime, options);
-                cachedTime = _distributedCache.GetString(cacheKey);
-            }
-            var result = $"Current Time : {currentTime} \nCached  Time : {cachedTime}";
-            return result;
-        }
     }
 }

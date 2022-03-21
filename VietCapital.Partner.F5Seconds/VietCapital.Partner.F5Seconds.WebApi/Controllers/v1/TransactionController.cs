@@ -58,9 +58,9 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
             var result = await Mediator.Send(command);
             Uri uri = new Uri($"rabbitmq://{rabbitHost}/{rabbitvHost}/{voucherTransactionQueue}");
             var endPoint = await _bus.GetSendEndpoint(uri);
-            if (result.Succeeded)
+            if (result.succeeded)
             {
-                foreach (var item in result.Data)
+                foreach (var item in result.data)
                 {
                     var trans = _mapper.Map<VoucherTransaction>(item, opt => opt.AfterMap((s, d) => {
                         d.ProductId = command.productId;

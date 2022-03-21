@@ -14,10 +14,10 @@ namespace VietCapital.Partner.F5Seconds.Application.Wrappers
         {
             this.PageNumber = pageNumber;
             this.PageSize = pageSize;
-            this.Data = data;
-            this.Message = null;
-            this.Succeeded = true;
-            this.Errors = null;
+            this.data = data;
+            this.message = null;
+            this.succeeded = true;
+            this.errors = null;
         }
     }
 }

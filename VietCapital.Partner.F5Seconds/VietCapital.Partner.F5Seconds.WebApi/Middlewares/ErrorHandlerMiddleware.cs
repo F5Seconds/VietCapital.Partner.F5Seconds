@@ -29,7 +29,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Middlewares
             {
                 var response = context.Response;
                 response.ContentType = "application/json";
-                var responseModel = new Response<string>() { Succeeded = false, Message = error?.Message };
+                var responseModel = new Response<string>() { succeeded = false, message = error?.Message };
 
                 switch (error)
                 {
@@ -39,8 +39,9 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Middlewares
                         break;
                     case ValidationException e:
                         // custom application error
+                        responseModel.code = 202;
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        responseModel.Errors = e.Errors;
+                        responseModel.errors = e.Errors;
                         break;
                     case KeyNotFoundException e:
                         // not found error

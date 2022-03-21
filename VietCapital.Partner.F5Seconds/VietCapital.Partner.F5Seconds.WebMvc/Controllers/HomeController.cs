@@ -59,14 +59,14 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
             var product = await _context.Products.Include(cp => cp.CategoryProducts).ThenInclude(c => c.Category).SingleAsync(p => p.ProductCode.Equals(id));
             if(product is null) return NotFound();
             var pGatewayDetail = await _gatewayHttpClient.DetailProduct(id);
-            if (!pGatewayDetail.Succeeded) return NotFound();
-            if (pGatewayDetail.Data is null) return NotFound();
-            if (product.Content is null) product.Content = pGatewayDetail.Data.productContent;
-            if (product.Term is null) product.Term = pGatewayDetail.Data.productTerm;
+            if (!pGatewayDetail.succeeded) return NotFound();
+            if (pGatewayDetail.data is null) return NotFound();
+            if (product.Content is null) product.Content = pGatewayDetail.data.productContent;
+            if (product.Term is null) product.Term = pGatewayDetail.data.productTerm;
             return View(new ProductEditView()
             {
                 Product = product,
-                StoreList = pGatewayDetail.Data.storeList
+                StoreList = pGatewayDetail.data.storeList
             });
         }
 
@@ -83,8 +83,8 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
                 productCode = buyVoucher.Code
             };
             var trans = await _gatewayHttpClient.BuyProduct(payload);
-            if(!trans.Succeeded) return BadRequest(trans);
-            foreach (var item in trans.Data)
+            if(!trans.succeeded) return BadRequest(trans);
+            foreach (var item in trans.data)
             {
                 bool expried = DateTime.TryParseExact(item.expiryDate, "yyyy-MM-dd", CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime expiryDate);
                 
@@ -170,7 +170,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
         public async Task<IActionResult> ProductSync()
         {
             var product = await _gatewayHttpClient.ListProduct();
-            if (product is not null && product.Succeeded)
+            if (product is not null && product.succeeded)
             {
                 string rabbitHost = _config[RabbitMqAppSettingConst.Host];
                 string rabbitvHost = _config[RabbitMqAppSettingConst.Vhost];
@@ -183,7 +183,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
                 }
                 Uri uri = new Uri($"rabbitmq://{rabbitHost}/{rabbitvHost}/{productSyncQueue}");
                 var endPoint = await _bus.GetSendEndpoint(uri);
-                foreach (var item in product.Data)
+                foreach (var item in product.data)
                 {
                     await endPoint.Send(item);
                 }

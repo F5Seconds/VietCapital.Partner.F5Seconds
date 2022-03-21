@@ -81,16 +81,16 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.Controllers
             var product = await _context.Products.Include(x => x.CategoryProducts).SingleAsync(p => p.Id.Equals(id));
             if (product is null) return NotFound();
             var pGatewayDetail = await _gatewayHttpClient.DetailProduct(product.ProductCode);
-            if (!pGatewayDetail.Succeeded) return NotFound();
-            if(pGatewayDetail.Data is null) return NotFound();
-            if (product.Content is null) product.Content = pGatewayDetail.Data.productContent;
-            if (product.Term is null) product.Term = pGatewayDetail.Data.productTerm;
+            if (!pGatewayDetail.succeeded) return NotFound();
+            if(pGatewayDetail.data is null) return NotFound();
+            if (product.Content is null) product.Content = pGatewayDetail.data.productContent;
+            if (product.Term is null) product.Term = pGatewayDetail.data.productTerm;
             var productViewModel = new ProductEditView()
             {
                 Product = product,
                 CategoryList = new MultiSelectList(_context.Categories, nameof(Category.Id), nameof(Category.Name)),
                 SelectedCategories = product.CategoryProducts == null ? null : product.CategoryProducts.Select(x => x.CategoryId),
-                StoreList = pGatewayDetail.Data.storeList
+                StoreList = pGatewayDetail.data.storeList
             };
             return View(productViewModel);
         }

@@ -24,7 +24,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.
             public async Task<Response<CategoryOutsideResponse>> Handle(GetDetailCategoryQuery request, CancellationToken cancellationToken)
             {
                 var category = await _category.FindCategoryById(request.Id??0);
-                if (category == null) return new Response<CategoryOutsideResponse>(false,null, ResponseConst.NotData);
+                if (category == null) return new Response<CategoryOutsideResponse>(false,null, ResponseConst.NotData,null,220);
                 return new Response<CategoryOutsideResponse>(true, _mapper.Map<CategoryOutsideResponse>(category));
             }
         }

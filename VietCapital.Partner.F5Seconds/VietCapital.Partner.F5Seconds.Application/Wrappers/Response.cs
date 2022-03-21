@@ -9,30 +9,30 @@ namespace VietCapital.Partner.F5Seconds.Application.Wrappers
         public Response()
         {
         }
-        public Response(bool succeeded, T data, string message = null, List<string> error = null,int code = 200)
+        public Response(bool succeed, T dt, string mess = null, List<string> error = null,int c = 200)
         {
-            Succeeded = succeeded;
-            Message = message;
-            Data = data;
-            Errors = error;
-            Code = code;
+            succeeded = succeed;
+            message = mess;
+            data = dt;
+            errors = error;
+            code = c;
         }
         public Response(T data, string message = null)
         {
-            Succeeded = true;
-            Message = message;
-            Data = data;
+            succeeded = true;
+            this.message = message;
+            this.data = data;
         }
         public Response(string message)
         {
-            Succeeded = false;
-            Message = message;
+            succeeded = false;
+            this.message = message;
         }
-        public bool Succeeded { get; set; }
-        public int Code { get; set; }
-        public string Message { get; set; }
-        public List<string> Errors { get; set; }
-        public T Data { get; set; }
+        public bool succeeded { get; set; }
+        public int code { get; set; }
+        public string message { get; set; }
+        public List<string> errors { get; set; }
+        public T data { get; set; }
     }
 
     public class ResponseBase

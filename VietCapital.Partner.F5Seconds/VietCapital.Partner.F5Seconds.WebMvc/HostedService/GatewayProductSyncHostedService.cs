@@ -55,7 +55,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.HostedService
         private async Task DoWork()
         {
             var product = await _gatewayHttpClient.ListProduct();
-            if(product is not null && product.Succeeded)
+            if(product is not null && product.succeeded)
             {
                 string rabbitHost = _config[RabbitMqAppSettingConst.Host];
                 string rabbitvHost = _config[RabbitMqAppSettingConst.Vhost];
@@ -68,7 +68,7 @@ namespace VietCapital.Partner.F5Seconds.WebMvc.HostedService
                 }
                 Uri uri = new Uri($"rabbitmq://{rabbitHost}/{rabbitvHost}/{productSyncQueue}");
                 var endPoint = await _bus.GetSendEndpoint(uri);
-                foreach (var item in product.Data)
+                foreach (var item in product.data)
                 {
                     await endPoint.Send(item);
                 }

@@ -34,8 +34,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi
             services.AddRabbitMqExtension(_config,_env);
             services.AddControllers().AddNewtonsoftJson(options =>
             {
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
-                options.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
             services.AddApiVersioningExtension();
             services.AddHealthChecks();
