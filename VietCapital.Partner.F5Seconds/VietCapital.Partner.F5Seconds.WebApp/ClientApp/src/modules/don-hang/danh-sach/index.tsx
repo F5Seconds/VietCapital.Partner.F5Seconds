@@ -46,10 +46,14 @@ const DanhSachDonHangPage = () => {
 
   const columns = [
     {
+      field: 'transactionId',
+      headerName: 'Mã giao dịch',
+    },
+    {
       field: 'customerId',
       headerName: 'Mã khách hàng',
     },
-    {field: 'productCode', headerName: 'Mã sản phẩm'},
+    {field: 'productId', headerName: 'Mã sản phẩm'},
 
     {
       field: 'productName',
@@ -60,6 +64,10 @@ const DanhSachDonHangPage = () => {
       headerName: 'Điểm',
     },
     {
+      field: 'voucherCode',
+      headerName: 'Mã voucher',
+    },
+    {
       field: 'state',
       headerName: 'Trạng thái',
       renderCell: (row: any) => <Box sx={{color: stateColor(row.state)}}>{state(row.state)}</Box>,
@@ -67,7 +75,7 @@ const DanhSachDonHangPage = () => {
     {
       field: 'created',
       headerName: 'Ngày giao dịch',
-      renderCell: (row: any) => new Date(row.expiryDate).toLocaleDateString('vi'),
+      renderCell: (row: any) => new Date(row.created).toLocaleDateString('vi'),
     },
     {
       field: 'expiryDate',
@@ -135,7 +143,7 @@ const DanhSachDonHangPage = () => {
     productPoint: item.product.point + '',
     voucherCode: item.voucherCode + '',
     state: item.state + '',
-    created: new Date(item.expiryDate).toLocaleDateString('vi'),
+    created: new Date(item.created).toLocaleDateString('vi'),
     expiryDate: new Date(item.expiryDate).toLocaleDateString('vi'),
   }));
 
@@ -167,7 +175,7 @@ const DanhSachDonHangPage = () => {
           filename="myfile"
           extension=".csv"
           separator=";"
-          wrapColumnChar=""
+          wrapColumnChar="'"
           columns={columns.map(item => ({id: item.field, displayName: item.headerName}))}
           datas={datas}
         >

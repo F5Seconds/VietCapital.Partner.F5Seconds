@@ -36,7 +36,7 @@ const TongQuanPage = () => {
   const chartOptions: any = {
     ...BaseOptionChart(),
     stroke: {width: [0, 0, 0, 0]},
-    plotOptions: {bar: {columnWidth: '11%', borderRadius: 4}},
+    plotOptions: {bar: {columnWidth: '28%', borderRadius: 4}},
     fill: {type: ['solid', 'solid', 'solid', 'solid']},
     labels: data.labels,
     xaxis: {

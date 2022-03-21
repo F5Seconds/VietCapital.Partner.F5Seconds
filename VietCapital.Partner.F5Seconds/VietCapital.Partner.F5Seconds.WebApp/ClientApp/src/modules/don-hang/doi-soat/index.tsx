@@ -56,10 +56,14 @@ const DoiSoatPage = () => {
 
   const columns = [
     {
+      field: 'transactionId',
+      headerName: 'Mã giao dịch',
+    },
+    {
       field: 'customerId',
       headerName: 'Mã khách hàng',
     },
-    {field: 'productCode', headerName: 'Mã sản phẩm'},
+    {field: 'productId', headerName: 'Mã sản phẩm'},
 
     {
       field: 'productName',
@@ -70,9 +74,18 @@ const DoiSoatPage = () => {
       headerName: 'Điểm',
     },
     {
+      field: 'voucherCode',
+      headerName: 'Mã voucher',
+    },
+    {
       field: 'state',
       headerName: 'Trạng thái',
       renderCell: (row: any) => <Box sx={{color: stateColor(row.state)}}>{state(row.state)}</Box>,
+    },
+    {
+      field: 'created',
+      headerName: 'Ngày giao dịch',
+      renderCell: (row: any) => new Date(row.created).toLocaleDateString('vi'),
     },
     {
       field: 'expiryDate',
@@ -150,6 +163,7 @@ const DoiSoatPage = () => {
       </>
     );
   };
+  console.log(listUpload);
   return (
     <Page title="Đối soát đơn hàng">
       <Card sx={{p: 1, mb: 2}}>
@@ -178,7 +192,9 @@ const DoiSoatPage = () => {
               cssClass="csv-reader-input"
               onFileLoaded={(data, fileInfo, originalFile) =>
                 setListUpload(prev => {
+                  console.log(data);
                   return data.map(item => {
+                    console.log(item);
                     let object: any = {};
                     columns.forEach(i => {
                       if (i.headerName === 'Ngày hết hạn' || i.headerName === 'Ngày giao dịch') {
@@ -199,6 +215,7 @@ const DoiSoatPage = () => {
                 dynamicTyping: true,
                 skipEmptyLines: true,
                 transformHeader: header => header,
+                quoteChar: "'",
               }}
               inputId="upload"
               inputStyle={{display: 'none'}}
