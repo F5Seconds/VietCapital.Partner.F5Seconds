@@ -110,23 +110,6 @@ const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose}) => {
     },
   ];
 
-  const onSubmit = (data: any) => {
-    accountService.addClaimToRole(data).then(() => getClaim());
-  };
-  const handleDelete = async () => {
-    setIsDeleting(true);
-    setIsOpenDelete(prev => ({...prev, visible: false}));
-    const res = await accountService.removeClaimToRole({
-      ...isOpenDelete.row,
-      roleName: role?.name,
-      claimName: 'screens',
-    });
-    if (res) {
-      getClaim();
-    }
-    setIsDeleting(false);
-  };
-
   return (
     <DialogBase
       open={open}

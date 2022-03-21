@@ -136,7 +136,7 @@ const TongQuanPage = () => {
     }
   }, [dateRange]);
   return (
-    <Page title="Tổng quan">
+    <Page title="Thống kê">
       <Card>
         <Stack direction="row">
           <Box>

@@ -13,8 +13,9 @@ interface Props {
   };
   onClick?: () => void;
   rest?: any;
+  listQuyen?: string[];
 }
-const NavItem: FC<Props> = ({item, onClick, ...rest}) => {
+const NavItem: FC<Props> = ({item, onClick, listQuyen, ...rest}) => {
   const {href, icon: Icon, title, children = []} = item;
   const location = useLocation();
   const navigate = useNavigate();
@@ -87,46 +88,56 @@ const NavItem: FC<Props> = ({item, onClick, ...rest}) => {
       </ListItem>
       {children.length !== 0 && (
         <Collapse in={childrenActive}>
-          {children.map(item => (
-            <ListItem
-              key={item.href}
-              disableGutters
-              sx={{
-                display: 'flex',
-                py: 0.5,
-              }}
-              {...rest}
-            >
-              <Button
-                component={RouterLink}
-                sx={{
-                  paddingLeft: 4,
-                  color: '#fff',
-                  fontWeight: 'medium',
-                  justifyContent: 'flex-start',
-                  letterSpacing: 0,
-                  py: 1.25,
-                  textTransform: 'none',
-                  '&:hover': {
-                    backgroundColor: colors.primaryDark,
-                  },
-                  width: '100%',
-                  // ...(active && {
-                  //   backgroundColor: '#08488C',
-                  // }),
-                  backgroundColor: location.pathname.includes(item.href?.split('/')[2])
-                    ? colors.primaryDark
-                    : null,
-                  '& svg': {
-                    mr: 1,
-                  },
-                }}
-                to={item.href}
-              >
-                <span>{item.title}</span>
-              </Button>
-            </ListItem>
-          ))}
+          {children.map(item => {
+            const newListQuyen = Array.isArray(listQuyen)
+              ? listQuyen
+                  ?.filter((item: string) => item?.split(';')[1] === 'seen')
+                  ?.map((item: string) => `${item?.split(';')[0]}`)
+              : [];
+            if (newListQuyen?.indexOf(item?.href) > -1) {
+              return (
+                <ListItem
+                  key={item.href}
+                  disableGutters
+                  sx={{
+                    display: 'flex',
+                    py: 0.5,
+                  }}
+                  {...rest}
+                >
+                  <Button
+                    component={RouterLink}
+                    sx={{
+                      paddingLeft: 4,
+                      color: '#fff',
+                      fontWeight: 'medium',
+                      justifyContent: 'flex-start',
+                      letterSpacing: 0,
+                      py: 1.25,
+                      textTransform: 'none',
+                      '&:hover': {
+                        backgroundColor: colors.primaryDark,
+                      },
+                      width: '100%',
+                      // ...(active && {
+                      //   backgroundColor: '#08488C',
+                      // }),
+                      backgroundColor: location.pathname.includes(item.href?.split('/')[2])
+                        ? colors.primaryDark
+                        : null,
+                      '& svg': {
+                        mr: 1,
+                      },
+                    }}
+                    to={item.href}
+                  >
+                    <span>{item.title}</span>
+                  </Button>
+                </ListItem>
+              );
+            }
+            return null;
+          })}
         </Collapse>
       )}
     </>

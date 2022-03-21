@@ -89,13 +89,13 @@ const accountService = {
     }
     return false;
   },
-  addClaimToRole: async (data: any): Promise<any> => {
+  addClaimToRole: async (data: {
+    roleName: string;
+    claimName: string;
+    value: string;
+  }): Promise<any> => {
     try {
-      const res = await accountApi.addClaimToRole({
-        ...data,
-        claimName: 'screens',
-        roleName: data?.role?.name,
-      });
+      const res = await accountApi.addClaimToRole(data);
       if (res.result) {
         store.dispatch(setShowAlert({message: res.result, type: 'success'}));
         return true;

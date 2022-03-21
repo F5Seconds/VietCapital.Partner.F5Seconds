@@ -29,7 +29,7 @@ const accountApi = {
   },
 
   //claim
-  addClaimToRole: (params: {roleName: string}): Promise<any> =>
+  addClaimToRole: (params: {roleName: string; claimName: string; value: string}): Promise<any> =>
     axiosClient.post(`/account/addClaimToRoles?${queryString.stringify(params)}`),
   getAllClaimsInRole: (params: any): Promise<{clams: string[]}> =>
     axiosClient.get('/account/GetAllClaimsInRole', {params}),

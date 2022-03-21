@@ -33,9 +33,9 @@ import jwt_decode from 'jwt-decode';
 
 export const items = [
   {
-    href: '/tong-quan',
+    href: '/thong-ke',
     icon: Chart1,
-    title: 'Tổng quan',
+    title: 'Thống kê',
   },
   {
     href: '/quan-ly-user',
@@ -134,12 +134,25 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    console.log(auth?.quyen);
+  }, [auth]);
+
   const content = (
     <Box className="sidebar" sx={{p: 2, overflow: 'auto'}}>
       <List>
-        {items.map(item => (
-          <NavItem key={item.title} item={item} />
-        ))}
+        {items.map(item => {
+          const listQuyen = Array.isArray(auth?.quyen)
+            ? auth?.quyen
+                ?.filter((item: string) => item?.split(';')[1] === 'seen')
+                ?.map((item: string) => `/${item.split('/')[1]?.split(';')[0]}`)
+            : [];
+          console.log({listQuyen});
+          if (listQuyen?.indexOf(item.href) > -1) {
+            return <NavItem key={item.title} item={item} listQuyen={auth?.quyen} />;
+          }
+          return null;
+        })}
         <NavItem
           onClick={() => {
             dispatch(setAuth({}));

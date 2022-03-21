@@ -131,7 +131,7 @@ const PhanQuyenUser = () => {
   return (
     <Page title="Phân quyền user">
       <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           sx={{marginRight: 1}}
@@ -140,7 +140,7 @@ const PhanQuyenUser = () => {
           }}
         >
           Phân màn hình
-        </Button>
+        </Button> */}
         <Button
           variant="contained"
           color="primary"
