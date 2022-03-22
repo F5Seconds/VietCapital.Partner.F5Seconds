@@ -13,7 +13,8 @@ const accountApi = {
     axiosClient.get(`/account/getUserById?id=${id}`),
   updateUser: (id: string | number | null, data: Partial<Account>): Promise<any> =>
     axiosClient.put(`/account/updateUser?id=${id}`, data),
-
+  removeUser: (params: {userName: string}): Promise<any> =>
+    axiosClient.delete(`/account/removeUser?${queryString.stringify(params)}`),
   getAllUsersByRole: (params: any): Promise<any> =>
     axiosClient.get('/account/getAllUsersByRole', {params}),
   addUsersToRole: (params: any, data: any): Promise<any> =>
