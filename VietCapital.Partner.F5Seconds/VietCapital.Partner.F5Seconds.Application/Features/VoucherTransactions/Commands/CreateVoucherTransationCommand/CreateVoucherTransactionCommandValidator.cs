@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using System.Linq;
 using System.Text;
@@ -21,20 +22,23 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Transactions.Comman
         private string[] transList;
         private string serializedProductCodeList;
         private string[] productCodeList;
-        private readonly IRedisClient _redisCacheClient;
+        private readonly IRedisClient _redisClient;
+        private readonly IDatabase _redisDatabase;
         private readonly ILogger<CreateVoucherTransactionCommandValidator> _logger;
         public CreateVoucherTransactionCommandValidator(
             IVoucherTransactionRepositoryAsync voucherTransaction,
             IProductRepositoryAsync productRepository,
             IDistributedCache distributedCache,
-            IRedisClient redisCacheClient,
+            IDatabase redisDatabase,
+            IRedisClient redisClient,
             ILogger<CreateVoucherTransactionCommandValidator> logger)
         {
             _voucherTransaction = voucherTransaction;
             _productRepository = productRepository;
             _distributedCache = distributedCache;
             _logger = logger;
-            _redisCacheClient = redisCacheClient;
+            _redisClient = redisClient;
+            _redisDatabase = redisDatabase;
             RuleFor(p => p.transactionId)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull()

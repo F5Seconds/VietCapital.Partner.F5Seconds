@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core.Configuration;
 using StackExchange.Redis.Extensions.Newtonsoft;
 using System;
@@ -58,7 +59,8 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
                 options.Configuration = configuration["ConnectionStrings:Redis"];
                 options.InstanceName = "VietcapitalInstance";
             });
-
+            var redis = ConnectionMultiplexer.Connect("localhost");
+            services.AddScoped<IDatabase>(s => redis.GetDatabase());
         }
         public static void AddHttpClientExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {

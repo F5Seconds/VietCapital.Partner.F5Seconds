@@ -70,7 +70,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi
             app.UseAuthorization();
             app.UseResponseCaching();
             app.UseSwaggerExtension();
-            app.UseMiddlewareExtension(_config);
+            app.UseMiddlewareExtension(_config,env);
             app.UseHealthChecks("/health");
 
             app.UseEndpoints(endpoints =>
