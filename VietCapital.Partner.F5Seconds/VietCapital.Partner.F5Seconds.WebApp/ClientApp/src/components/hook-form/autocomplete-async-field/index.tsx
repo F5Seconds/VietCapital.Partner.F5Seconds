@@ -1,4 +1,10 @@
-import {Autocomplete, CircularProgress, TextField} from '@mui/material';
+import {
+  Autocomplete,
+  AutocompleteChangeDetails,
+  AutocompleteChangeReason,
+  CircularProgress,
+  TextField,
+} from '@mui/material';
 import React, {FC, useRef, useState} from 'react';
 import {Controller} from 'react-hook-form';
 
@@ -12,7 +18,11 @@ interface Props {
   loading: boolean;
   placeholder?: string;
   onSubmit?: (value: string) => void;
-  onChange?: (value: string) => void;
+  onChange?: (
+    value: string,
+    reason: AutocompleteChangeReason,
+    details: AutocompleteChangeDetails<any> | undefined
+  ) => void;
   multiple?: boolean;
   items: {label: string; value: string | number}[];
 }
@@ -71,9 +81,9 @@ const AutocompleteAsyncField: FC<Props> = props => {
               : handleSearchDebounce(value);
           }}
           value={field?.value || (multiple ? [] : '')}
-          onChange={(e, newValue) => {
+          onChange={(e, newValue, reason, details) => {
             field.onChange(newValue);
-            onChange && onChange(newValue);
+            onChange && onChange(newValue, reason, details);
           }}
           getOptionLabel={option => option.label || ''}
           loading={loading}

@@ -67,9 +67,37 @@ const accountService = {
     }
     return false;
   },
+  addUserToRole: async (params: {userName: string; rolename: string}): Promise<any> => {
+    try {
+      const res = await accountApi.addUserToRole(params);
+      if (res.result) {
+        store.dispatch(setShowAlert({message: res.result, type: 'success'}));
+        return true;
+      } else {
+        store.dispatch(setShowAlert({message: res.error || '', type: 'error'}));
+      }
+    } catch (error) {
+      console.log('Lỗi gán quyền');
+    }
+    return false;
+  },
   addUsersToRole: async (params: any, data: any): Promise<any> => {
     try {
       const res = await accountApi.addUsersToRole(params, data);
+      if (res.result) {
+        store.dispatch(setShowAlert({message: res.result, type: 'success'}));
+        return true;
+      } else {
+        store.dispatch(setShowAlert({message: res.error || '', type: 'error'}));
+      }
+    } catch (error) {
+      console.log('Lỗi gán quyền');
+    }
+    return false;
+  },
+  removeUserFromRole: async (data: {userName: string; rolename: string}): Promise<any> => {
+    try {
+      const res = await accountApi.removeUserFromRole(data);
       if (res.result) {
         store.dispatch(setShowAlert({message: res.result, type: 'success'}));
         return true;
@@ -165,6 +193,53 @@ const accountService = {
   }): Promise<any> => {
     try {
       const res = await accountApi.removeClaimToRole(data);
+      if (res.result) {
+        store.dispatch(setShowAlert({message: res.result, type: 'success'}));
+        return true;
+      } else {
+        store.dispatch(setShowAlert({message: res.error || '', type: 'error'}));
+      }
+    } catch (error) {
+      console.log('Lỗi gán quyền');
+    }
+    return false;
+  },
+
+  addClaimToUser: async (data: {
+    userName: string;
+    claimName: string;
+    value: string;
+  }): Promise<any> => {
+    try {
+      const res = await accountApi.addClaimToUser(data);
+      if (res.result) {
+        store.dispatch(setShowAlert({message: res.result, type: 'success'}));
+        return true;
+      } else {
+        store.dispatch(setShowAlert({message: res.error || '', type: 'error'}));
+      }
+    } catch (error) {
+      console.log('Lỗi gán quyền');
+    }
+    return false;
+  },
+  getAllClaimsByUser: async (params: {
+    userName: string;
+  }): Promise<{type: string; value: string}[] | undefined> => {
+    try {
+      const res = await accountApi.getAllClaimsByUser(params);
+      return res;
+    } catch (error) {
+      console.log('Lỗi get all user');
+    }
+  },
+  removeClaimToUser: async (data: {
+    userName: string;
+    claimName: string;
+    value: string;
+  }): Promise<any> => {
+    try {
+      const res = await accountApi.removeClaimToUser(data);
       if (res.result) {
         store.dispatch(setShowAlert({message: res.result, type: 'success'}));
         return true;

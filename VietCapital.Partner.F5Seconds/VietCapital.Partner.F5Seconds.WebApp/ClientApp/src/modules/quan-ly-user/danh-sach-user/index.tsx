@@ -15,11 +15,19 @@ import {useAppSelector} from '../../../redux/hooks';
 import {selectQuyen} from '../../../redux/slice/auth';
 import {accountService} from '../../../services';
 import {colors} from '../../../theme';
+import DialogGanQuyen from './dialog-gan-quyen';
 import DialogUser from './dialog-user';
 
 const DanhSachUser = () => {
   const location = useLocation();
   const [checkQuyen] = useCheckQuyen();
+  const [openDialogGanQuyen, setOpenDialogGanQuyen] = useState<{
+    open: boolean;
+    id?: string | null;
+  }>({
+    open: false,
+    id: null,
+  });
   const {enqueueSnackbar} = useSnackbar();
   const queryParams = queryString.parse(location.search);
   const navigate = useNavigate();
@@ -30,7 +38,7 @@ const DanhSachUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const {height} = useWindowDimensions();
   const [listUser, setListUser] = useState([]);
-  const [isOpenDelete, setIsOpenDelete] = useState({visible: false, id: ''});
+  const [isOpenDelete, setIsOpenDelete] = useState({visible: false, row: {username: ''}});
   const [updating, setIsUpdating] = useState(false);
   const [filters, setFilters] = React.useState({
     ...queryParams,
@@ -73,7 +81,7 @@ const DanhSachUser = () => {
                 color="error"
                 onClick={e => {
                   e.stopPropagation();
-                  setIsOpenDelete({visible: true, id: row.id});
+                  setIsOpenDelete({visible: true, row: row});
                 }}
               >
                 <Trash color={colors.error} />
@@ -96,7 +104,7 @@ const DanhSachUser = () => {
   const handleDelete = async () => {
     setIsUpdating(true);
     setIsOpenDelete(prev => ({...prev, visible: false}));
-    const res = await accountService.deleteRole(isOpenDelete.id);
+    const res = await accountService.removeUser({userName: isOpenDelete.row?.username});
     if (res) {
       getList();
     }
@@ -112,6 +120,8 @@ const DanhSachUser = () => {
     getList();
   }, []);
 
+  const handleCloseDialogGanQuyen = () => setOpenDialogGanQuyen(prev => ({...prev, open: false}));
+
   if (!checkQuyen('seen')) {
     navigate('/404');
   }
@@ -119,6 +129,18 @@ const DanhSachUser = () => {
     <Page title="Danh sách user">
       {checkQuyen('create') && (
         <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
+          {checkQuyen('edit') && (
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{marginRight: 1}}
+              onClick={() => {
+                setOpenDialogGanQuyen(prev => ({open: true}));
+              }}
+            >
+              Gán quyền
+            </Button>
+          )}
           <Button
             variant="contained"
             onClick={() => {
@@ -157,6 +179,13 @@ const DanhSachUser = () => {
           id={openDialog.id}
           onSubmit={handleSubmitUser}
           onClose={handleCloseDialog}
+        />
+      )}
+      {openDialogGanQuyen.open && (
+        <DialogGanQuyen
+          open={openDialogGanQuyen.open}
+          id={openDialogGanQuyen.id}
+          onClose={handleCloseDialogGanQuyen}
         />
       )}
       <DialogConfirm

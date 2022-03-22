@@ -19,6 +19,10 @@ const accountApi = {
     axiosClient.get('/account/getAllUsersByRole', {params}),
   addUsersToRole: (params: any, data: any): Promise<any> =>
     axiosClient.post('/account/addUsersToRole?roleName=' + params?.roleName, data),
+  addUserToRole: (params: {userName: string; rolename: string}): Promise<any> =>
+    axiosClient.post(`/account/addUserToRole?${queryString.stringify(params)}`),
+  removeUserFromRole: (params: {userName: string; rolename: string}): Promise<any> =>
+    axiosClient.delete(`/account/removeUserFromRole?${queryString.stringify(params)}`),
   //role
   getAllRole: (): Promise<Role[]> => axiosClient.get('/account/role'),
   createRole: (roleName: string): Promise<{result?: string; error?: string}> => {
@@ -34,13 +38,23 @@ const accountApi = {
     return axiosClient.put(url);
   },
 
-  //claim
+  //claim role
   addClaimToRole: (params: {roleName: string; claimName: string; value: string}): Promise<any> =>
     axiosClient.post(`/account/addClaimToRoles?${queryString.stringify(params)}`),
   getAllClaimsInRole: (params: any): Promise<{clams: string[]}> =>
     axiosClient.get('/account/GetAllClaimsInRole', {params}),
   removeClaimToRole: (params: {roleName: string; claimName: string; value: string}): Promise<any> =>
     axiosClient.delete(`/account/removeClaimToRole?${queryString.stringify(params)}`),
+
+  // claim user
+  addClaimToUser: (params: {userName: string; claimName: string; value: string}): Promise<any> =>
+    axiosClient.post(`/account/addClaimToUser?${queryString.stringify(params)}`),
+  getAllClaimsByUser: (params: {userName: string}): Promise<{type: string; value: string}[]> => {
+    console.log({params});
+    return axiosClient.get(`/account/GetAllClaimByUser?userName=${params.userName}`);
+  },
+  removeClaimToUser: (params: {userName: string; claimName: string; value: string}): Promise<any> =>
+    axiosClient.delete(`/account/removeClaimToUser?${queryString.stringify(params)}`),
 };
 
 export default accountApi;

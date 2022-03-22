@@ -1,20 +1,17 @@
-import {Create} from '@mui/icons-material';
 import {
   Card,
   CircularProgress,
-  Divider,
   Grid,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   ListSubheader,
-  Paper,
   Stack,
   Switch,
 } from '@mui/material';
-import {Add, AddSquare, Edit, Eye, Trash} from 'iconsax-react';
-import React, {FC, useEffect, useState} from 'react';
+import {AddSquare, Edit, Eye, Trash} from 'iconsax-react';
+import {FC, useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {DialogBase} from '../../../../components/base';
 import LoadingOverlay from '../../../../components/base/loading-overlay';
@@ -26,10 +23,9 @@ interface Props {
   open: boolean;
   id?: number | string | null;
   onClose: () => void;
-  onSubmit: (data: any) => void;
 }
 
-const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
+const DialogGanQuyen: FC<Props> = ({open = false, id, onClose}) => {
   const form = useForm({
     defaultValues: {
       role: null,
@@ -69,34 +65,24 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
     getUsers();
   }, []);
 
-  const role: any = watch('role');
+  const user: any = watch('user');
+  console.log({user});
 
   useEffect(() => {
     const getClaim = () => {
-      accountService.getAllClaimsInRole({roleName: role?.name}).then(res => {
+      accountService.getAllClaimsByUser({userName: user?.value}).then(res => {
         console.log('====================================');
         // console.log(res);
         console.log('====================================');
-        const list = res?.clams;
+        const list = res?.filter(item => item.type === 'quyen')?.map(item => item.value);
         list && setCheckedList(list);
       });
     };
 
-    if (role) {
-      accountService.getAllUsersByRole({roleId: role?.id}).then(res => {
-        console.log('====================================');
-        // console.log(res);
-        console.log('====================================');
-        const list = res?.listUser;
-        const users = listUsers
-          ?.filter((item: any) => list?.includes(item?.username))
-          .map((item: any) => ({...item, label: item?.name, value: item?.email}));
-
-        setValue<any>('user', users);
-      });
+    if (user?.value) {
       getClaim();
     }
-  }, [role]);
+  }, [user]);
 
   return (
     <DialogBase
@@ -104,8 +90,8 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
       title="Gán quyền"
       onClose={onClose}
       textPositive="Gán quyền"
-      onSubmit={handleSubmit(onSubmit)}
       hasSubmitButton={false}
+      onSubmit={() => {}}
     >
       {isLoading ? (
         <Stack direction="row" justifyContent="center">
@@ -113,7 +99,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
         </Stack>
       ) : (
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <AutocompleteAsyncField
               form={form}
               name="role"
@@ -127,7 +113,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
               }}
               loading={isLoadingRole}
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12}>
             <AutocompleteAsyncField
               form={form}
@@ -135,35 +121,19 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
               label="Nhân viên *"
               items={listUsers?.map((item: any) => ({
                 ...item,
-                label: item.name,
-                value: item.email,
+                label: item.username,
+                value: item.username,
               }))}
-              multiple
-              onChange={(value, reason, details) => {
-                if (reason === 'selectOption') {
-                  details &&
-                    accountService.addUserToRole({
-                      userName: details?.option?.username,
-                      rolename: role?.name,
-                    });
-                } else if (reason === 'removeOption') {
-                  details &&
-                    accountService.removeUserFromRole({
-                      userName: details?.option?.username,
-                      rolename: role?.name,
-                    });
-                }
-              }}
               loading={isLoadingRole}
             />
           </Grid>
 
-          {role?.name && (
+          {user?.value && (
             <>
               <Grid item xs={12} md={6} lg={4}>
                 <Card sx={{p: 2}} variant="outlined">
                   <ListThaoTac
-                    roleName={role.name}
+                    userName={user.username}
                     title="Danh sách user"
                     checkedList={checkedList}
                     onChange={setCheckedList}
@@ -175,7 +145,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
               <Grid item xs={12} md={6} lg={4}>
                 <Card sx={{p: 2}} variant="outlined">
                   <ListThaoTac
-                    roleName={role.name}
+                    userName={user.username}
                     title="Phân quyền user"
                     checkedList={checkedList}
                     onChange={setCheckedList}
@@ -187,7 +157,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
               <Grid item xs={12} md={6} lg={4}>
                 <Card sx={{p: 2}} variant="outlined">
                   <ListThaoTac
-                    roleName={role.name}
+                    userName={user.username}
                     title="Danh mục"
                     checkedList={checkedList}
                     onChange={setCheckedList}
@@ -199,7 +169,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
               <Grid item xs={12} md={6} lg={4}>
                 <Card sx={{p: 2}} variant="outlined">
                   <ListThaoTac
-                    roleName={role.name}
+                    userName={user.username}
                     title="Sản phẩm"
                     checkedList={checkedList}
                     onChange={setCheckedList}
@@ -211,7 +181,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
               <Grid item xs={12} md={6} lg={4}>
                 <Card sx={{p: 2}} variant="outlined">
                   <ListThaoTac
-                    roleName={role.name}
+                    userName={user.username}
                     title="Danh sách đơn hàng"
                     checkedList={checkedList}
                     onChange={setCheckedList}
@@ -223,7 +193,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
               <Grid item xs={12} md={6} lg={4}>
                 <Card sx={{p: 2}} variant="outlined">
                   <ListThaoTac
-                    roleName={role.name}
+                    userName={user.username}
                     title="Đối soát"
                     checkedList={checkedList}
                     onChange={setCheckedList}
@@ -242,7 +212,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
 };
 
 interface ListThaoTacProps {
-  roleName: string;
+  userName: string;
   title: string;
   checkedList: string[];
   onChange: (value: string[]) => void;
@@ -251,7 +221,7 @@ interface ListThaoTacProps {
 }
 
 export const ListThaoTac: FC<ListThaoTacProps> = ({
-  roleName,
+  userName,
   checkedList,
   onChange,
   title,
@@ -270,16 +240,16 @@ export const ListThaoTac: FC<ListThaoTacProps> = ({
     const newChecked = [...checkedList];
 
     if (currentIndex === -1) {
-      const res = await accountService.addClaimToRole({
-        roleName,
+      const res = await accountService.addClaimToUser({
+        userName,
         claimName: 'quyen',
         value,
       });
       res && newChecked.push(value);
     } else {
-      const res = await accountService.removeClaimToRole({
+      const res = await accountService.removeClaimToUser({
         value: checkedList[currentIndex],
-        roleName,
+        userName,
         claimName: 'quyen',
       });
       res && newChecked.splice(currentIndex, 1);
@@ -319,7 +289,7 @@ export const ListThaoTac: FC<ListThaoTacProps> = ({
     >
       {listQuyen.map((item, index) => {
         return (
-          <ListItem disablePadding>
+          <ListItem key={index + 1} disablePadding>
             <ListItemIcon>
               {item === 'seen' ? (
                 <Eye size="16" />
