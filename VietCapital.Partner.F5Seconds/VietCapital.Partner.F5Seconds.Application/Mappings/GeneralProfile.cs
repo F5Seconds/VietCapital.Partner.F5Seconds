@@ -48,6 +48,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Mappings
                     Image = c.Category.Image,
                     Status = c.Category.Status
                 })));
+            CreateMap<ProductDTO, F5ProductOutSideResponse>();
             CreateMap<CreateProductCommand, Product>();
             CreateMap<Product, GetAllProductsViewModel>().ReverseMap();
             CreateMap<GetAllProductsQuery, GetAllProductsParameter>();
