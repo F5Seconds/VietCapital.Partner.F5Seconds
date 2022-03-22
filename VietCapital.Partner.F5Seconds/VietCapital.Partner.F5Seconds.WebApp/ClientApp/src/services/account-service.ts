@@ -43,6 +43,21 @@ const accountService = {
       console.log('Lỗi get user');
     }
   },
+  resetPassword: async (data: {
+    email: string;
+    token: string;
+    password: string;
+    confirmPassword: string;
+  }): Promise<any> => {
+    try {
+      const res = await accountApi.resetPassword(data);
+      store.dispatch(setShowAlert({message: 'Đổi mật khẩu thành công', type: 'success'}));
+      return res;
+    } catch (error) {
+      store.dispatch(setShowAlert({message: 'Đã xảy ra lỗi', type: 'error'}));
+      console.log('Lỗi get user');
+    }
+  },
   updateUser: async (id: string | number | null, data: any): Promise<any> => {
     try {
       const res = await accountApi.updateUser(id, data);

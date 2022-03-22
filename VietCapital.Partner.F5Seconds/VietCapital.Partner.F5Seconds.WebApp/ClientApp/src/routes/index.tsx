@@ -13,6 +13,7 @@ import PhanQuyenUser from '../modules/quan-ly-user/phan-quyen-user';
 import ChiTietSanPhamPage from '../modules/san-pham/chi-tiet';
 import DanhSachSanPhamPage from '../modules/san-pham/danh-sach';
 import TongQuanPage from '../modules/thong-ke';
+import ThongTinCaNhanPage from '../modules/thong-tin-ca-nhan';
 import {useAppSelector} from '../redux/hooks';
 import {selectJWT} from '../redux/slice/auth';
 
@@ -35,6 +36,10 @@ export const routes: RouteObject[] = [
     ),
     children: [
       {index: true, element: <Navigate to="/thong-ke" />},
+      {
+        path: 'thong-tin-ca-nhan',
+        element: <ThongTinCaNhanPage />,
+      },
       {
         path: 'thong-ke',
         element: <TongQuanPage />,

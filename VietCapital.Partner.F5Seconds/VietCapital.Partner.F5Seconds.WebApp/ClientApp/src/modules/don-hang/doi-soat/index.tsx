@@ -5,8 +5,9 @@ import {TickCircle} from 'iconsax-react';
 import moment from 'moment';
 import queryString from 'query-string';
 import React, {useState} from 'react';
-import CSVReader from 'react-csv-reader';
 import {useLocation, useNavigate} from 'react-router-dom';
+import readXlsxFile from 'read-excel-file';
+import writeXlsxFile from 'write-excel-file';
 import {DataTable, SearchBar} from '../../../components/base';
 import useCheckQuyen from '../../../hooks/useCheckQuyen';
 import Page from '../../../layouts/Page';
@@ -66,14 +67,14 @@ const DoiSoatPage = () => {
     },
     {field: 'productId', headerName: 'Mã sản phẩm'},
 
-    {
-      field: 'productName',
-      headerName: 'Tên sản phẩm',
-    },
-    {
-      field: 'productPoint',
-      headerName: 'Điểm',
-    },
+    // {
+    //   field: 'productName',
+    //   headerName: 'Tên sản phẩm',
+    // },
+    // {
+    //   field: 'productPoint',
+    //   headerName: 'Điểm',
+    // },
     {
       field: 'voucherCode',
       headerName: 'Mã voucher',
@@ -88,11 +89,11 @@ const DoiSoatPage = () => {
       headerName: 'Ngày giao dịch',
       renderCell: (row: any) => new Date(row.created).toLocaleDateString('vi'),
     },
-    {
-      field: 'expiryDate',
-      headerName: 'Ngày hết hạn',
-      renderCell: (row: any) => new Date(row.expiryDate).toLocaleDateString('vi'),
-    },
+    // {
+    //   field: 'expiryDate',
+    //   headerName: 'Ngày hết hạn',
+    //   renderCell: (row: any) => new Date(row.expiryDate).toLocaleDateString('vi'),
+    // },
     // {
     //   field: '',
     //   headerName: '',
@@ -129,7 +130,7 @@ const DoiSoatPage = () => {
             voucherCode: item.voucherCode,
             state: item.state,
             customerId: item.customerId,
-            created: item.created,
+            created: moment(item.created, 'DD/MM/YYYY').toDate(),
           })),
         })
         .then(res => {
@@ -168,6 +169,22 @@ const DoiSoatPage = () => {
   if (!checkQuyen('seen')) {
     navigate('/404');
   }
+  const schema = columns.map(item => ({
+    column: item.headerName,
+    type: String,
+    value: (row: {[x: string]: string}) => row?.[`${item.field}`],
+  }));
+
+  const getData = (list: Transaction[]): any => {
+    return list.map(item => ({
+      transactionId: item.transactionId + '',
+      customerId: item.customerId,
+      productId: item.productId + '',
+      voucherCode: item.voucherCode + '',
+      state: item.state + '',
+      created: new Date(item.created).toLocaleDateString('vi'),
+    }));
+  };
   return (
     <Page title="Đối soát đơn hàng">
       <Card sx={{p: 1, mb: 2}}>
@@ -192,50 +209,58 @@ const DoiSoatPage = () => {
             />
           </LocalizationProvider>
           <label htmlFor="upload">
-            <CSVReader
-              cssClass="csv-reader-input"
-              onFileLoaded={(data, fileInfo, originalFile) =>
-                setListUpload(prev => {
-                  // console.log(data);
-                  return data.map(item => {
-                    // console.log(item);
-                    let object: any = {};
-                    columns.forEach(i => {
-                      if (i.headerName === 'Ngày hết hạn' || i.headerName === 'Ngày giao dịch') {
-                        Object.assign(object, {
-                          [i.field]: moment(item[`${i.headerName}`], 'DD/MM/YYYY').toDate(),
-                        });
-                        return;
-                      }
-                      Object.assign(object, {[i.field]: item[`${i.headerName}`]});
-                    });
-                    return object;
+            <Input
+              onChange={e => {
+                e.target?.files?.[0] &&
+                  readXlsxFile(e.target.files[0], {
+                    map: columns.reduce((a, v) => ({...a, [v.headerName]: v.field}), {}),
+                  }).then(({rows}: any) => {
+                    setListUpload(rows);
                   });
-                })
-              }
-              onError={error => console.log(error)}
-              parserOptions={{
-                header: true,
-                dynamicTyping: true,
-                skipEmptyLines: true,
-                transformHeader: header => header,
-                quoteChar: "'",
               }}
-              inputId="upload"
-              inputStyle={{display: 'none'}}
+              accept="image/*.xlsx"
+              id="upload"
+              type="file"
             />
             <Button
               component="span"
               variant="outlined"
               startIcon={listUpload.length ? <TickCircle size="16" variant="Bulk" /> : null}
             >
-              Tải lên file CSV
+              Tải lên file Excel
             </Button>
           </label>
 
           <Button variant="contained" onClick={handleDoiSoat}>
             Đối soát{' '}
           </Button>
+          {(data.doiSoatKhop.length > 0 ||
+            data.doiSoatKhongKhopF5s.length > 0 ||
+            data.doiSoatKhongKhopBvb.length > 0) && (
+            <Button
+              variant="contained"
+              onClick={async () => {
+                await writeXlsxFile(
+                  [
+                    getData(data.doiSoatKhop),
+                    getData(data.doiSoatKhongKhopF5s),
+                    getData(data.doiSoatKhongKhopBvb),
+                  ],
+                  {
+                    schema: [schema, schema, schema],
+                    sheets: [
+                      'Đối soát khớp',
+                      'Đối soát không khớp F5s',
+                      'Đối soát không khớp Bản Việt',
+                    ],
+                    fileName: `KetQua_DoiSoat.xlsx`,
+                  }
+                );
+              }}
+            >
+              Tải xuống kết quả
+            </Button>
+          )}
         </Stack>
       </Card>
 

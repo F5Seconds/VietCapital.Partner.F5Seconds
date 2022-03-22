@@ -8,6 +8,12 @@ const accountApi = {
       password,
     }),
   register: (data: Account): Promise<any> => axiosClient.post('/account/register', data),
+  resetPassword: (data: {
+    email: string;
+    token: string;
+    password: string;
+    confirmPassword: string;
+  }): Promise<any> => axiosClient.post('/account/reset-password', data),
   getAllUser: (): Promise<any> => axiosClient.get('/account/getAllUser'),
   getUserById: (id: string | number | null): Promise<any> =>
     axiosClient.get(`/account/getUserById?id=${id}`),

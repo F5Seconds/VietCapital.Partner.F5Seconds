@@ -12,24 +12,22 @@ import {
 import {
   Bag2,
   Chart1,
-  Dash,
   Firstline,
   KeyboardOpen,
   Logout,
   TaskSquare,
   UserOctagon,
 } from 'iconsax-react';
-import {FC, useEffect, useState} from 'react';
+import {FC, useEffect, useLayoutEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import {selectJWT, setAuth} from '../../redux/slice/auth';
+import {selectAuth, setAuth} from '../../redux/slice/auth';
 import {accountService} from '../../services';
 import {colors} from '../../theme';
 // import {authActions} from 'src/redux/slice/authSlice';
 // import {nhanSuService} from 'src/services';
 // import {avatar} from 'src/utils';
 import NavItem from './NavItem';
-import jwt_decode from 'jwt-decode';
 
 export const items = [
   {
@@ -122,17 +120,30 @@ interface Props {
 const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
   const location = useLocation();
   const navigate = useNavigate();
-  // const {jwt, email} = useAppSelector(state => state.auth);
+  const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
   const jwt = localStorage.getItem('jwt');
-  const auth: any = jwt && jwt_decode(jwt);
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
   }, [location.pathname]);
+
+  useLayoutEffect(() => {
+    auth?.id &&
+      accountService.getUserById(auth?.id).then(res => {
+        dispatch(
+          setAuth({
+            email: res?.email,
+            userName: res?.username,
+            firstName: res?.firstName,
+            lastName: res?.lastName,
+          })
+        );
+      });
+  }, [auth?.jwToken]);
 
   const content = (
     <Box className="sidebar" sx={{p: 2, overflow: 'auto'}}>
@@ -185,7 +196,7 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
                 onClick={() => navigate('/thong-tin-ca-nhan')}
                 sx={{bgcolor: 'red', cursor: 'pointer'}}
               >
-                {auth?.email[0]?.toUpperCase()}
+                {auth?.email?.[0]?.toUpperCase()}
               </Avatar>
             ) : (
               <Skeleton
@@ -198,7 +209,7 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
             )}
             {auth ? (
               <Typography variant="h5" component="h5" color="#fff" marginTop={1} textAlign="center">
-                {auth?.email}
+                {auth?.lastName ? auth?.lastName + ' ' + auth?.firstName : null}
               </Typography>
             ) : (
               <Skeleton

@@ -12,6 +12,8 @@ interface CounterState {
   roles?: string[];
   userName?: string;
   quyen?: string[];
+  firstName?: string;
+  lastName?: string;
 }
 
 // Define the initial state using that type
@@ -33,17 +35,20 @@ export const counterSlice = createSlice({
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
     setAuth: (state, action: PayloadAction<CounterState>) => {
-      const {email, id, isVerified, jwToken, refreshToken, roles, userName} = action.payload;
+      const {email, id, isVerified, jwToken, refreshToken, roles, userName, firstName, lastName} =
+        action.payload;
       const jwtDecode: any = jwToken && jwt_decode(jwToken);
 
-      state.email = email;
+      state.email = email || state.email;
       state.isVerified = isVerified;
-      state.jwToken = jwToken;
-      state.id = id;
-      state.refreshToken = refreshToken;
-      state.roles = jwtDecode?.roles;
-      state.userName = jwtDecode?.userName;
-      state.quyen = jwtDecode?.quyen;
+      state.jwToken = jwToken || state.jwToken;
+      state.id = jwtDecode?.uid || id || state.id;
+      state.refreshToken = refreshToken || state.refreshToken;
+      state.roles = jwtDecode?.roles || state.roles;
+      state.userName = jwtDecode?.userName || userName || state.userName;
+      state.quyen = jwtDecode?.quyen || state.quyen;
+      state.firstName = firstName || state.firstName;
+      state.lastName = lastName || state.lastName;
     },
   },
 });
@@ -54,5 +59,6 @@ export const {setAuth} = counterSlice.actions;
 export const selectIsVerified = (state: RootState) => state.auth.isVerified;
 export const selectJWT = (state: RootState) => state.auth.jwToken;
 export const selectQuyen = (state: RootState) => state.auth.quyen;
+export const selectAuth = (state: RootState) => state.auth;
 
 export default counterSlice.reducer;
