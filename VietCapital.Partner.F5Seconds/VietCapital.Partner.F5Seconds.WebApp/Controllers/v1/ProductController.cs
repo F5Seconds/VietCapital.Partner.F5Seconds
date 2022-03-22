@@ -24,8 +24,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         }
         // GET: api/<controller>
         [HttpGet]
-        [AllowAnonymous]
-
+        [Authorize(Policy = "sanPhamSeenPolicy")]
         public async Task<IActionResult> Get([FromQuery] GetAllProductsParameter filter)
         {
 
@@ -33,44 +32,37 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         }
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        [AllowAnonymous]
-
+        [Authorize(Policy = "sanPhamSeenPolicy")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));
         }
         // POST api/<controller>
-        [HttpPost]
-        // [Authorize]
-        [AllowAnonymous]
+        // [HttpPost]
 
-        public async Task<IActionResult> Post(CreateProductCommand command)
-        {
-            return Ok(await Mediator.Send(command));
-        }
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        // [Authorize]
-        [AllowAnonymous]
+        // public async Task<IActionResult> Post(CreateProductCommand command)
+        // {
+        //     return Ok(await Mediator.Send(command));
+        // }
+        // // PUT api/<controller>/5
+        // [HttpPut("{id}")]
 
-        public async Task<IActionResult> Put(int id, UpdateProductCommand command)
-        {
-           if (id != command.Id)
-           {
-               return BadRequest();
-           }
-           return Ok(await Mediator.Send(command));
-        }
+        // public async Task<IActionResult> Put(int id, UpdateProductCommand command)
+        // {
+        //    if (id != command.Id)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    return Ok(await Mediator.Send(command));
+        // }
 
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        // [Authorize]
-        [AllowAnonymous]
+        // // DELETE api/<controller>/5
+        // [HttpDelete("{id}")]
 
-        public async Task<IActionResult> Delete(int id)
-        {
-           return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
-        }
+        // public async Task<IActionResult> Delete(int id)
+        // {
+        //    return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
+        // }
 
         [HttpGet("sync")]
         public async Task<IActionResult> SyncProduct()

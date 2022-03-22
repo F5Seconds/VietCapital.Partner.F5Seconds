@@ -16,8 +16,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
     {
         // GET: api/<controller>
         [HttpGet]
-        [AllowAnonymous]
-
+        [Authorize(Policy = "danhMucSeenPolicy")]
         public async Task<IActionResult> Get([FromQuery] GetAllCategoriesParameter filter)
         {
 
@@ -25,7 +24,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         }
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "danhMucSeenPolicy")]
 
         public async Task<IActionResult> Get(int id)
         {
@@ -33,18 +32,14 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         }
         // POST api/<controller>
         [HttpPost]
-        // [Authorize]
-        [AllowAnonymous]
-
+        [Authorize(Policy = "danhMucCreatePolicy")]
         public async Task<IActionResult> Post(CreateCategoriesCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        // [Authorize]
-        [AllowAnonymous]
-
+        [Authorize(Policy = "danhMucEditPolicy")]
         public async Task<IActionResult> Put(int id, UpdateCategoryCommand command)
         {
            if (id != command.Id)
@@ -56,9 +51,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        // [Authorize]
-        [AllowAnonymous]
-
+        [Authorize(Policy = "danhMucDeletePolicy")]
         public async Task<IActionResult> Delete(int id)
         {
            return Ok(await Mediator.Send(new DeleteCategoryByIdCommand { Id = id }));

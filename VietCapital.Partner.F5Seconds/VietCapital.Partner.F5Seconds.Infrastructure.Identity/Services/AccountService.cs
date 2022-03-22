@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.Cache;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -55,16 +51,16 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                throw new ApiException($"No Accounts Registered with {request.Email}.");
+                throw new ApiException($"Không có tài khoản nào với mail {request.Email}.");
             }
             var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
             if (!result.Succeeded)
             {
-                throw new ApiException($"Invalid Credentials for '{request.Email}'.");
+                throw new ApiException($"Thông tin đăng nhập không hợp lệ cho '{request.Email}'.");
             }
             if (!user.EmailConfirmed)
             {
-                throw new ApiException($"Account Not Confirmed for '{request.Email}'.");
+                throw new ApiException($"Tài khoản chưa được xác nhận cho '{request.Email}'.");
             }
             JwtSecurityToken jwtSecurityToken = await GenerateJWToken(user);
             AuthenticationResponse response = new AuthenticationResponse();
@@ -77,7 +73,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             response.IsVerified = user.EmailConfirmed;
             var refreshToken = GenerateRefreshToken(ipAddress);
             response.RefreshToken = refreshToken.Token;
-            return new Response<AuthenticationResponse>(response, $"Authenticated {user.UserName}");
+            return new Response<AuthenticationResponse>(response, $"Đã xác thực {user.UserName}");
         }
 
         public async Task<Response<string>> RegisterAsync(RegisterRequest request, string origin)
@@ -85,7 +81,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
             if (userWithSameUserName != null)
             {
-                throw new ApiException($"Username '{request.UserName}' is already taken.");
+                throw new ApiException($"Tên tài khoản '{request.UserName}' đã tồn tại.");
             }
             var user = new ApplicationUser
             {
@@ -116,7 +112,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             }
             else
             {
-                throw new ApiException($"Email {request.Email } is already registered.");
+                throw new ApiException($"Email {request.Email } đã tồn tại.");
             }
         }
 
@@ -213,7 +209,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 {
                     Result = false,
                     Errors = new List<string>(){
-                                                "Invalid payload"
+                                                "Không hợp lệ"
                                             }
                 };
             }
@@ -301,15 +297,15 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
 
                 if (roleResult.Succeeded)
                 {
-                    return new { result = $"Role {roleName} added successfully" };
+                    return new { result = $"Quyền {roleName} thêm thành công" };
                 }
                 else
                 {
-                    return new { error = $"Issue adding the new {roleName} role" };
+                    return new { error = $"Sự cố khi thêm  mới quyền {roleName}" };
                 }
             }
 
-            return new { error = "Role already exist" };
+            return new { error = "Quyền đã tồn tại" };
         }
 
         public async Task<object> AddUserToRole(string userName, string roleName)
@@ -365,16 +361,16 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                     {
                         await _userManager.RemoveClaimAsync(user, new Claim(item.Type, item.Value));
                     }
-                    return new { result = $"User {user.UserName} removed from the {roleName} role" };
+                    return new { result = $"Người dùng {user.UserName} đã được xóa khỏi quyền {roleName}" };
                 }
                 else
                 {
-                    return new { error = $"Error: Unable to removed user {user.UserName} from the {roleName} role" };
+                    return new { error = $"Error: Không thể xóa người dùng {user.UserName} ra khỏi quyền {roleName}" };
                 }
             }
 
             // User doesn't exist
-            return new { error = "Unable to find user" };
+            return new { error = "Không thể tìm thấy người dùng" };
         }
 
         public async Task<object> DeleteRole(string id)
@@ -390,14 +386,14 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
 
                     if (result.Succeeded)
                     {
-                        return new { result = $"removed from the {rolename} role" };
+                        return new { result = $"Đã xóa quyền {rolename}" };
                     }
                     else
                     {
-                        return new { error = $"Error: Unable to removed  the {rolename} role" };
+                        return new { error = $"Error: Không thể xóa quyền {rolename}" };
                     }
                 }
-                return new { error = "Unable to find role" };
+                return new { error = "Không tìm thấy quyền" };
             }
             return new { error = "Đã có nhân viên trong quyền này" };
 
@@ -415,14 +411,14 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
 
                 if (result.Succeeded)
                 {
-                    return new { result = $"update from the {rolename} role to {newRoleName}" };
+                    return new { result = $"Cập nhật quyền {rolename} thành quyền {newRoleName}" };
                 }
                 else
                 {
-                    return new { error = $"Error: Unable to update  the {rolename} role to {newRoleName}" };
+                    return new { error = $"Error:Không thể cập nhật quyền {rolename} thành quyền {newRoleName}" };
                 }
             }
-            return new { error = "Unable to find role" };
+            return new { error = "Không thể tìm thấy quyền" };
 
 
         }
@@ -440,6 +436,48 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             return new { listUser = danhsachnhanvien };
         }
         //clam
+        public async Task<object> AddClaimToUser(string userName, string claimName, string value)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user != null)
+            {
+                await _userManager.AddClaimAsync(user, new Claim(claimName, value));
+                return new { result = $"Thêm thành công" };
+            }
+            return new { result = $"Nhân viên không tồn tại" };
+        }
+        public async Task<object> RemoveClaimToUser(string username, string ClaimName, string value)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user != null)
+            {
+                try
+                {
+                    await _userManager.RemoveClaimAsync(user, new Claim(ClaimName, value));
+
+                    return new { result = $"Người dùng {user.UserName} đã được xóa yêu cầu {ClaimName}" };
+
+                }
+                catch (Exception e)
+                {
+                    return new { error = $"Error: Không thể xóa yêu cầu {ClaimName} với thao tác {value} ra khỏi người dùng {user.UserName} " };
+                }
+            }
+
+            // User doesn't exist
+            return new { error = "Không thể tìm thấy người dùng" };
+        }
+        public async Task<object> GetAllClaimByUser(string username)
+        {
+            var nhanvien = await _userManager.FindByNameAsync(username);
+            if(nhanvien != null){
+               return await _userManager.GetClaimsAsync(nhanvien); 
+            }
+            return new { error = "Không thể tìm thấy người dùng" };
+        }
+
+
         public async Task<object> AddClaimToRoles(string role, string claimName, string value)
         {
             var getrole = await _roleManager.FindByNameAsync(role);
@@ -450,7 +488,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 {
                     if (item.Value == value && item.Type == claimName)
                     {
-                        return new { error = $"Error: The claim {claimName} to the  User {getrole.Name} has been use" };
+                        return new { error = $"Error: Yêu cầu {claimName} với thao tác {value} cho quyền {getrole.Name} đã được sử dụng" };
                     }
                 }
                 var userClaim = new Claim(claimName, value);
@@ -464,16 +502,15 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                     {
                         await _userManager.AddClaimAsync(item, new Claim(claimName, value));
                     }
-                    return new { result = $"the claim {claimName} add to the  Role {getrole.Name}" };
+                    return new { result = $"Yêu cầu {claimName} với thao tác {value} đã được thêm vào quyền {getrole.Name}" };
                 }
                 else
                 {
-                    return new { error = $"Error: Unable to add the claim {claimName} to the  Role {getrole.Name}" };
+                    return new { error = $"Error: Không thể thêm yêu cầu {claimName} với thao tác {value} cho quyền {getrole.Name}" };
                 }
             }
 
-            // User doesn't exist
-            return new { error = "Unable to find user" };
+            return new { error = "Không thể tìm thấy quyền" };
         }
 
         public async Task<object> RemoveClaimToRole(string role, string claimName, string value)
@@ -487,7 +524,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             }
             if (claim == null)
             {
-                return new { error = "Unable to find claim" };
+                return new { error = "Không tìm thấy yêu cầu" };
             }
             if (getrole != null)
             {
@@ -503,16 +540,15 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                     {
                         await _userManager.RemoveClaimAsync(item, new Claim(claimName, value));
                     }
-                    return new { result = $"the claim {claimName} remove to the  Role {getrole.Name}" };
+                    return new { result = $"Yêu cầu {claimName} với thao tác {value} đã được xóa khỏi quyền {getrole.Name}" };
                 }
                 else
                 {
-                    return new { error = $"Error: Unable to remove the claim {claimName} to the  Role {getrole.Name}" };
+                    return new { error = $"Error: Không thể tìm thấy yêu cầu {claimName} với thao tác {value} cho quyền {getrole.Name}" };
                 }
             }
 
-            // User doesn't exist
-            return new { error = "Unable to find user" };
+            return new { error = "Không thể tìm thấy quyền" };
         }
 
         public async Task<object> GetAllClaimsInRole(string rolename)
@@ -576,9 +612,35 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                     username = user.UserName
                 };
             }
-            return new { error = "Unable to find user" };
+            return new { error = "Không thể tìm thấy người dùng" };
 
 
+        }
+
+        public async Task<object> RemoveUser(string userName)
+        {
+             var user = await _userManager.FindByNameAsync(userName);
+
+            if (user != null)
+            {
+                var result = await _userManager.GetRolesAsync(user);
+
+                if (result != null)
+                {
+                    return new { error = $"Error: Không thể xóa người dùng {user.UserName} do đã có trong một quyền" };
+
+                }else{
+                    var userClaim = await _userManager.GetClaimsAsync(user);
+                    foreach (var item in userClaim)
+                    {
+                        await _userManager.RemoveClaimAsync(user, new Claim(item.Type, item.Value));
+                    }
+                    return new { result = $"Người dùng {user.UserName} đã được xóa" };
+                }
+            }
+
+            // User doesn't exist
+            return new { error = "Không thể tìm thấy người dùng" };
         }
     }
 }

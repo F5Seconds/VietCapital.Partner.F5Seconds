@@ -88,7 +88,8 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
             {
                 gateWayUri = Environment.GetEnvironmentVariable("GATEWAY_URI");
             }
-            services.AddHttpClient<IGatewayHttpClientService, GatewayHttpClientRepository>(c => {
+            services.AddHttpClient<IGatewayHttpClientService, GatewayHttpClientRepository>(c =>
+            {
                 c.BaseAddress = new Uri(gateWayUri);
             });
         }
@@ -157,7 +158,115 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Extensions
                 config.ReportApiVersions = true;
             });
         }
+        public static void AddAuthorizations(this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("adminPolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && claim.Value == "admin")
+                                 )
+                );
+                options.AddPolicy("userSeenPolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/quan-ly-user/danh-sach-user;seen" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("userCreatePolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/quan-ly-user/danh-sach-user;create" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("userEditPolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/quan-ly-user/danh-sach-user;edit" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("userDeletePolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/quan-ly-user/danh-sach-user;delete" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("sanPhamSeenPolicy",
+                 policy => policy.RequireAssertion(
+                      context => context.User.HasClaim(claim =>
+                                      claim.Type == "quyen" && (claim.Value == "/san-pham;seen" || claim.Value == "admin")
+                                  ))
+                 );
+                options.AddPolicy("sanPhamEditPolicy",
+                 policy => policy.RequireAssertion(
+                      context => context.User.HasClaim(claim =>
+                                      claim.Type == "quyen" && (claim.Value == "/san-pham;edit" || claim.Value == "admin")
+                                  ))
+                 );
+                options.AddPolicy("donHangSeenPolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/don-hang/danh-sach-don-hang;seen" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("phanQuyenDeletePolicy",
+                policy => policy.RequireAssertion(
+                context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/quan-ly-user/phan-quyen-user;delete" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("phanQuyenEditPolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/quan-ly-user/phan-quyen-user;edit" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("phanQuyenCreatePolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/quan-ly-user/phan-quyen-user;create" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("phanQuyenSeenPolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/quan-ly-user/phan-quyen-user;seen" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("danhMucSeenPolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/danh-muc;seen" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("danhMucCreatePolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/danh-muc;create" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("danhMucEditPolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/danh-muc;edit" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("danhMucDeletePolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/danh-muc;delete" || claim.Value == "admin")
+                                 ))
+                );
+                options.AddPolicy("doiSoatSeenPolicy",
+                policy => policy.RequireAssertion(
+                     context => context.User.HasClaim(claim =>
+                                     claim.Type == "quyen" && (claim.Value == "/don-hang/doi-soat;seen" || claim.Value == "admin")
+                                 ))
+                );
+            });
 
+        }
         public static void AddRepositoryExtension(this IServiceCollection services)
         {
             services.AddTransient<IProductRepository, ProductRepository>();
