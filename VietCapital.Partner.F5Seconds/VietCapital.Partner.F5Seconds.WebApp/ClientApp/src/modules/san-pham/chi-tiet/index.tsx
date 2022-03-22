@@ -205,7 +205,7 @@ const ChiTietSanPhamPage = () => {
                 <Typography component="div" color="text.secondary">
                   Cửa hàng áp dụng
                 </Typography>
-                <Card>
+                <Card variant="outlined">
                   <List>
                     {diaDiems.length === 0 && (
                       <ListItem>

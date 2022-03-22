@@ -103,7 +103,7 @@ export const routes: RouteObject[] = [
           },
         ],
       },
-      {path: '*', element: <NotFound />},
+      {path: '*', element: <Navigate to="/404" />},
     ],
   },
 
