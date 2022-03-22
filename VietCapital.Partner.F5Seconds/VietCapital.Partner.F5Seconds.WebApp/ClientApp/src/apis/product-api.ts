@@ -22,6 +22,10 @@ const productApi = {
     const url = `/product/${id}`;
     return axiosClient.delete(url);
   },
+  sync: (): Promise<any> => {
+    const url = `/product/sync`;
+    return axiosClient.get(url);
+  },
 };
 
 export default productApi;

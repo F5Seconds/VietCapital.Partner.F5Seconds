@@ -60,6 +60,17 @@ const productService = {
       store.dispatch(setShowAlert({type: 'error', message: 'Đã xảy ra lỗi'}));
     }
   },
+  sync: async (): Promise<any> => {
+    try {
+      const res = await productApi.sync();
+      if (res.succeeded) {
+        store.dispatch(setShowAlert({type: 'success', message: 'đồng bộ thành công'}));
+      }
+      return res.data;
+    } catch (error) {
+      store.dispatch(setShowAlert({type: 'error', message: 'Đã xảy ra lỗi'}));
+    }
+  },
 };
 
 export default productService;

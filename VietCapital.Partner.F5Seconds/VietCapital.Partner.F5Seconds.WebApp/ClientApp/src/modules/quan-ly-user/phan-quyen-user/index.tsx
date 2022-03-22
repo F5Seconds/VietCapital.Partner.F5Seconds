@@ -11,7 +11,6 @@ import {Role} from '../../../models';
 import {accountService} from '../../../services';
 import {colors} from '../../../theme';
 import DialogGanQuyen from './dialog-gan-quyen';
-import DialogPhanManHinh from './dialog-phan-man-hinh';
 import DialogRole from './dialog-role';
 
 const PhanQuyenUser = () => {
@@ -35,13 +34,7 @@ const PhanQuyenUser = () => {
     open: false,
     id: null,
   });
-  const [openDialogPhanManHinh, setOpenDialogPhanManHinh] = useState<{
-    open: boolean;
-    id?: string | null;
-  }>({
-    open: false,
-    id: null,
-  });
+
   const [isOpenDelete, setIsOpenDelete] = useState({visible: false, id: ''});
   const [isDeleting, setIsDeleting] = useState(false);
   const [listRole, setListRole] = useState<Role[]>([]);
@@ -90,8 +83,7 @@ const PhanQuyenUser = () => {
 
   const handleCloseDialog = () => setOpenDialog(prev => ({...prev, open: false}));
   const handleCloseDialogGanQuyen = () => setOpenDialogGanQuyen(prev => ({...prev, open: false}));
-  const handleCloseDialogPhanManHinh = () =>
-    setOpenDialogPhanManHinh(prev => ({...prev, open: false}));
+
   const handleSubmit = async (data: {roleName: string}) => {
     setIsDeleting(true);
     setOpenDialog(prev => ({...prev, open: false}));
@@ -206,14 +198,7 @@ const PhanQuyenUser = () => {
           onSubmit={handleSubmitGanQuyen}
         />
       )}
-      {openDialogPhanManHinh.open && (
-        <DialogPhanManHinh
-          open={openDialogPhanManHinh.open}
-          id={openDialogPhanManHinh.id}
-          onClose={handleCloseDialogPhanManHinh}
-          onSubmit={handleSubmitGanQuyen}
-        />
-      )}
+
       <DialogConfirm
         open={isOpenDelete.visible}
         title="Xác nhận"

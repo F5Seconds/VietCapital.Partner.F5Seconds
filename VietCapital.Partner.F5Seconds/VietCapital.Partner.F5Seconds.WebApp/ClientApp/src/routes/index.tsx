@@ -2,6 +2,7 @@ import {FC} from 'react';
 import {Navigate, Outlet, RouteObject} from 'react-router-dom';
 import {NotFound} from '../components';
 import MainLayout from '../layouts';
+import Page404 from '../layouts/404';
 import LoginPage from '../modules/auth/login';
 import ChiTietDanhMucPage from '../modules/danh-muc/chi-tiet';
 import DanhSachDanhMucPage from '../modules/danh-muc/danh-sach';
@@ -105,8 +106,17 @@ export const routes: RouteObject[] = [
       {path: '*', element: <NotFound />},
     ],
   },
+
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/404',
+    element: <Page404 />,
+  },
+  {
+    path: '*',
+    element: <Navigate to="/404" />,
   },
 ];

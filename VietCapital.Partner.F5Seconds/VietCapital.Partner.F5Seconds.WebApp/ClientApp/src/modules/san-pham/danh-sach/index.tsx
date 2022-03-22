@@ -1,3 +1,4 @@
+import {LoadingButton} from '@mui/lab';
 import {Button, IconButton, Stack} from '@mui/material';
 import {Trash} from 'iconsax-react';
 import queryString from 'query-string';
@@ -18,6 +19,7 @@ const DanhSachSanPhamPage = () => {
   const queryParams: any = queryString.parse(location.search);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingDongBo, setIsLoadingDongBo] = useState(false);
   const {height} = useWindowDimensions();
   const [isOpenDelete, setIsOpenDelete] = useState<{visible: boolean; id: number | string}>({
     visible: false,
@@ -90,18 +92,18 @@ const DanhSachSanPhamPage = () => {
     }
     setIsDeleting(false);
   };
-  useEffect(() => {
-    const getList = async () => {
-      setIsLoading(true);
-      const res = await productService.getAll(filters);
-      if (res) {
-        const {currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious} = res;
+  const getList = async () => {
+    setIsLoading(true);
+    const res = await productService.getAll(filters);
+    if (res) {
+      const {currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious} = res;
 
-        setListProduct(res.data);
-        setPagination({currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious});
-      }
-      setIsLoading(false);
-    };
+      setListProduct(res.data);
+      setPagination({currentPage, pageSize, totalCount, totalPages, hasNext, hasPrevious});
+    }
+    setIsLoading(false);
+  };
+  useEffect(() => {
     getList();
   }, [filters]);
   const [checkQuyen] = useCheckQuyen();
@@ -112,6 +114,21 @@ const DanhSachSanPhamPage = () => {
     <Page title="Danh sách sản phẩm">
       <Stack direction="row" justifyContent="space-between" marginBottom={2}>
         <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
+        <LoadingButton
+          loading={isLoadingDongBo}
+          variant="contained"
+          onClick={() => {
+            setIsLoadingDongBo(true);
+            productService
+              .sync()
+              .then(() => getList())
+              .finally(() => {
+                setIsLoadingDongBo(false);
+              });
+          }}
+        >
+          Đồng bộ dữ liệu
+        </LoadingButton>
 
         {/* <Button
           variant="contained"
