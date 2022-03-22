@@ -28,6 +28,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces
         Task<object> GetAllUsersByRole(string roleId);
         Task<object> AddClaimToRoles(string role, string claimName, string value);
         Task<object> RemoveClaimToRole(string role, string claimName, string value);
+        Task<object> RemoveUser(string userName);
         Task<object> GetAllClaimsInRole(string roleName);
         Task<object> GetUserById(string id);
         Task<object> UpdateUser(string id,User data);

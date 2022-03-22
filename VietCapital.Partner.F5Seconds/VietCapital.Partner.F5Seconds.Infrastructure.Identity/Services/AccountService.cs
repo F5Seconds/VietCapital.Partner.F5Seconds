@@ -616,5 +616,31 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
 
 
         }
+
+        public async Task<object> RemoveUser(string userName)
+        {
+             var user = await _userManager.FindByNameAsync(userName);
+
+            if (user != null)
+            {
+                var result = await _userManager.GetRolesAsync(user);
+
+                if (result != null)
+                {
+                    return new { error = $"Error: Không thể xóa người dùng {user.UserName} do đã có trong một quyền" };
+
+                }else{
+                    var userClaim = await _userManager.GetClaimsAsync(user);
+                    foreach (var item in userClaim)
+                    {
+                        await _userManager.RemoveClaimAsync(user, new Claim(item.Type, item.Value));
+                    }
+                    return new { result = $"Người dùng {user.UserName} đã được xóa" };
+                }
+            }
+
+            // User doesn't exist
+            return new { error = "Không thể tìm thấy người dùng" };
+        }
     }
 }

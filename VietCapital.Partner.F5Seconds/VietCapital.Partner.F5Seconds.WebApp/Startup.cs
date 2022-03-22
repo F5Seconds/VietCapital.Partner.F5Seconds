@@ -47,6 +47,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp
             services.AddApiVersioningExtension();
             services.AddHealthChecks();
             services.AddControllersWithViews();
+            services.AddAuthorizations();
             services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
