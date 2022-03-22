@@ -14,7 +14,9 @@ using VietCapital.Partner.F5Seconds.WebApp.Repositories;
 namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [Authorize]
+    // [Authorize]
+    [AllowAnonymous]
+
     public class ProductController : BaseApiController
     {
         private readonly IProductRepository _productRepository;
@@ -24,7 +26,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         }
         // GET: api/<controller>
         [HttpGet]
-        [Authorize(Policy = "sanPhamSeenPolicy")]
+        // [Authorize(Policy = "sanPhamSeenPolicy")]
         public async Task<IActionResult> Get([FromQuery] GetAllProductsParameter filter)
         {
 
@@ -32,7 +34,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers.v1
         }
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        [Authorize(Policy = "sanPhamSeenPolicy")]
+        // [Authorize(Policy = "sanPhamSeenPolicy")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));

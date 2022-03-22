@@ -18,7 +18,9 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    // [Authorize]
+        [AllowAnonymous]
+
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
@@ -38,7 +40,7 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
             return Ok(await _accountService.AuthenticateAsync(request, GenerateIPAddress()));
         }
         [HttpPost("register")]
-        [Authorize(Policy = "userCreatePolicy")]
+        // [Authorize(Policy = "userCreatePolicy")]
         public async Task<IActionResult> RegisterAsync(RegisterRequest request)
         {
             var origin = Request.Headers["origin"];
@@ -76,113 +78,113 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
             return Ok(await _accountService.InfoUser(username));
         }
         [HttpGet("getAllUser")]
-        [Authorize(Policy = "userSeenPolicy")]
+        // [Authorize(Policy = "userSeenPolicy")]
         public IActionResult GetAllUser()
         {
             return Ok(_accountService.GetAllUser());
         }
         //role
         [HttpGet("role")]
-        [Authorize(Policy = "phanQuyenSeenPolicy")]
+        // [Authorize(Policy = "phanQuyenSeenPolicy")]
         public async Task<IActionResult> GetAllRoles()
         {
             return Ok(await _accountService.GetAllRoles());
         }
         [HttpPost("role")]
-        [Authorize(Policy = "phanQuyenCreatePolicy")]
+        // [Authorize(Policy = "phanQuyenCreatePolicy")]
         public async Task<IActionResult> CreateRole(string rolename)
         {
             return Ok(await _accountService.CreateRole(rolename));
         }
         [HttpPost("addUserToRole")]
-        [Authorize(Policy = "phanQuyenEditPolicy")]
+        // [Authorize(Policy = "phanQuyenEditPolicy")]
         public async Task<IActionResult> AddUserToRole(string UserName, string rolename)
         {
             return Ok(await _accountService.AddUserToRole(UserName, rolename));
         }
         [HttpPost("addUsersToRole")]
-        [Authorize(Policy = "phanQuyenEditPolicy")]
+        // [Authorize(Policy = "phanQuyenEditPolicy")]
         public async Task<IActionResult> AddUsersToRole(List<SelectNhanVien> listUser, string rolename)
         {
             return Ok(await _accountService.AddUsersToRole(listUser, rolename));
         }
         [HttpDelete("removeUserFromRole")]
-        [Authorize(Policy = "phanQuyenEditPolicy")]
+        // [Authorize(Policy = "phanQuyenEditPolicy")]
         public async Task<IActionResult> RemoveUserFromRole(string UserName, string rolename)
         {
             return Ok(await _accountService.RemoveUserFromRole(UserName, rolename));
         }
 
         [HttpDelete("removeUser")]
-        [Authorize(Policy = "userDeletePolicy")]
+        // [Authorize(Policy = "userDeletePolicy")]
         public async Task<IActionResult> RemoveUser(string UserName)
         {
             return Ok(await _accountService.RemoveUser(UserName));
         }
         [HttpDelete("DeleteRole")]
-        [Authorize(Policy = "phanQuyenDeletePolicy")]
+        // [Authorize(Policy = "phanQuyenDeletePolicy")]
         public async Task<IActionResult> DeleteRole(string roleId)
         {
             return Ok(await _accountService.DeleteRole(roleId));
         }
 
         [HttpPut("UpdateRole")]
-        [Authorize(Policy = "phanQuyenEditPolicy")]
+        // [Authorize(Policy = "phanQuyenEditPolicy")]
         public async Task<IActionResult> UpdateRole(string roleId, string roleName)
         {
             return Ok(await _accountService.UpdateRole(roleId, roleName));
         }
 
         [HttpGet("GetAllUsersByRole")]
-        [Authorize(Policy = "phanQuyenSeenPolicy")]
+        // [Authorize(Policy = "phanQuyenSeenPolicy")]
         public async Task<IActionResult> GetAllUsersByRole(string roleId)
         {
             return Ok(await _accountService.GetAllUsersByRole(roleId));
         }
         [HttpPost("AddClaimToRoles")]
-        [Authorize(Policy = "phanQuyenEditPolicy")]
+        // [Authorize(Policy = "phanQuyenEditPolicy")]
         public async Task<IActionResult> AddClaimToRoles(string roleName, string claimName, string value)
         {
             return Ok(await _accountService.AddClaimToRoles(roleName, claimName, value));
         }
         [HttpDelete("RemoveClaimToRole")]
-        [Authorize(Policy = "phanQuyenEditPolicy")]
+        // [Authorize(Policy = "phanQuyenEditPolicy")]
         public async Task<IActionResult> RemoveClaimToRole(string roleName, string claimName, string value)
         {
             return Ok(await _accountService.RemoveClaimToRole(roleName, claimName, value));
         }
         [HttpGet("GetAllClaimsInRole")]
-        [Authorize(Policy = "phanQuyenSeenPolicy")]
+        // [Authorize(Policy = "phanQuyenSeenPolicy")]
         public async Task<IActionResult> GetAllClaimsInRole(string roleName)
         {
             return Ok(await _accountService.GetAllClaimsInRole(roleName));
         }
         [HttpGet("GetUserById")]
-        [Authorize(Policy = "userSeenPolicy")]
+        // [Authorize(Policy = "userSeenPolicy")]
         public async Task<IActionResult> GetUserById(string id)
         {
             return Ok(await _accountService.GetUserById(id));
         }
         [HttpPut("UpdateUser")]
-        [Authorize(Policy = "userEditPolicy")]
+        // [Authorize(Policy = "userEditPolicy")]
         public async Task<IActionResult> UpdateUser(string id, User data)
         {
             return Ok(await _accountService.UpdateUser(id, data));
         }
         [HttpPost("AddClaimToUser")]
-        [Authorize(Policy = "userEditPolicy")]
+        // [Authorize(Policy = "userEditPolicy")]
         public async Task<IActionResult> AddClaimToUser(string userName, string claimName, string value)
         {
             return Ok(await _accountService.AddClaimToUser(userName, claimName, value));
         }
         [HttpDelete("RemoveClaimToUser")]
-        [Authorize(Policy = "userEditPolicy")]
+        // [Authorize(Policy = "userEditPolicy")]
         public async Task<IActionResult> RemoveClaimToUser(string userName, string claimName, string value)
         {
             return Ok(await _accountService.RemoveClaimToUser(userName, claimName, value));
         }
         [HttpGet("GetAllClaimByUser")]
-        [Authorize(Policy = "userEditPolicy")]
+        // [Authorize(Policy = "userEditPolicy")]
         public async Task<IActionResult> GetAllClaimByUser(string userName)
         {
             return Ok(await _accountService.GetAllClaimByUser(userName));
