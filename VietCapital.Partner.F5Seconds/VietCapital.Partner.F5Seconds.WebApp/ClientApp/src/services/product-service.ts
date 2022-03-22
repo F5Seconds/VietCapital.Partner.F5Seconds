@@ -63,12 +63,11 @@ const productService = {
   sync: async (): Promise<any> => {
     try {
       const res = await productApi.sync();
-      if (res.succeeded) {
+      if (res) {
         store.dispatch(setShowAlert({type: 'success', message: 'đồng bộ thành công'}));
       }
-      return res.data;
     } catch (error) {
-      store.dispatch(setShowAlert({type: 'error', message: 'Đã xảy ra lỗi'}));
+      store.dispatch(setShowAlert({type: 'error', message: 'Đã xảy ra lỗi đồng bộ sản phẩm'}));
     }
   },
 };

@@ -118,7 +118,7 @@ const ChiTietSanPhamPage = () => {
 
   return (
     <Page title={id ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}>
-      <Grid sx={{pointerEvents: 'none'}} container spacing={2}>
+      <Grid sx={{pointerEvents: checkQuyen('edit') ? 'all' : 'none'}} container spacing={2}>
         <Grid item xs={12} md={12} lg={12}>
           <CardBase
             actions={
