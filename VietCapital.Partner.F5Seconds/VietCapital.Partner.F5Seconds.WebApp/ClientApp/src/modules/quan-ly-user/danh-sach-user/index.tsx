@@ -8,14 +8,18 @@ import accountApi from '../../../apis/account-api';
 import {DataTable, DialogConfirm} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
+import useCheckQuyen from '../../../hooks/useCheckQuyen';
 import Page from '../../../layouts/Page';
 import {Account} from '../../../models';
+import {useAppSelector} from '../../../redux/hooks';
+import {selectQuyen} from '../../../redux/slice/auth';
 import {accountService} from '../../../services';
 import {colors} from '../../../theme';
 import DialogUser from './dialog-user';
 
 const DanhSachUser = () => {
   const location = useLocation();
+  const [checkQuyen] = useCheckQuyen();
   const {enqueueSnackbar} = useSnackbar();
   const queryParams = queryString.parse(location.search);
   const navigate = useNavigate();
@@ -58,22 +62,26 @@ const DanhSachUser = () => {
       field: 'email',
       headerName: 'Email',
     },
-    {
-      field: '',
-      headerName: '',
-      renderCell: (row: any) => (
-        <IconButton
-          size="medium"
-          color="error"
-          onClick={e => {
-            e.stopPropagation();
-            setIsOpenDelete({visible: true, id: row.id});
-          }}
-        >
-          <Trash color={colors.error} />
-        </IconButton>
-      ),
-    },
+    ...(checkQuyen('delete')
+      ? [
+          {
+            field: '',
+            headerName: '',
+            renderCell: (row: any) => (
+              <IconButton
+                size="medium"
+                color="error"
+                onClick={e => {
+                  e.stopPropagation();
+                  setIsOpenDelete({visible: true, id: row.id});
+                }}
+              >
+                <Trash color={colors.error} />
+              </IconButton>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const handleSubmitUser = async (data: Account) => {
@@ -103,25 +111,31 @@ const DanhSachUser = () => {
   useEffect(() => {
     getList();
   }, []);
+
+  if (!checkQuyen('seen')) {
+    navigate('/404');
+  }
   return (
     <Page title="Danh sách user">
-      <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setOpenDialog(prev => ({open: true}));
-          }}
-        >
-          Thêm user
-        </Button>
-      </Stack>
+      {checkQuyen('create') && (
+        <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setOpenDialog(prev => ({open: true}));
+            }}
+          >
+            Thêm user
+          </Button>
+        </Stack>
+      )}
       <DataTable
         columns={columns}
         rows={listUser}
         loading={isLoading}
         height={height - 200}
         onRowClick={row => {
-          setOpenDialog(prev => ({...prev, open: true, id: row.id}));
+          checkQuyen('edit') && setOpenDialog(prev => ({...prev, open: true, id: row.id}));
         }}
         pagination={{
           show: true,

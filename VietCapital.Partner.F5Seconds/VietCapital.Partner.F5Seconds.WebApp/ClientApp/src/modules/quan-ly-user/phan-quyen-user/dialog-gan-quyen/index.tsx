@@ -138,12 +138,6 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
                 value: item.email,
               }))}
               multiple
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Không được để trống',
-                },
-              }}
               loading={isLoadingRole}
             />
           </Grid>
@@ -158,6 +152,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
                     checkedList={checkedList}
                     onChange={setCheckedList}
                     id="/quan-ly-user/danh-sach-user"
+                    listQuyen={['seen', 'create', 'edit', 'delete']}
                   />
                 </Card>
               </Grid>
@@ -169,6 +164,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
                     checkedList={checkedList}
                     onChange={setCheckedList}
                     id="/quan-ly-user/phan-quyen-user"
+                    listQuyen={['seen', 'create', 'edit', 'delete']}
                   />
                 </Card>
               </Grid>
@@ -180,6 +176,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
                     checkedList={checkedList}
                     onChange={setCheckedList}
                     id="/danh-muc"
+                    listQuyen={['seen', 'create', 'edit', 'delete']}
                   />
                 </Card>
               </Grid>
@@ -191,6 +188,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
                     checkedList={checkedList}
                     onChange={setCheckedList}
                     id="/san-pham"
+                    listQuyen={['seen', 'edit']}
                   />
                 </Card>
               </Grid>
@@ -202,6 +200,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
                     checkedList={checkedList}
                     onChange={setCheckedList}
                     id="/don-hang/danh-sach-don-hang"
+                    listQuyen={['seen']}
                   />
                 </Card>
               </Grid>
@@ -213,6 +212,7 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
                     checkedList={checkedList}
                     onChange={setCheckedList}
                     id="/don-hang/doi-soat"
+                    listQuyen={['seen']}
                   />
                 </Card>
               </Grid>
@@ -231,13 +231,22 @@ interface ListThaoTacProps {
   checkedList: string[];
   onChange: (value: string[]) => void;
   id: string;
+  listQuyen: ('seen' | 'create' | 'edit' | 'delete')[];
 }
 
-const ListThaoTac: FC<ListThaoTacProps> = ({roleName, checkedList, onChange, title, id}) => {
+const ListThaoTac: FC<ListThaoTacProps> = ({
+  roleName,
+  checkedList,
+  onChange,
+  title,
+  listQuyen = [],
+  id,
+}) => {
   const [loading, setLoading] = useState<{[x: string]: boolean}>({
     [`${id};seen`]: false,
     [`${id};edit`]: false,
   });
+
   const handleToggle = (value: string) => async () => {
     setLoading(prev => ({...prev, [value]: true}));
 
@@ -292,18 +301,55 @@ const ListThaoTac: FC<ListThaoTacProps> = ({roleName, checkedList, onChange, tit
       }
       disablePadding
     >
-      <ListItem disablePadding>
-        <ListItemIcon>
-          <Eye size="16" />
-        </ListItemIcon>
-        <ListItemText id="switch-list-label-wifi" primary="Xem" />
+      {listQuyen.map((item, index) => {
+        return (
+          <ListItem disablePadding>
+            <ListItemIcon>
+              {item === 'seen' ? (
+                <Eye size="16" />
+              ) : item === 'create' ? (
+                <AddSquare size="16" />
+              ) : item === 'edit' ? (
+                <Edit size="16" />
+              ) : (
+                <Trash size="16" />
+              )}
+            </ListItemIcon>
+            <ListItemText
+              id={`switch-list-label-${`${id};${item}`}`}
+              primary={
+                item === 'seen'
+                  ? 'Xem'
+                  : item === 'create'
+                  ? 'Tạo'
+                  : item === 'edit'
+                  ? 'Sửa'
+                  : 'Xóa'
+              }
+            />
+            <Switch
+              disabled={loading[`${id};${item}`]}
+              edge="end"
+              onChange={handleToggle(`${id};${item}`)}
+              checked={checkedList.indexOf(`${id};${item}`) !== -1}
+              inputProps={{
+                'aria-labelledby': `switch-list-label-${`${id};${item}`}`,
+              }}
+            />
+          </ListItem>
+        );
+      })}
+
+      {/* <ListItem disablePadding>
+        <ListItemIcon></ListItemIcon>
+        <ListItemText id="switch-list-label-bluetooth" primary="Tạo" />
         <Switch
-          disabled={loading[`${id};seen`]}
+          disabled={loading[`${id};create`]}
           edge="end"
-          onChange={handleToggle(`${id};seen`)}
-          checked={checkedList.indexOf(`${id};seen`) !== -1}
+          onChange={handleToggle(`${id};create`)}
+          checked={checkedList.indexOf(`${id};create`) !== -1}
           inputProps={{
-            'aria-labelledby': 'switch-list-label-wifi',
+            'aria-labelledby': 'switch-list-label-bluetooth',
           }}
         />
       </ListItem>
@@ -311,7 +357,7 @@ const ListThaoTac: FC<ListThaoTacProps> = ({roleName, checkedList, onChange, tit
         <ListItemIcon>
           <Edit size="16" />
         </ListItemIcon>
-        <ListItemText id="switch-list-label-bluetooth" primary="Thao tác" />
+        <ListItemText id="switch-list-label-bluetooth" primary="Sửa" />
         <Switch
           disabled={loading[`${id};edit`]}
           edge="end"
@@ -322,15 +368,16 @@ const ListThaoTac: FC<ListThaoTacProps> = ({roleName, checkedList, onChange, tit
           }}
         />
       </ListItem>
-      {/* <ListItem disablePadding>
+      <ListItem disablePadding>
         <ListItemIcon>
           <Trash size="16" />
         </ListItemIcon>
         <ListItemText id="switch-list-label-bluetooth" primary="Xóa" />
         <Switch
+          disabled={loading[`${id};delete`]}
           edge="end"
-          onChange={handleToggle('delete')}
-          checked={checked.indexOf('delete') !== -1}
+          onChange={handleToggle(`${id};delete`)}
+          checked={checkedList.indexOf(`${id};delete`) !== -1}
           inputProps={{
             'aria-labelledby': 'switch-list-label-bluetooth',
           }}

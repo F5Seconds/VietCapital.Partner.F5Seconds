@@ -1,9 +1,11 @@
 import {Button, IconButton, Stack} from '@mui/material';
 import {Trash} from 'iconsax-react';
 import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {DataTable, DialogConfirm} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
+import useCheckQuyen from '../../../hooks/useCheckQuyen';
 import Page from '../../../layouts/Page';
 import {Role} from '../../../models';
 import {accountService} from '../../../services';
@@ -13,6 +15,8 @@ import DialogPhanManHinh from './dialog-phan-man-hinh';
 import DialogRole from './dialog-role';
 
 const PhanQuyenUser = () => {
+  const navigate = useNavigate();
+  const [checkQuyen] = useCheckQuyen();
   const [isLoading, setIsLoading] = useState(true);
   const {height} = useWindowDimensions();
   const [openDialog, setOpenDialog] = useState<{
@@ -62,23 +66,28 @@ const PhanQuyenUser = () => {
       field: 'name',
       headerName: 'Tên quyền',
     },
-    {
-      field: '',
-      headerName: '',
-      renderCell: (row: Role) => (
-        <IconButton
-          size="medium"
-          color="error"
-          onClick={e => {
-            e.stopPropagation();
-            setIsOpenDelete({visible: true, id: row.id});
-          }}
-        >
-          <Trash color={colors.error} />
-        </IconButton>
-      ),
-    },
+    ...(checkQuyen('delete')
+      ? [
+          {
+            field: '',
+            headerName: '',
+            renderCell: (row: Role) => (
+              <IconButton
+                size="medium"
+                color="error"
+                onClick={e => {
+                  e.stopPropagation();
+                  setIsOpenDelete({visible: true, id: row.id});
+                }}
+              >
+                <Trash color={colors.error} />
+              </IconButton>
+            ),
+          },
+        ]
+      : []),
   ];
+
   const handleCloseDialog = () => setOpenDialog(prev => ({...prev, open: false}));
   const handleCloseDialogGanQuyen = () => setOpenDialogGanQuyen(prev => ({...prev, open: false}));
   const handleCloseDialogPhanManHinh = () =>
@@ -128,6 +137,10 @@ const PhanQuyenUser = () => {
   useEffect(() => {
     getAllRole();
   }, []);
+
+  if (!checkQuyen('seen')) {
+    navigate('/404');
+  }
   return (
     <Page title="Phân quyền user">
       <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
@@ -141,24 +154,29 @@ const PhanQuyenUser = () => {
         >
           Phân màn hình
         </Button> */}
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{marginRight: 1}}
-          onClick={() => {
-            setOpenDialogGanQuyen(prev => ({open: true}));
-          }}
-        >
-          Gán quyền
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setOpenDialog(prev => ({open: true}));
-          }}
-        >
-          Thêm quyền
-        </Button>
+        {checkQuyen('edit') && (
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{marginRight: 1}}
+            onClick={() => {
+              setOpenDialogGanQuyen(prev => ({open: true}));
+            }}
+          >
+            Gán quyền
+          </Button>
+        )}
+
+        {checkQuyen('create') && (
+          <Button
+            variant="contained"
+            onClick={() => {
+              setOpenDialog(prev => ({open: true}));
+            }}
+          >
+            Thêm quyền
+          </Button>
+        )}
       </Stack>
       <DataTable
         columns={columns}
@@ -166,7 +184,8 @@ const PhanQuyenUser = () => {
         loading={isLoading}
         height={height - 138}
         onRowClick={row => {
-          setOpenDialog(prev => ({...prev, open: true, id: row.id, roleName: row.name}));
+          checkQuyen('edit') &&
+            setOpenDialog(prev => ({...prev, open: true, id: row.id, roleName: row.name}));
         }}
       />
 

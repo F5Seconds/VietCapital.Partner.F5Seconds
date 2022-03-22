@@ -12,6 +12,7 @@ import {
   InputField,
   TextAreaField,
 } from '../../../components/hook-form';
+import useCheckQuyen from '../../../hooks/useCheckQuyen';
 import Page from '../../../layouts/Page';
 import {Category, Product} from '../../../models';
 import {categoryService, productService} from '../../../services';
@@ -102,18 +103,23 @@ const ChiTietSanPhamPage = () => {
     };
     id && getDetail();
   }, [id]);
+  const [checkQuyen] = useCheckQuyen();
 
   return (
     <Page title={id ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}>
-      <Grid container spacing={2}>
+      <Grid sx={{pointerEvents: 'none'}} container spacing={2}>
         <Grid item xs={12} md={12} lg={12}>
           <CardBase
             actions={
-              <Stack direction="row" justifyContent="flex-end" margin={2}>
-                <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
-                  {id ? 'Cập nhật' : 'Thêm sản phẩm'}
-                </Button>
-              </Stack>
+              checkQuyen('edit') ? (
+                <Stack direction="row" justifyContent="flex-end" margin={2}>
+                  <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>
+                    {id ? 'Cập nhật' : 'Thêm sản phẩm'}
+                  </Button>
+                </Stack>
+              ) : (
+                false
+              )
             }
           >
             <Grid container sx={{padding: 2}} spacing={2}>

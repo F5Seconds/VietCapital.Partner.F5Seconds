@@ -6,6 +6,7 @@ import {useLocation, useNavigate} from 'react-router';
 import {DataTable, DialogConfirm, SearchBar} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
+import useCheckQuyen from '../../../hooks/useCheckQuyen';
 import Header from '../../../layouts/Header';
 import Page from '../../../layouts/Page';
 import {PaginationParams, Product, QueryParams} from '../../../models';
@@ -103,6 +104,10 @@ const DanhSachSanPhamPage = () => {
     };
     getList();
   }, [filters]);
+  const [checkQuyen] = useCheckQuyen();
+  if (!checkQuyen('seen')) {
+    navigate('/404');
+  }
   return (
     <Page title="Danh sách sản phẩm">
       <Stack direction="row" justifyContent="space-between" marginBottom={2}>

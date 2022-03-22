@@ -9,6 +9,7 @@ import {CheckboxField, ImagePickerField, InputField} from '../../../components/h
 import Page from '../../../layouts/Page';
 import {Category} from '../../../models';
 import {categoryService} from '../../../services';
+import useCheckQuyen from '../../../hooks/useCheckQuyen';
 
 const DanhMucSanPhamPage = () => {
   const {id = ''} = useParams();
@@ -70,6 +71,11 @@ const DanhMucSanPhamPage = () => {
     };
     id && getDetail();
   }, [id]);
+
+  const [checkQuyen] = useCheckQuyen();
+  if (!checkQuyen('create') && !checkQuyen('edit')) {
+    navigate('/404');
+  }
   return (
     <Page title={id ? 'Cập nhật' : 'Thêm danh mục'}>
       <CardBase

@@ -6,8 +6,9 @@ import moment from 'moment';
 import queryString from 'query-string';
 import React, {useState} from 'react';
 import CSVReader from 'react-csv-reader';
-import {useLocation} from 'react-router';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {DataTable, SearchBar} from '../../../components/base';
+import useCheckQuyen from '../../../hooks/useCheckQuyen';
 import Page from '../../../layouts/Page';
 import {PaginationParams, QueryParams, Transaction} from '../../../models';
 import {transactionService} from '../../../services';
@@ -19,7 +20,7 @@ const Input = styled('input')({
 
 const DoiSoatPage = () => {
   const location = useLocation();
-
+  const navigate = useNavigate();
   const queryParams: QueryParams = queryString.parse(location.search);
   const [openDialog, setOpenDialog] = useState<{open: boolean; row?: any}>({
     open: false,
@@ -163,7 +164,10 @@ const DoiSoatPage = () => {
       </>
     );
   };
-  console.log(listUpload);
+  const [checkQuyen] = useCheckQuyen();
+  if (!checkQuyen('seen')) {
+    navigate('/404');
+  }
   return (
     <Page title="Đối soát đơn hàng">
       <Card sx={{p: 1, mb: 2}}>

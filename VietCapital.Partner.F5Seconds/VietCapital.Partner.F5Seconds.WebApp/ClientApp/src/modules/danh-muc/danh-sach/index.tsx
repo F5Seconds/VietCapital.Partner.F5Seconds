@@ -6,6 +6,7 @@ import {useLocation, useNavigate} from 'react-router';
 import {DataTable, DialogConfirm, SearchBar} from '../../../components/base';
 import LoadingOverlay from '../../../components/base/loading-overlay';
 import {useWindowDimensions} from '../../../hooks';
+import useCheckQuyen from '../../../hooks/useCheckQuyen';
 import Page from '../../../layouts/Page';
 import {Category, PaginationParams, QueryParams} from '../../../models';
 import {categoryService} from '../../../services';
@@ -13,6 +14,8 @@ import {colors} from '../../../theme';
 
 const DanhSachDanhMucPage = () => {
   const location = useLocation();
+  const [checkQuyen] = useCheckQuyen();
+
   const queryParams: QueryParams = queryString.parse(location.search);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -55,21 +58,25 @@ const DanhSachDanhMucPage = () => {
       headerName: 'Trạng thái',
       valueGetter: (row: Category) => (row.status ? 'true' : 'false'),
     },
-    {
-      field: '',
-      headerName: '',
-      renderCell: (row: Category) => (
-        <IconButton
-          color="error"
-          onClick={e => {
-            e.stopPropagation();
-            setIsOpenDelete({visible: true, id: row.id});
-          }}
-        >
-          <Trash fontSize={20} color={colors.error} />
-        </IconButton>
-      ),
-    },
+    ...(checkQuyen('delete')
+      ? [
+          {
+            field: '',
+            headerName: '',
+            renderCell: (row: Category) => (
+              <IconButton
+                color="error"
+                onClick={e => {
+                  e.stopPropagation();
+                  setIsOpenDelete({visible: true, id: row.id});
+                }}
+              >
+                <Trash fontSize={20} color={colors.error} />
+              </IconButton>
+            ),
+          },
+        ]
+      : []),
   ];
 
   const handleDelete = async () => {
@@ -95,19 +102,25 @@ const DanhSachDanhMucPage = () => {
     };
     getList();
   }, [filters]);
+
+  if (!checkQuyen('seen')) {
+    navigate('/404');
+  }
   return (
     <Page title="Danh sách danh mục">
       <Stack direction="row" justifyContent="space-between" marginBottom={2}>
         <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
 
-        <Button
-          variant="contained"
-          onClick={() => {
-            navigate('them-danh-muc');
-          }}
-        >
-          Thêm danh mục
-        </Button>
+        {checkQuyen('create') && (
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate('them-danh-muc');
+            }}
+          >
+            Thêm danh mục
+          </Button>
+        )}
       </Stack>
 
       <DataTable

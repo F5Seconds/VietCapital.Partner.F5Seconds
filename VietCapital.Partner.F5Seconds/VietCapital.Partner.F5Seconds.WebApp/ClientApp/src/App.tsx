@@ -1,5 +1,5 @@
 import {SnackbarProvider, useSnackbar} from 'notistack';
-import React, {useEffect} from 'react';
+import React, {useEffect, useLayoutEffect} from 'react';
 import {useRoutes} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from './redux/hooks';
 import {selectAlert, setHiddenAlert} from './redux/slice/alertSlice';
@@ -8,6 +8,7 @@ import ThemeConfig from './theme';
 import GlobalStyles from './theme/globalStyles';
 // import './App.css';
 import './theme/styles.css';
+import {selectJWT, setAuth} from './redux/slice/auth';
 
 const Noti = () => {
   const {enqueueSnackbar, closeSnackbar} = useSnackbar();
@@ -25,6 +26,12 @@ const Noti = () => {
 
 function App() {
   const dispatch = useAppDispatch();
+  const jwt = useAppSelector(selectJWT);
+  const jwtLocal = localStorage.getItem('jwt');
+  useLayoutEffect(() => {
+    !jwt && jwtLocal && dispatch(setAuth({jwToken: jwtLocal}));
+  }, [jwt, jwtLocal]);
+
   return (
     <ThemeConfig>
       <GlobalStyles />

@@ -5,8 +5,9 @@ import {Box, Button, Stack, TextField} from '@mui/material';
 import queryString from 'query-string';
 import {useEffect, useState} from 'react';
 import CsvDownloader from 'react-csv-downloader';
-import {useLocation} from 'react-router';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {DataTable, SearchBar} from '../../../components/base';
+import useCheckQuyen from '../../../hooks/useCheckQuyen';
 import Page from '../../../layouts/Page';
 import {PaginationParams, QueryParams, Transaction} from '../../../models';
 import transactionService from '../../../services/transaction-service';
@@ -15,7 +16,7 @@ import DialogDetail from './dialog-detail';
 
 const DanhSachDonHangPage = () => {
   const location = useLocation();
-
+  const navigate = useNavigate();
   const queryParams: QueryParams = queryString.parse(location.search);
   const [openDialog, setOpenDialog] = useState<{open: boolean; row?: any}>({
     open: false,
@@ -147,6 +148,10 @@ const DanhSachDonHangPage = () => {
     expiryDate: new Date(item.expiryDate).toLocaleDateString('vi'),
   }));
 
+  const [checkQuyen] = useCheckQuyen();
+  if (!checkQuyen('seen')) {
+    navigate('/404');
+  }
   return (
     <Page title="Danh sách đơn hàng">
       <Stack direction="row" alignItems="center" justifyContent="space-between" marginBottom={2}>
