@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,16 +22,15 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
         private readonly DbSet<CategoryProduct> _categoryProduct;
         private readonly IGatewayHttpClientService _gatewayHttpClient;
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-
-
-        public ProductRepositoryAsync(ApplicationDbContext dbContext,IGatewayHttpClientService gatewayHttpClient) : base(dbContext)
+        public ProductRepositoryAsync(ApplicationDbContext dbContext, IMapper mapper, IGatewayHttpClientService gatewayHttpClient) : base(dbContext)
         {
             _products = dbContext.Set<Product>();
-            _categoryProduct= dbContext.Set<CategoryProduct>();
+            _categoryProduct = dbContext.Set<CategoryProduct>();
             _gatewayHttpClient = gatewayHttpClient;
             _context = dbContext;
-
+            _mapper = mapper;
         }
 
         public async Task<Product> FindByCodeAsync(string code)
@@ -67,7 +67,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
             var products = _products.Include(cp => cp.CategoryProducts)
                 .ThenInclude(c => c.Category)
                 .Where(p => p.Status).AsQueryable();
-            Search(ref products,parameter.Search);
+            Search(ref products, parameter.Search);
             return await PagedList<Product>.ToPagedList(products.OrderByDescending(x => x.Id), parameter.PageNumber, parameter.PageSize);
         }
 
@@ -86,24 +86,23 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
         {
             var products = _products.Include(cp => cp.CategoryProducts)
                 .ThenInclude(c => c.Category).AsQueryable();
-            Search(ref products,parameter.Search);
+            Search(ref products, parameter.Search);
             return await PagedList<Product>.ToPagedList(products.OrderByDescending(x => x.Id), parameter.PageNumber, parameter.PageSize);
         }
 
         public async Task<ProductDTO> GetProductByIdAsync(int id)
         {
-           var product =  await _products
-                .Include(cp => cp.CategoryProducts)
-                .ThenInclude(c => c.Category)
-                .FirstOrDefaultAsync(x => x.Id.Equals(id));
+            var product = await _products
+                 .Include(cp => cp.CategoryProducts)
+                 .ThenInclude(c => c.Category)
+                 .FirstOrDefaultAsync(x => x.Id.Equals(id));
             var pGatewayDetail = await _gatewayHttpClient.DetailProduct(product.ProductCode);
             if (!pGatewayDetail.Succeeded) return null;
-            if(pGatewayDetail.Data is null) return null;
+            if (pGatewayDetail.Data is null) return null;
             if (product.Content is null) product.Content = pGatewayDetail.Data.productContent;
             if (product.Term is null) product.Term = pGatewayDetail.Data.productTerm;
-            var newProduct = new ProductDTO(){
-                StoreList =  pGatewayDetail.Data.storeList
-            };
+            var newProduct = _mapper.Map<ProductDTO>(product);
+            newProduct.StoreList = pGatewayDetail.Data.storeList;
             return newProduct;
         }
 
