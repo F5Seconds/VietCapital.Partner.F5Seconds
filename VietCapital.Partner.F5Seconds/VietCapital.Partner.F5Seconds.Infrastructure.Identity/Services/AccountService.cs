@@ -472,7 +472,35 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
         {
             var nhanvien = await _userManager.FindByNameAsync(username);
             if(nhanvien != null){
-               return await _userManager.GetClaimsAsync(nhanvien); 
+                var listClaimRole = new List<Claim>();
+                var listRole = await _userManager.GetRolesAsync(nhanvien);
+                foreach (var item in listRole)
+                {
+                    var role = await _roleManager.FindByNameAsync(item);
+                    var roleClaim = await _roleManager.GetClaimsAsync(role);
+                    foreach (var item1 in roleClaim)
+                    {
+                        listClaimRole.Add(item1);
+                    }
+                }
+                var listClaimUser = await _userManager.GetClaimsAsync(nhanvien); 
+                var listClaim = new List<Claim>();
+                foreach (var item in listClaimUser)
+                {
+                    foreach (var item1 in listClaimRole)
+                    {
+                        if(item.Value.Equals(item1.Value))
+                        {
+                            listClaim.Add(item);
+                            break;
+                        }
+                    }
+                }
+                foreach (var item in listClaim)
+                {
+                    listClaimUser.Remove(item);
+                }
+                return listClaimUser;
             }
             return new { error = "Không thể tìm thấy người dùng" };
         }
