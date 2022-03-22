@@ -13,7 +13,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories
         Task<IReadOnlyList<Product>> GetListAsync();
         Task<PagedList<Product>> GetPagedListAsync(GetListProductParameter parameter);
         Task<Product> FindByCodeAsync(string code);
-        Task<Product> GetProductByIdAsync(int id);
+        Task<ProductDTO> GetProductByIdAsync(int id);
         Task<bool> IsExitedByCode(string code);
         Task<bool> IsUniqueBarcodeAsync(string barcode);
         Task<PagedList<Product>> GetAllPagedListAsync(GetAllProductsParameter parameter);

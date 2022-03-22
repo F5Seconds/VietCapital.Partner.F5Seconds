@@ -6,6 +6,7 @@ using VietCapital.Partner.F5Seconds.Application.DTOs.F5seconds;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.GetAllProducts;
 using VietCapital.Partner.F5Seconds.Application.Features.Products.Queries.ListProduct;
 using VietCapital.Partner.F5Seconds.Application.Filters;
+using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Application.Interfaces.Repositories;
 using VietCapital.Partner.F5Seconds.Application.Wrappers;
 using VietCapital.Partner.F5Seconds.Domain.Entities;
@@ -18,12 +19,18 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
     {
         private readonly DbSet<Product> _products;
         private readonly DbSet<CategoryProduct> _categoryProduct;
+        private readonly IGatewayHttpClientService _gatewayHttpClient;
+        private readonly ApplicationDbContext _context;
 
 
-        public ProductRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
+
+        public ProductRepositoryAsync(ApplicationDbContext dbContext,IGatewayHttpClientService gatewayHttpClient) : base(dbContext)
         {
             _products = dbContext.Set<Product>();
             _categoryProduct= dbContext.Set<CategoryProduct>();
+            _gatewayHttpClient = gatewayHttpClient;
+            _context = dbContext;
+
         }
 
         public async Task<Product> FindByCodeAsync(string code)
@@ -83,12 +90,21 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
             return await PagedList<Product>.ToPagedList(products.OrderByDescending(x => x.Id), parameter.PageNumber, parameter.PageSize);
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<ProductDTO> GetProductByIdAsync(int id)
         {
-           return await _products
+           var product =  await _products
                 .Include(cp => cp.CategoryProducts)
                 .ThenInclude(c => c.Category)
                 .FirstOrDefaultAsync(x => x.Id.Equals(id));
+            var pGatewayDetail = await _gatewayHttpClient.DetailProduct(product.ProductCode);
+            if (!pGatewayDetail.Succeeded) return null;
+            if(pGatewayDetail.Data is null) return null;
+            if (product.Content is null) product.Content = pGatewayDetail.Data.productContent;
+            if (product.Term is null) product.Term = pGatewayDetail.Data.productTerm;
+            var newProduct = new ProductDTO(){
+                StoreList =  pGatewayDetail.Data.storeList
+            };
+            return newProduct;
         }
 
         public async Task<List<CategoryProduct>> GetProductInCategoryByIdAsync(int id)
