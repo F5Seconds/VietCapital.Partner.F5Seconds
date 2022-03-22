@@ -4,8 +4,8 @@ import DateRangePicker from '@mui/lab/DateRangePicker';
 import {Box, Button, Stack, TextField} from '@mui/material';
 import queryString from 'query-string';
 import {useEffect, useState} from 'react';
-import CsvDownloader from 'react-csv-downloader';
 import {useLocation, useNavigate} from 'react-router-dom';
+import writeXlsxFile from 'write-excel-file';
 import {DataTable, SearchBar} from '../../../components/base';
 import useCheckQuyen from '../../../hooks/useCheckQuyen';
 import Page from '../../../layouts/Page';
@@ -175,16 +175,22 @@ const DanhSachDonHangPage = () => {
             )}
           />
         </LocalizationProvider>
-        <CsvDownloader
-          filename="myfile"
-          extension=".csv"
-          separator=";"
-          wrapColumnChar="'"
-          columns={columns.map(item => ({id: item.field, displayName: item.headerName}))}
-          datas={datas}
+
+        <Button
+          variant="contained"
+          onClick={async () => {
+            await writeXlsxFile(datas, {
+              schema: columns.map(item => ({
+                column: item.headerName,
+                type: String,
+                value: (row: {[x: string]: string}) => row?.[`${item.field}`],
+              })),
+              fileName: `DanhSach_DonHang.xlsx`,
+            });
+          }}
         >
-          <Button variant="contained">Tải xuống file CSV</Button>
-        </CsvDownloader>
+          Tải xuống file Excel
+        </Button>
       </Stack>
 
       <DataTable

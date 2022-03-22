@@ -47,6 +47,7 @@ const ChiTietSanPhamPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [diaDiems, setDiaDiems] = useState<any[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {id = ''} = useParams<string>();
   const navigate = useNavigate();
@@ -91,6 +92,7 @@ const ChiTietSanPhamPage = () => {
   }, []);
   useEffect(() => {
     const getDetail = async () => {
+      setLoading(true);
       const res: any = await productService.getOne(id);
       if (res) {
         Object.keys(defaultValues).forEach((item: any) => {
@@ -110,6 +112,7 @@ const ChiTietSanPhamPage = () => {
           }
         });
         setDiaDiems(res?.storeList);
+        setLoading(false);
       }
     };
     id && getDetail();
@@ -118,7 +121,7 @@ const ChiTietSanPhamPage = () => {
 
   return (
     <Page title={id ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}>
-      <Grid sx={{pointerEvents: 'none'}} container spacing={2}>
+      <Grid sx={{pointerEvents: checkQuyen('edit') ? 'all' : 'none'}} container spacing={2}>
         <Grid item xs={12} md={12} lg={12}>
           <CardBase
             actions={
@@ -205,7 +208,7 @@ const ChiTietSanPhamPage = () => {
                 <Typography component="div" color="text.secondary">
                   Cửa hàng áp dụng
                 </Typography>
-                <Card variant="outlined">
+                <Card variant="outlined" sx={{maxHeight: 600, overflow: 'auto'}}>
                   <List>
                     {diaDiems.length === 0 && (
                       <ListItem>
@@ -235,7 +238,7 @@ const ChiTietSanPhamPage = () => {
           </Grid> */}
       </Grid>
 
-      <LoadingOverlay open={isSubmitting} />
+      <LoadingOverlay open={isSubmitting || loading} />
     </Page>
   );
 };

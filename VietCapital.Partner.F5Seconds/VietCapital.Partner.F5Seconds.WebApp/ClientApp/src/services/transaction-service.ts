@@ -72,10 +72,12 @@ const transactionService = {
     try {
       const res = await transactionApi.doiSoat(data);
       if (res.succeeded) {
+        store.dispatch(setShowAlert({type: 'success', message: 'Đối soát thành công'}));
         return res.data;
       }
     } catch (error) {
       console.log('Lỗi get category');
+      store.dispatch(setShowAlert({type: 'error', message: 'Đối soát thất bại'}));
     }
   },
 };
