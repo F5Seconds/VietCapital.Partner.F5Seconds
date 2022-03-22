@@ -436,6 +436,48 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             return new { listUser = danhsachnhanvien };
         }
         //clam
+        public async Task<object> AddClaimToUser(string userName, string claimName, string value)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user != null)
+            {
+                await _userManager.AddClaimAsync(user, new Claim(claimName, value));
+                return new { result = $"Thêm thành công" };
+            }
+            return new { result = $"Nhân viên không tồn tại" };
+        }
+        public async Task<object> RemoveClaimToUser(string username, string ClaimName, string value)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user != null)
+            {
+                try
+                {
+                    await _userManager.RemoveClaimAsync(user, new Claim(ClaimName, value));
+
+                    return new { result = $"Người dùng {user.UserName} đã được xóa yêu cầu {ClaimName}" };
+
+                }
+                catch (Exception e)
+                {
+                    return new { error = $"Error: Không thể xóa yêu cầu {ClaimName} với thao tác {value} ra khỏi người dùng {user.UserName} " };
+                }
+            }
+
+            // User doesn't exist
+            return new { error = "Không thể tìm thấy người dùng" };
+        }
+        public async Task<object> GetAllClaimByUser(string username)
+        {
+            var nhanvien = await _userManager.FindByNameAsync(username);
+            if(nhanvien != null){
+               return await _userManager.GetClaimsAsync(nhanvien); 
+            }
+            return new { error = "Không thể tìm thấy người dùng" };
+        }
+
+
         public async Task<object> AddClaimToRoles(string role, string claimName, string value)
         {
             var getrole = await _roleManager.FindByNameAsync(role);

@@ -166,6 +166,24 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
         {
             return Ok(await _accountService.UpdateUser(id,data));
         }
+        [HttpPost("AddClaimToUser")]
+        // [Authorize(Policy = "adminPolicy")]
+        public async Task<IActionResult> AddClaimToUser(string userName,string claimName,string value)
+        {
+            return Ok(await _accountService.AddClaimToUser(userName,claimName,value));
+        }
+        [HttpDelete("RemoveClaimToUser")]
+        // [Authorize(Policy = "adminPolicy")]
+        public async Task<IActionResult> RemoveClaimToUser(string userName,string claimName,string value)
+        {
+            return Ok(await _accountService.RemoveClaimToUser( userName, claimName, value));
+        }
+        [HttpGet("GetAllClaimByUser")]
+        // [Authorize(Policy = "adminPolicy")]
+        public async Task<IActionResult> GetAllClaimByUser(string userName)
+        {
+            return Ok(await _accountService.GetAllClaimByUser(userName));
+        }
         
         // private string GenerateJsonWebToken(AuthenRequest userInfo)
         // {

@@ -31,6 +31,12 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces
         Task<object> GetAllClaimsInRole(string roleName);
         Task<object> GetUserById(string id);
         Task<object> UpdateUser(string id,User data);
+        Task<object> GetAllClaimByUser(string userName);
+        Task<object> RemoveClaimToUser(string userName, string claimName, string value);
+        Task<object> AddClaimToUser(string userName, string claimName, string value);
+
+
+
 
 
     }
