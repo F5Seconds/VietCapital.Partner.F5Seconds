@@ -38,7 +38,6 @@ namespace VietCapital.Partner.F5Seconds.WebApp
                 services.AddSwaggerExtension();
             }
             services.AddRedisCacheExtension();
-            services.AddHostedService();
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);
            services.AddControllers().AddNewtonsoftJson(options =>
