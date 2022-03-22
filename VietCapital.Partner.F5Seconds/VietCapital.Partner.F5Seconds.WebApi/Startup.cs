@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using VietCapital.Partner.F5Seconds.Application;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
 using VietCapital.Partner.F5Seconds.Infrastructure.Identity;
@@ -17,22 +18,31 @@ namespace VietCapital.Partner.F5Seconds.WebApi
     {
         public IConfiguration _config { get; }
         private readonly IWebHostEnvironment _env;
+        private readonly ILogger<Startup> _logger;
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _config = configuration;
             _env = env;
+            using var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Information);
+                builder.AddConsole();
+                builder.AddEventSourceLogger();
+            });
+            _logger = loggerFactory.CreateLogger<Startup>();
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddApplicationLayer();
             services.AddIdentityInfrastructure(_config,_env);
             services.AddPersistenceInfrastructure(_config, _env.IsProduction());
             services.AddSharedInfrastructure(_config);
             services.AddSwaggerExtension();
-            services.AddRedisCacheExtension(_config);
+            services.AddRedisCacheExtension(_config,_logger);
             services.AddHttpClientExtension(_config,_env);
             services.AddRabbitMqExtension(_config,_env);
-            services.AddRateLimitExtension(_config);
+            //services.AddRateLimitExtension(_config);
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;

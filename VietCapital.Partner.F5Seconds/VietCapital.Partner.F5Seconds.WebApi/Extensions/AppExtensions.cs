@@ -20,8 +20,8 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
         }
         public static void UseMiddlewareExtension(this IApplicationBuilder app, IConfiguration configuration)
         {
-            app.UseMiddleware<ErrorHandlerMiddleware>();
-            app.UseMiddleware<AdminSafeListMiddleware>(configuration["AdminSafeList"]);
+            //app.UseMiddleware<ErrorHandlerMiddleware>();
+            //app.UseMiddleware<AdminSafeListMiddleware>(configuration["AdminSafeList"]);
         }
     }
 }

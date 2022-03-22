@@ -6,7 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
 using System;
 using System.Collections.Generic;
 using VietCapital.Partner.F5Seconds.Application.Interfaces;
@@ -45,13 +49,16 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Extensions
             services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
             services.AddInMemoryRateLimiting();
         }
-        public static void AddRedisCacheExtension(this IServiceCollection services, IConfiguration configuration)
+        public static void AddRedisCacheExtension(this IServiceCollection services, IConfiguration configuration, ILogger<Startup> logger)
         {
+            var redisConfig = configuration.GetSection("Redis").Get<RedisConfiguration>();
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfig);
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = configuration["ConnectionStrings:Redis"];
                 options.InstanceName = "VietcapitalInstance";
             });
+
         }
         public static void AddHttpClientExtension(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {

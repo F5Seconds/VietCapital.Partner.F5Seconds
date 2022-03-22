@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using StackExchange.Redis.Extensions.Core.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +22,15 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
     {
         private readonly IDistributedCache _distributedCache;
         private readonly DbSet<VoucherTransaction> _voucherTransactions;
+        private readonly IRedisClient _redisCacheClient;
         string serializedTransList;
         string[] transList;
         byte[] redisTransList;
-        public VoucherTransactionRepositoryAsync(ApplicationDbContext dbContext, IDistributedCache distributedCache) : base(dbContext)
+        public VoucherTransactionRepositoryAsync(ApplicationDbContext dbContext, IDistributedCache distributedCache, IRedisClient redisCacheClient) : base(dbContext)
         {
             _voucherTransactions = dbContext.Set<VoucherTransaction>();
             _distributedCache = distributedCache;
+            _redisCacheClient = redisCacheClient;
         }
 
         public async Task<PagedList<VoucherTransaction>> GetPagedVoucherTransByFilter(GetVoucherTransFilterParameter parameter)

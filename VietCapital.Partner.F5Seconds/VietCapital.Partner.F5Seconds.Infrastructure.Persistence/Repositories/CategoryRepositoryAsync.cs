@@ -42,26 +42,8 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
             var categories = _categories
                 .Include(cp => cp.CategoryProducts.Where(p => p.Product.Status))
                 .ThenInclude(p => p.Product).AsQueryable();
-            string serializedCategoryList;
-            var categoryList = new List<Category>();
-            var redisCategoryList = await _distributedCache.GetAsync(RedisCacheConst.CategoryKey);
-            if (redisCategoryList != null)
-            {
-                _logger.LogInformation($"CATEGORY CACHED");
-                serializedCategoryList = Encoding.UTF8.GetString(redisCategoryList);
-                categoryList = JsonConvert.DeserializeObject<List<Category>>(serializedCategoryList);
-            }
-            else
-            {
-                _logger.LogInformation($"CATEGORY DATABASE");
-                categoryList = await categories.ToListAsync();
-                serializedCategoryList = JsonConvert.SerializeObject(categoryList);
-                redisCategoryList = Encoding.UTF8.GetBytes(serializedCategoryList);
-                await _distributedCache.SetAsync(RedisCacheConst.CategoryKey, redisCategoryList, RedisCacheConst.CacheEntryOptions);
-            }
-
-            SearchCache(ref categoryList, parameter.Search);
-            return PagedList<Category>.ToPagedListCache(categoryList.OrderByDescending(x => x.Id).ToList(), parameter.PageNumber, parameter.PageSize);
+            Search(ref categories, parameter.Search);
+            return await PagedList<Category>.ToPagedList(categories.OrderByDescending(x => x.Id), parameter.PageNumber, parameter.PageSize);
         }
 
         public async Task<List<Category>> GetByNameAsync(string Name)
