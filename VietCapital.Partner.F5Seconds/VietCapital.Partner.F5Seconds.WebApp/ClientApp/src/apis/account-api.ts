@@ -50,7 +50,6 @@ const accountApi = {
   addClaimToUser: (params: {userName: string; claimName: string; value: string}): Promise<any> =>
     axiosClient.post(`/account/addClaimToUser?${queryString.stringify(params)}`),
   getAllClaimsByUser: (params: {userName: string}): Promise<{type: string; value: string}[]> => {
-    console.log({params});
     return axiosClient.get(`/account/GetAllClaimByUser?userName=${params.userName}`);
   },
   removeClaimToUser: (params: {userName: string; claimName: string; value: string}): Promise<any> =>

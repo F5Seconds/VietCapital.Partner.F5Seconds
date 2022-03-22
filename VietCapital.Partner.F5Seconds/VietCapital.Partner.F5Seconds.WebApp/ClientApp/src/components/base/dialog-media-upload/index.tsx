@@ -60,11 +60,11 @@ const DialogMediaUpload: FC<Props> = ({
         files.map(async item => {
           const storageRef = ref(storage, `images/${item.name}`);
           const resUpload = await uploadBytes(storageRef, item);
-          console.log(resUpload);
+          // console.log(resUpload);
           return resUpload;
         })
       );
-      console.log(result);
+      // console.log(result);
       if (result.length > 0) {
         setFiles([]);
         enqueueSnackbar('Upload thành công', {variant: 'success'});
@@ -73,10 +73,10 @@ const DialogMediaUpload: FC<Props> = ({
       }
       setIsSubmitting(false);
     } else {
-      console.log(listImage, listChecked);
+      // console.log(listImage, listChecked);
       onSubmit && onSubmit(listChecked);
     }
-    console.log(files);
+    // console.log(files);
   };
   React.useEffect(() => {
     init && setListChecked([init]);

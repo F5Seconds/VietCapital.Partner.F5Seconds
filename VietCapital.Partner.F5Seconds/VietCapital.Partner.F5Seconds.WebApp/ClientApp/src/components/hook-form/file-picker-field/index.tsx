@@ -34,7 +34,7 @@ const FilePickerField: FC<Props> = props => {
             accept="image/*"
             onChange={({target: {files, value}}) => {
               field.onChange(files?.[0]);
-              console.log(files?.[0], value);
+              // console.log(files?.[0], value);
               onChange && onChange(files?.[0]);
             }}
           />

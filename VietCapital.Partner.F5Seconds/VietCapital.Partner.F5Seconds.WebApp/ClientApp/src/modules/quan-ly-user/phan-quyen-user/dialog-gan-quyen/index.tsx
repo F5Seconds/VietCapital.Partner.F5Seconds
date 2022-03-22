@@ -74,9 +74,6 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
   useEffect(() => {
     const getClaim = () => {
       accountService.getAllClaimsInRole({roleName: role?.name}).then(res => {
-        console.log('====================================');
-        // console.log(res);
-        console.log('====================================');
         const list = res?.clams;
         list && setCheckedList(list);
       });
@@ -84,9 +81,6 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose, onSubmit}) => {
 
     if (role) {
       accountService.getAllUsersByRole({roleId: role?.id}).then(res => {
-        console.log('====================================');
-        // console.log(res);
-        console.log('====================================');
         const list = res?.listUser;
         const users = listUsers
           ?.filter((item: any) => list?.includes(item?.username))

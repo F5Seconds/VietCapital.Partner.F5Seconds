@@ -66,14 +66,11 @@ const DialogGanQuyen: FC<Props> = ({open = false, id, onClose}) => {
   }, []);
 
   const user: any = watch('user');
-  console.log({user});
+  // console.log({user});
 
   useEffect(() => {
     const getClaim = () => {
       accountService.getAllClaimsByUser({userName: user?.value}).then(res => {
-        console.log('====================================');
-        // console.log(res);
-        console.log('====================================');
         const list = res?.filter(item => item.type === 'quyen')?.map(item => item.value);
         list && setCheckedList(list);
       });

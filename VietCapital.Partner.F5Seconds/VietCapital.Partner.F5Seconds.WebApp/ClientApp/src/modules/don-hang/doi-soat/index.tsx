@@ -196,9 +196,9 @@ const DoiSoatPage = () => {
               cssClass="csv-reader-input"
               onFileLoaded={(data, fileInfo, originalFile) =>
                 setListUpload(prev => {
-                  console.log(data);
+                  // console.log(data);
                   return data.map(item => {
-                    console.log(item);
+                    // console.log(item);
                     let object: any = {};
                     columns.forEach(i => {
                       if (i.headerName === 'Ngày hết hạn' || i.headerName === 'Ngày giao dịch') {

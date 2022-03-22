@@ -42,15 +42,15 @@ const LoginPage = () => {
 
   const jwt = useAppSelector(selectJWT);
   const dispatch = useAppDispatch();
-  console.log(jwt);
+  // console.log(jwt);
 
   const onSubmit = (data: defaultValues) => {
-    console.log(data);
+    // console.log(data);
 
     accountApi
       .login(data.username, data.password)
       .then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.succeeded) {
           enqueueSnackbar('Đăng nhập thành công', {variant: 'success'});
           localStorage.setItem('jwt', res?.data?.jwToken);

@@ -134,10 +134,6 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
     }
   }, [location.pathname]);
 
-  useEffect(() => {
-    console.log(auth?.quyen);
-  }, [auth]);
-
   const content = (
     <Box className="sidebar" sx={{p: 2, overflow: 'auto'}}>
       <List>
@@ -147,7 +143,6 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
                 ?.filter((item: string) => item?.split(';')[1] === 'seen')
                 ?.map((item: string) => `/${item.split('/')[1]?.split(';')[0]}`)
             : [];
-          console.log({listQuyen});
           if (listQuyen?.indexOf(item.href) > -1) {
             return <NavItem key={item.title} item={item} listQuyen={auth?.quyen} />;
           }

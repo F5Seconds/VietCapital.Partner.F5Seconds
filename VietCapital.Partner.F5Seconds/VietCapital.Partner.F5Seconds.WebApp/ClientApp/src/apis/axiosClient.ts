@@ -10,15 +10,17 @@ const axiosClient = axios.create({
 });
 
 axiosClient.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: AxiosRequestConfig | any) => {
     if (config.url?.indexOf('account') === -1) {
       config.baseURL = '/api/v1';
     }
 
-    // const token = sessionStorage.getItem('token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      if (config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
     return config;
   },
   error => {

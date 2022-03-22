@@ -64,8 +64,6 @@ const DataTable: FC<Props> = props => {
 
   const emptyRows = pagination.page > 0 ? Math.max(0, pagination.rowsPerPage - rows.length) : 0;
 
-  console.log(pagination, {emptyRows, heightRow, heightRowRef});
-
   return (
     <Card sx={{boxShadow: 'rgb(145 158 171 / 24%) 0px 1px 2px 0px', position: 'relative'}}>
       {loading && (

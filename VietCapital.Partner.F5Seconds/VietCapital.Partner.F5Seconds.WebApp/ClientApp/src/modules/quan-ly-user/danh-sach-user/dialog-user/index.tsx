@@ -36,7 +36,7 @@ const DialogUser: FC<Props> = ({open = false, id = null, onClose, onSubmit}) => 
     const getUser = async () => {
       const res = await accountService.getUserById(id);
       if (res) {
-        console.log(res);
+        // console.log(res);
         Object.keys(res).forEach((key: string) => {
           form.setValue(key, res[key]);
         });

@@ -57,9 +57,6 @@ const DialogPhanManHinh: FC<Props> = ({open = false, id, onClose}) => {
 
   const getClaim = () => {
     accountService.getAllClaimsInRole({roleName: role?.name}).then(res => {
-      console.log('====================================');
-      // console.log(res);
-      console.log('====================================');
       const list = res?.clams;
       list &&
         setListClaim(

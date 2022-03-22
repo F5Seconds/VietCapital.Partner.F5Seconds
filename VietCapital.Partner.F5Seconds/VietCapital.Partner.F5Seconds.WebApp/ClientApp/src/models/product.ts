@@ -14,4 +14,9 @@ export interface Product {
   brandName: string;
   brandLogo: string;
   categories: Category[];
+  storeList?: {
+    storeAddr: string;
+    storeLat?: number;
+    storeLong?: number;
+  }[];
 }

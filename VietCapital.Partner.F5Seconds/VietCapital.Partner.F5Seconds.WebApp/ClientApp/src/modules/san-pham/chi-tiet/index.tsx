@@ -1,5 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {Button, Card, Grid, List, ListItem, ListItemText, Stack, Typography} from '@mui/material';
+import {
+  Button,
+  Card,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Stack,
+  Typography,
+} from '@mui/material';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {useNavigate, useParams} from 'react-router-dom';
@@ -51,7 +61,7 @@ const ChiTietSanPhamPage = () => {
 
   const onSubmit = async (data: Partial<Product & {categoryProducts?: any}>) => {
     // console.log('====================================');
-    console.log(data);
+    // console.log(data);
     // console.log('====================================');
     if (id) {
       await productService.update(id, {
@@ -93,12 +103,13 @@ const ChiTietSanPhamPage = () => {
           } else if (typeof res[item] === 'number') {
             setValue(item, res[item] + '');
           } else if (item === 'status') {
-            console.log('status', res[item]);
+            // console.log('status', res[item]);
             setValue(item, res[item]);
           } else {
             setValue(item, res[item]);
           }
         });
+        setDiaDiems(res?.storeList);
       }
     };
     id && getDetail();
@@ -204,10 +215,13 @@ const ChiTietSanPhamPage = () => {
                         />
                       </ListItem>
                     )}
-                    {diaDiems.map(item => (
-                      <ListItem>
-                        <ListItemText primary={item} />
-                      </ListItem>
+                    {diaDiems.map((item, index) => (
+                      <>
+                        <ListItem>
+                          <ListItemText primary={`${index + 1}. ${item?.storeAddr}`} />
+                        </ListItem>
+                        {index < diaDiems?.length - 1 && <Divider variant="middle" />}
+                      </>
                     ))}
                   </List>
                 </Card>

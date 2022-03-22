@@ -21,7 +21,6 @@ const NavItem: FC<Props> = ({item, onClick, listQuyen, ...rest}) => {
   const navigate = useNavigate();
   const [childrenActive, setChildrenActive] = useState(true);
   // href === '/so-hoa/danh-sach-phieu-yeu-cau' ? true : false
-  console.log(location.pathname, href);
   const active = href
     ? !!matchPath(
         {
