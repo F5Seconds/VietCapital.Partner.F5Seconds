@@ -1,12 +1,19 @@
+import moment from 'moment';
 import {transactionApi} from '../apis';
-import {Transaction, QueryParams, ResultData} from '../models';
+import {QueryParams, ResultData, Transaction} from '../models';
 import {setShowAlert} from '../redux/slice/alertSlice';
 import store from '../redux/store';
 
 const transactionService = {
-  getAll: async (params: QueryParams): Promise<ResultData<Transaction> | undefined> => {
+  getAll: async (
+    params: QueryParams & {from?: Date; to?: Date}
+  ): Promise<ResultData<Transaction> | undefined> => {
     try {
-      const res = await transactionApi.getAll(params);
+      const res = await transactionApi.getAll({
+        ...params,
+        from: params.from ? moment(params.from).format('YYYY-MM-DD') : undefined,
+        to: params.to ? moment(params.to).format('YYYY-MM-DD') : undefined,
+      });
       if (res.succeeded) {
         return res.data;
       }
@@ -55,6 +62,20 @@ const transactionService = {
       return res.data;
     } catch (error) {
       store.dispatch(setShowAlert({type: 'error', message: 'Đã xảy ra lỗi'}));
+    }
+  },
+  doiSoat: async (
+    data: any
+  ): Promise<
+    {doiSoatKhop: any[]; doiSoatKhongKhopF5s: any[]; doiSoatKhongKhopBvb: any[]} | undefined
+  > => {
+    try {
+      const res = await transactionApi.doiSoat(data);
+      if (res.succeeded) {
+        return res.data;
+      }
+    } catch (error) {
+      console.log('Lỗi get category');
     }
   },
 };

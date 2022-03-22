@@ -22,6 +22,7 @@ interface Props {
   isSubmitting?: boolean;
   textNegative?: string;
   textPositive?: string;
+  hasSubmitButton?: boolean;
 }
 const DialogBase: FC<Props> = ({
   open,
@@ -32,6 +33,7 @@ const DialogBase: FC<Props> = ({
   isSubmitting = false,
   textNegative = 'Thoát',
   textPositive = 'Xác nhận',
+  hasSubmitButton = true,
   ...rest
 }) => {
   return (
@@ -62,14 +64,16 @@ const DialogBase: FC<Props> = ({
             {textNegative}
           </LoadingButton>
           <div style={{width: 24}} />
-          <LoadingButton
-            loading={isSubmitting}
-            variant="contained"
-            onClick={onSubmit}
-            sx={{minWidth: 150}}
-          >
-            {textPositive}
-          </LoadingButton>
+          {hasSubmitButton && (
+            <LoadingButton
+              loading={isSubmitting}
+              variant="contained"
+              onClick={onSubmit}
+              sx={{minWidth: 150}}
+            >
+              {textPositive}
+            </LoadingButton>
+          )}
         </Stack>
       </DialogActions>
     </Dialog>

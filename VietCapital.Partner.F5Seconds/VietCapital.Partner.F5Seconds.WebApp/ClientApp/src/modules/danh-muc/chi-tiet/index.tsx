@@ -28,7 +28,7 @@ const DanhMucSanPhamPage = () => {
   } = form;
 
   const onSubmit = async (data: Partial<Category>) => {
-    console.log(data);
+    // console.log(data);
 
     if (id) {
       await categoryService.update(id, {id, ...data});

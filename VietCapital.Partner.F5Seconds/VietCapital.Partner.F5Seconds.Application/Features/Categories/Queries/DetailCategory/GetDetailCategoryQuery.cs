@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.DTOs.Gateway;
@@ -16,10 +18,12 @@ namespace VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.
         {
             private readonly ICategoryRepositoryAsync _category;
             private readonly IMapper _mapper;
-            public GetDetailCategoryQueryHandler(ICategoryRepositoryAsync category, IMapper mapper)
+            private readonly IDistributedCache _distributedCache;
+            public GetDetailCategoryQueryHandler(ICategoryRepositoryAsync category, IMapper mapper, IDistributedCache distributedCache)
             {
                 _category = category;
                 _mapper = mapper;
+                _distributedCache = distributedCache;
             }
             public async Task<Response<CategoryOutsideResponse>> Handle(GetDetailCategoryQuery request, CancellationToken cancellationToken)
             {

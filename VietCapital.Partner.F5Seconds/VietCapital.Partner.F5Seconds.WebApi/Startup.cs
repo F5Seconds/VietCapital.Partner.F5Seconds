@@ -58,6 +58,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseResponseCaching();
             app.UseSwaggerExtension();
             app.UseMiddlewareExtension(_config);
             app.UseHealthChecks("/health");

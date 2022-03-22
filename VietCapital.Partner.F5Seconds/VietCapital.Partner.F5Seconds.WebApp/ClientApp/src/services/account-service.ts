@@ -1,5 +1,5 @@
 import accountApi from '../apis/account-api';
-import {Role} from '../models';
+import {Account, Role} from '../models';
 import {setShowAlert} from '../redux/slice/alertSlice';
 import store from '../redux/store';
 
@@ -22,6 +22,34 @@ const accountService = {
       const res = await accountApi.getAllUsersByRole(params);
       return res;
     } catch (error) {
+      console.log('Lỗi get all user');
+    }
+  },
+  getUserById: async (id: string | number | null): Promise<any> => {
+    try {
+      const res = await accountApi.getUserById(id);
+      return res;
+    } catch (error) {
+      console.log('Lỗi get user');
+    }
+  },
+  register: async (data: Account): Promise<any> => {
+    try {
+      const res = await accountApi.register(data);
+      store.dispatch(setShowAlert({message: 'Thêm user thành công', type: 'success'}));
+      return res;
+    } catch (error) {
+      store.dispatch(setShowAlert({message: 'Đã xảy ra lỗi', type: 'error'}));
+      console.log('Lỗi get user');
+    }
+  },
+  updateUser: async (id: string | number | null, data: any): Promise<any> => {
+    try {
+      const res = await accountApi.updateUser(id, data);
+      store.dispatch(setShowAlert({message: 'Cập nhật user thành công', type: 'success'}));
+      return res;
+    } catch (error) {
+      store.dispatch(setShowAlert({message: 'Đã xảy ra lỗi', type: 'error'}));
       console.log('Lỗi get all user');
     }
   },
@@ -86,6 +114,52 @@ const accountService = {
       }
     } catch (error) {
       store.dispatch(setShowAlert({message: 'Đã xảy ra lỗi', type: 'error'}));
+    }
+    return false;
+  },
+  addClaimToRole: async (data: {
+    roleName: string;
+    claimName: string;
+    value: string;
+  }): Promise<any> => {
+    try {
+      const res = await accountApi.addClaimToRole(data);
+      if (res.result) {
+        store.dispatch(setShowAlert({message: res.result, type: 'success'}));
+        return true;
+      } else {
+        store.dispatch(setShowAlert({message: res.error || '', type: 'error'}));
+      }
+    } catch (error) {
+      console.log('Lỗi gán quyền');
+    }
+    return false;
+  },
+  getAllClaimsInRole: async (params: {
+    roleName: string;
+  }): Promise<{clams: string[]} | undefined> => {
+    try {
+      const res = await accountApi.getAllClaimsInRole(params);
+      return res;
+    } catch (error) {
+      console.log('Lỗi get all user');
+    }
+  },
+  removeClaimToRole: async (data: {
+    roleName: string;
+    claimName: string;
+    value: string;
+  }): Promise<any> => {
+    try {
+      const res = await accountApi.removeClaimToRole(data);
+      if (res.result) {
+        store.dispatch(setShowAlert({message: res.result, type: 'success'}));
+        return true;
+      } else {
+        store.dispatch(setShowAlert({message: res.error || '', type: 'error'}));
+      }
+    } catch (error) {
+      console.log('Lỗi gán quyền');
     }
     return false;
   },

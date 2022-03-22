@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.DetailCategory;
 using VietCapital.Partner.F5Seconds.Application.Features.Categories.Queries.ListCategory;
@@ -18,6 +20,7 @@ namespace VietCapital.Partner.F5Seconds.WebApi.Controllers.v1
         }
 
         [HttpGet("list")]
+        [ResponseCache(Duration = 10, Location = ResponseCacheLocation.Any, NoStore = true)]
         public async Task<IActionResult> GetListCategory([FromQuery] GetListCategoryParameter filter)
         {
             return Ok(await Mediator.Send(new GetListCategoryQuery() { PageNumber = filter.PageNumber,PageSize = filter.PageSize,Search = filter.Search}));

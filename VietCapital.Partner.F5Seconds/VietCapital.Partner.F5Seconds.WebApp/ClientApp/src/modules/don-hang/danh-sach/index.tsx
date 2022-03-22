@@ -1,6 +1,10 @@
-import {Box, Stack} from '@mui/material';
+import {DateRange, LocalizationProvider} from '@mui/lab';
+import AdapterDate from '@mui/lab/AdapterMoment';
+import DateRangePicker from '@mui/lab/DateRangePicker';
+import {Box, Button, Stack, TextField} from '@mui/material';
 import queryString from 'query-string';
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
+import CsvDownloader from 'react-csv-downloader';
 import {useLocation} from 'react-router';
 import {DataTable, SearchBar} from '../../../components/base';
 import Page from '../../../layouts/Page';
@@ -20,8 +24,9 @@ const DanhSachDonHangPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [list, setList] = useState<Transaction[]>([]);
+  const [dateRange, setDateRange] = useState<DateRange<Date>>([null, null]);
 
-  const [filters, setFilters] = useState<QueryParams>({
+  const [filters, setFilters] = useState<QueryParams & {from?: Date; to?: Date}>({
     ...queryParams,
     search: queryParams.search ?? '',
     pageNumber: queryParams.pageNumber ?? 1,
@@ -41,10 +46,14 @@ const DanhSachDonHangPage = () => {
 
   const columns = [
     {
+      field: 'transactionId',
+      headerName: 'Mã giao dịch',
+    },
+    {
       field: 'customerId',
       headerName: 'Mã khách hàng',
     },
-    {field: 'productCode', headerName: 'Mã sản phẩm'},
+    {field: 'productId', headerName: 'Mã sản phẩm'},
 
     {
       field: 'productName',
@@ -55,9 +64,18 @@ const DanhSachDonHangPage = () => {
       headerName: 'Điểm',
     },
     {
+      field: 'voucherCode',
+      headerName: 'Mã voucher',
+    },
+    {
       field: 'state',
       headerName: 'Trạng thái',
       renderCell: (row: any) => <Box sx={{color: stateColor(row.state)}}>{state(row.state)}</Box>,
+    },
+    {
+      field: 'created',
+      headerName: 'Ngày giao dịch',
+      renderCell: (row: any) => new Date(row.created).toLocaleDateString('vi'),
     },
     {
       field: 'expiryDate',
@@ -97,22 +115,74 @@ const DanhSachDonHangPage = () => {
     getList();
   }, [filters]);
 
+  useEffect(() => {
+    dateRange[0] &&
+      dateRange[1] &&
+      setFilters(prev => ({
+        ...prev,
+        from: dateRange[0] || undefined,
+        to: dateRange[1] || undefined,
+      }));
+  }, [dateRange]);
+
+  const datas: {
+    transactionId: string;
+    customerId: string;
+    productId: string;
+    productName: string;
+    productPoint: string;
+    voucherCode: string;
+    state: string;
+    created: string;
+    expiryDate: string;
+  }[] = list.map(item => ({
+    transactionId: item.transactionId + '',
+    customerId: item.customerId,
+    productId: item.productId + '',
+    productName: item.product.name,
+    productPoint: item.product.point + '',
+    voucherCode: item.voucherCode + '',
+    state: item.state + '',
+    created: new Date(item.created).toLocaleDateString('vi'),
+    expiryDate: new Date(item.expiryDate).toLocaleDateString('vi'),
+  }));
+
   return (
     <Page title="Danh sách đơn hàng">
-      <Stack direction="row" justifyContent="space-between" marginBottom={2}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" marginBottom={2}>
         <SearchBar onSubmit={value => setFilters(prev => ({...prev, search: value}))} />
-      </Stack>
-      {/* <Stack direction="row" justifyContent="flex-end" marginBottom={2}>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              setOpenDialog(prev => ({open: true}));
+
+        <LocalizationProvider dateAdapter={AdapterDate} locale={'vi'}>
+          <DateRangePicker
+            startText="Từ ngày"
+            toolbarPlaceholder="dd/mm/yyyy"
+            endText="Đến ngày"
+            value={dateRange}
+            inputFormat={'DD/MM/YYYY'}
+            onChange={newValue => {
+              setDateRange(newValue);
             }}
-          >
-            Thêm sản phẩm
-          </Button>
-        </Stack> */}
+            renderInput={(startProps, endProps) => (
+              <>
+                <TextField {...startProps} margin="dense" InputLabelProps={{shrink: true}} />
+                <Box sx={{mx: 2}}> Đến </Box>
+                <TextField {...endProps} margin="dense" InputLabelProps={{shrink: true}} />
+              </>
+            )}
+          />
+        </LocalizationProvider>
+        <CsvDownloader
+          filename="myfile"
+          extension=".csv"
+          separator=";"
+          wrapColumnChar="'"
+          columns={columns.map(item => ({id: item.field, displayName: item.headerName}))}
+          datas={datas}
+        >
+          <Button variant="contained">Tải xuống file CSV</Button>
+        </CsvDownloader>
+      </Stack>
+
       <DataTable
         columns={columns}
         rows={list.map(item => ({
@@ -134,7 +204,7 @@ const DanhSachDonHangPage = () => {
             setFilters(prev => ({...prev, pageNumber: page + 1}));
           },
           onRowsPerPageChange: value => {
-            setFilters(prev => ({...prev, pageSize: value, pageNumber: 0}));
+            setFilters(prev => ({...prev, pageSize: value, pageNumber: 1}));
           },
         }}
       />

@@ -72,7 +72,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Persistence.Repositories
             var trans = _voucherTransactions
                 .Include(p => p.Product).AsQueryable();
             Search(ref trans,parameter.Search);
-            return await PagedList<VoucherTransaction>.ToPagedList(trans.OrderByDescending(x => x.Id).AsNoTracking(), parameter.PageNumber, parameter.PageSize);
+            return await PagedList<VoucherTransaction>.ToPagedList(trans.OrderByDescending(x => x.Id).Where( p=> parameter.From != null ? p.Created.Date >= parameter.From.Value.Date :true).Where( p=> parameter.To != null ? p.Created.Date <= parameter.To.Value.Date :true).AsNoTracking(), parameter.PageNumber, parameter.PageSize);
         }
 
         public async Task<List<VoucherTransaction>> DoiSoatGiaoDichKhongKhopF5s(DateTime ngayBatDau, DateTime ngayKetThuc)

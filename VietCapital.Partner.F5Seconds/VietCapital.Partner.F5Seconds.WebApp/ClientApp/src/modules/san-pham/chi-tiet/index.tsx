@@ -8,6 +8,7 @@ import LoadingOverlay from '../../../components/base/loading-overlay';
 import {
   AutocompleteAsyncField,
   CheckboxField,
+  ImagePickerField,
   InputField,
   TextAreaField,
 } from '../../../components/hook-form';
@@ -24,10 +25,12 @@ const defaultValues = {
   partner: '',
   name: '',
   point: undefined,
-  categoryProducts: null,
+  categories: [],
   image: '',
   thumbnail: '',
+  content: '',
   term: '',
+  status: false,
 };
 const ChiTietSanPhamPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -54,7 +57,7 @@ const ChiTietSanPhamPage = () => {
         id,
         ...data,
         categoryProducts:
-          data.categoryProducts?.map((item: any) => ({categoryId: item.id, productId: id})) || [],
+          data.categories?.map((item: any) => ({categoryId: item.value, productId: id})) || [],
       });
     } else {
       const res = await productService.create(data);
@@ -79,18 +82,18 @@ const ChiTietSanPhamPage = () => {
     const getDetail = async () => {
       const res: any = await productService.getOne(id);
       if (res) {
-        console.log(res, defaultValues);
         Object.keys(defaultValues).forEach((item: any) => {
-          console.log(item);
-
-          if (item === 'categoryProducts') {
-            res[item] &&
+          if (item === 'categories') {
+            res.categories &&
               setValue(
-                item,
-                item?.map((item: any) => ({label: res[item].name, value: res[item].id}))
+                'categories',
+                res.categories?.map((i: any) => ({label: i.name, value: i.id}))
               );
           } else if (typeof res[item] === 'number') {
             setValue(item, res[item] + '');
+          } else if (item === 'status') {
+            console.log('status', res[item]);
+            setValue(item, res[item]);
           } else {
             setValue(item, res[item]);
           }
@@ -99,6 +102,7 @@ const ChiTietSanPhamPage = () => {
     };
     id && getDetail();
   }, [id]);
+
   return (
     <Page title={id ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}>
       <Grid container spacing={2}>
@@ -149,16 +153,21 @@ const ChiTietSanPhamPage = () => {
                   items={categories?.map(item => ({label: item?.name, value: item?.id, ...item}))}
                   onSubmit={value => getCategories(value)}
                   form={form}
-                  name="categoryProducts"
+                  name="categories"
                   label="Danh mục"
                 />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="image" label="Đường dẫn ảnh sản phẩm" />
+                {/* <InputField form={form} name="image" label="Đường dẫn ảnh sản phẩm" /> */}
+                <ImagePickerField form={form} name="image" label="Hình ảnh" />
               </Grid>
 
               <Grid item xs={12} md={6} lg={4}>
-                <InputField form={form} name="thumbnail" label="Đường dẫn ảnh sản phẩm thu nhỏ" />
+                <ImagePickerField
+                  form={form}
+                  name="thumbnail"
+                  label="Đường dẫn ảnh sản phẩm thu nhỏ"
+                />
               </Grid>
               <Grid item xs={12} md={6} lg={4}>
                 <CheckboxField form={form} name="status" label="Trạng thái" />

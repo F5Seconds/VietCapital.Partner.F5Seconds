@@ -9,7 +9,16 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import {Bag2, Firstline, KeyboardOpen, Logout, TaskSquare, UserOctagon} from 'iconsax-react';
+import {
+  Bag2,
+  Chart1,
+  Dash,
+  Firstline,
+  KeyboardOpen,
+  Logout,
+  TaskSquare,
+  UserOctagon,
+} from 'iconsax-react';
 import {FC, useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
@@ -23,6 +32,11 @@ import NavItem from './NavItem';
 import jwt_decode from 'jwt-decode';
 
 export const items = [
+  {
+    href: '/thong-ke',
+    icon: Chart1,
+    title: 'Thống kê',
+  },
   {
     href: '/quan-ly-user',
     icon: UserOctagon,
@@ -52,6 +66,16 @@ export const items = [
     href: '/don-hang',
     icon: Bag2,
     title: 'Quản lý đơn hàng',
+    children: [
+      {
+        href: '/don-hang/danh-sach-don-hang',
+        title: 'Danh sách đơn hàng',
+      },
+      {
+        href: '/don-hang/doi-soat',
+        title: 'Đối soát',
+      },
+    ],
   },
 
   // {
@@ -110,12 +134,25 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    console.log(auth?.quyen);
+  }, [auth]);
+
   const content = (
     <Box className="sidebar" sx={{p: 2, overflow: 'auto'}}>
       <List>
-        {items.map(item => (
-          <NavItem key={item.title} item={item} />
-        ))}
+        {items.map(item => {
+          const listQuyen = Array.isArray(auth?.quyen)
+            ? auth?.quyen
+                ?.filter((item: string) => item?.split(';')[1] === 'seen')
+                ?.map((item: string) => `/${item.split('/')[1]?.split(';')[0]}`)
+            : [];
+          console.log({listQuyen});
+          if (listQuyen?.indexOf(item.href) > -1) {
+            return <NavItem key={item.title} item={item} listQuyen={auth?.quyen} />;
+          }
+          return null;
+        })}
         <NavItem
           onClick={() => {
             dispatch(setAuth({}));
