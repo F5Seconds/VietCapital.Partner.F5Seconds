@@ -63,9 +63,9 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
             return Ok(await _accountService.ResetPassword(model));
         }
         [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword(string Email,string ConfirmPassword,string newPassword)
+        public async Task<IActionResult> ChangePassword(string Email,string oldPassword,string ConfirmPassword,string newPassword)
         {
-            return Ok(await _accountService.ChangePassword(Email,ConfirmPassword,newPassword));
+            return Ok(await _accountService.ChangePassword(Email,oldPassword,ConfirmPassword,newPassword));
         }
         private string GenerateIPAddress()
         {

@@ -277,13 +277,19 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 throw new ApiException($"Error occured while reseting the password.");
             }
         }
-        public async Task<Response<string>> ChangePassword(string Email, string ConfirmPassword, string newPassword)
+        public async Task<Response<string>> ChangePassword(string Email, string oldPassword, string ConfirmPassword, string newPassword)
         {
+
             if (ConfirmPassword.Equals(newPassword))
             {
                 var account = await _userManager.FindByEmailAsync(Email);
+
                 if (account == null) throw new ApiException($"Không có tài khoản nào với email là {Email}.");
 
+                var checkLogin = await _signInManager.PasswordSignInAsync(account.UserName, oldPassword, false, lockoutOnFailure: false);
+                if(!checkLogin.Succeeded){
+                    throw new ApiException($"Sai mật khẩu cũ");
+                }
                 var token = await _userManager.GeneratePasswordResetTokenAsync(account);
 
                 var result = await _userManager.ResetPasswordAsync(account, token, newPassword);
@@ -299,7 +305,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             }
             else
             {
-                    throw new ApiException($"Mật khẩu không khớp!!!");
+                throw new ApiException($"Mật khẩu không khớp!!!");
 
             }
         }
