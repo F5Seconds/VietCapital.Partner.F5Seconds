@@ -19,7 +19,7 @@ import logo from '../../../assets/images/logo.png';
 import {LoadingOverLay} from '../../../components/base';
 import {InputField} from '../../../components/hook-form';
 import {useAppDispatch, useAppSelector} from '../../../redux/hooks';
-import {selectJWT, setAuth} from '../../../redux/slice/auth';
+import {selectJWT, setAuth, setJWT} from '../../../redux/slice/auth';
 interface defaultValues {
   username: string;
   password: string;
@@ -54,7 +54,7 @@ const LoginPage = () => {
         if (res.succeeded) {
           enqueueSnackbar('Đăng nhập thành công', {variant: 'success'});
           localStorage.setItem('jwt', res?.data?.jwToken);
-          dispatch(setAuth(res?.data));
+          dispatch(setJWT(res?.data?.jwToken));
           navigate('/', {replace: true});
         }
       })

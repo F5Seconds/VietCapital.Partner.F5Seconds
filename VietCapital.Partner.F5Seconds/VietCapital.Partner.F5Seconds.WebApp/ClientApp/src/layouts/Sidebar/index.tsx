@@ -21,7 +21,7 @@ import {
 import {FC, useEffect, useLayoutEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import {selectAuth, setAuth} from '../../redux/slice/auth';
+import {logout, selectAuth, setAuth} from '../../redux/slice/auth';
 import {accountService} from '../../services';
 import {colors} from '../../theme';
 // import {authActions} from 'src/redux/slice/authSlice';
@@ -161,8 +161,9 @@ const Sidebar: FC<Props> = ({onMobileClose, openMobile}) => {
         })}
         <NavItem
           onClick={() => {
-            dispatch(setAuth({}));
+            dispatch(logout());
             localStorage.removeItem('jwt');
+            navigate('/login');
           }}
           item={{
             href: '/login',

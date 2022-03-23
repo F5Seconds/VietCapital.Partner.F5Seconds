@@ -34,6 +34,15 @@ export const counterSlice = createSlice({
   initialState,
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
+    setJWT: (state, action: PayloadAction<CounterState>) => {
+      const {jwToken} = action.payload;
+      const jwtDecode: any = jwToken && jwt_decode(jwToken);
+      state.jwToken = jwToken;
+      state.id = jwtDecode?.uid;
+      state.roles = jwtDecode?.roles;
+      state.userName = jwtDecode?.userName;
+      state.quyen = jwtDecode?.quyen;
+    },
     setAuth: (state, action: PayloadAction<CounterState>) => {
       const {email, id, isVerified, jwToken, refreshToken, roles, userName, firstName, lastName} =
         action.payload;
@@ -50,10 +59,22 @@ export const counterSlice = createSlice({
       state.firstName = firstName || state.firstName;
       state.lastName = lastName || state.lastName;
     },
+    logout: state => {
+      state.email = '';
+      state.isVerified = false;
+      state.jwToken = '';
+      state.id = '';
+      state.refreshToken = '';
+      state.roles = [];
+      state.userName = '';
+      state.quyen = [];
+      state.firstName = '';
+      state.lastName = '';
+    },
   },
 });
 
-export const {setAuth} = counterSlice.actions;
+export const {setAuth, setJWT, logout} = counterSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectIsVerified = (state: RootState) => state.auth.isVerified;
