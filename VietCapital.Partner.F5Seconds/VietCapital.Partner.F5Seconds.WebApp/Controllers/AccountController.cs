@@ -62,6 +62,11 @@ namespace VietCapital.Partner.F5Seconds.WebApp.Controllers
 
             return Ok(await _accountService.ResetPassword(model));
         }
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword(string Email,string ConfirmPassword,string newPassword)
+        {
+            return Ok(await _accountService.ChangePassword(Email,ConfirmPassword,newPassword));
+        }
         private string GenerateIPAddress()
         {
             if (Request.Headers.ContainsKey("X-Forwarded-For"))

@@ -277,6 +277,32 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 throw new ApiException($"Error occured while reseting the password.");
             }
         }
+        public async Task<Response<string>> ChangePassword(string Email, string ConfirmPassword, string newPassword)
+        {
+            if (ConfirmPassword.Equals(newPassword))
+            {
+                var account = await _userManager.FindByEmailAsync(Email);
+                if (account == null) throw new ApiException($"Không có tài khoản nào với email là {Email}.");
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(account);
+
+                var result = await _userManager.ResetPasswordAsync(account, token, newPassword);
+                // var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    return new Response<string>(Email, message: $"Đổi mật khẩu thành công.");
+                }
+                else
+                {
+                    throw new ApiException($"CÓ lỗi trong quá trình đổi mật khẩu");
+                }
+            }
+            else
+            {
+                    throw new ApiException($"Mật khẩu không khớp!!!");
+
+            }
+        }
 
 
         /////role
@@ -471,7 +497,8 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
         public async Task<object> GetAllClaimByUser(string username)
         {
             var nhanvien = await _userManager.FindByNameAsync(username);
-            if(nhanvien != null){
+            if (nhanvien != null)
+            {
                 var listClaimRole = new List<Claim>();
                 var listRole = await _userManager.GetRolesAsync(nhanvien);
                 foreach (var item in listRole)
@@ -483,13 +510,13 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                         listClaimRole.Add(item1);
                     }
                 }
-                var listClaimUser = await _userManager.GetClaimsAsync(nhanvien); 
+                var listClaimUser = await _userManager.GetClaimsAsync(nhanvien);
                 var listClaim = new List<Claim>();
                 foreach (var item in listClaimUser)
                 {
                     foreach (var item1 in listClaimRole)
                     {
-                        if(item.Value.Equals(item1.Value))
+                        if (item.Value.Equals(item1.Value))
                         {
                             listClaim.Add(item);
                             break;
@@ -647,7 +674,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
 
         public async Task<object> RemoveUser(string userName)
         {
-             var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName);
 
             if (user != null)
             {
@@ -657,7 +684,9 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 {
                     return new { error = $"Error: Không thể xóa người dùng {user.UserName} do đã có trong một quyền" };
 
-                }else{
+                }
+                else
+                {
                     var userClaim = await _userManager.GetClaimsAsync(user);
                     foreach (var item in userClaim)
                     {
