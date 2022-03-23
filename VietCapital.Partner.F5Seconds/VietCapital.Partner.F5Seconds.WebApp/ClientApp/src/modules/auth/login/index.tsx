@@ -46,7 +46,7 @@ const LoginPage = () => {
 
   const onSubmit = (data: defaultValues) => {
     // console.log(data);
-
+    console.log('bbb');
     accountApi
       .login(data.username, data.password)
       .then(res => {
@@ -91,6 +91,11 @@ const LoginPage = () => {
                     message: 'Vui lòng nhập tên đăng nhập',
                   },
                 }}
+                onKeyPress={(event: any) => {
+                  if (event.key === 'Enter') {
+                    handleSubmit(onSubmit)();
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -117,6 +122,11 @@ const LoginPage = () => {
                     </IconButton>
                   </InputAdornment>
                 }
+                onKeyPress={(event: any) => {
+                  if (event.key === 'Enter') {
+                    handleSubmit(onSubmit)();
+                  }
+                }}
               />
             </Grid>
           </Grid>

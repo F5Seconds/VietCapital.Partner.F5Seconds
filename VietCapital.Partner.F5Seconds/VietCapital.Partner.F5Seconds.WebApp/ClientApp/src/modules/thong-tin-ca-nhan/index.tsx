@@ -47,10 +47,12 @@ const ThongTinCaNhanPage = (props: Props) => {
     auth?.id && (await accountService.updateUser(auth.id, data));
   };
 
-  const handleSubmitUser = (data: {password: string; confirmPassword: string}) => {
-    auth?.email &&
-      auth?.jwToken &&
-      accountService.resetPassword({...data, email: auth?.email, token: auth?.jwToken});
+  const handleSubmitUser = (data: {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) => {
+    auth?.email && accountService.resetPassword({...data, email: auth?.email});
   };
   return (
     <>

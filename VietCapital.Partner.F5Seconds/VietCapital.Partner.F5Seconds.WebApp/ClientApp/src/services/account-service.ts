@@ -45,12 +45,12 @@ const accountService = {
   },
   resetPassword: async (data: {
     email: string;
-    token: string;
-    password: string;
+    oldPassword: string;
+    newPassword: string;
     confirmPassword: string;
   }): Promise<any> => {
     try {
-      const res = await accountApi.resetPassword(data);
+      const res = await accountApi.changePassword(data);
       store.dispatch(setShowAlert({message: 'Đổi mật khẩu thành công', type: 'success'}));
       return res;
     } catch (error) {

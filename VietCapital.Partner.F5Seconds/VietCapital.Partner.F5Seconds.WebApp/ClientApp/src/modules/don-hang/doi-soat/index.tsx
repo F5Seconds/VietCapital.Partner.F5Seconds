@@ -218,7 +218,7 @@ const DoiSoatPage = () => {
                     setListUpload(rows);
                   });
               }}
-              accept="image/*.xlsx"
+              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               id="upload"
               type="file"
             />

@@ -14,7 +14,8 @@ interface Props {
 const DialogResetPassword: FC<Props> = ({open = false, id = null, onClose, onSubmit}) => {
   const form = useForm<any>({
     defaultValues: {
-      password: '',
+      oldPassword: '',
+      newPassword: '',
       confirmPassword: '',
     },
   });
@@ -34,11 +35,25 @@ const DialogResetPassword: FC<Props> = ({open = false, id = null, onClose, onSub
       onSubmit={handleSubmit(onSubmit)}
     >
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} xl={6}>
+        <Grid item xs={12}>
           <InputField
             form={form}
-            name="password"
-            label="Mật khẩu"
+            name="oldPassword"
+            label="Mật khẩu hiện tại"
+            type="password"
+            rules={{
+              required: {
+                value: true,
+                message: 'Không được để trống',
+              },
+            }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <InputField
+            form={form}
+            name="newPassword"
+            label="Mật khẩu mới"
             type="password"
             rules={{
               required: {
@@ -54,11 +69,11 @@ const DialogResetPassword: FC<Props> = ({open = false, id = null, onClose, onSub
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={6} xl={6}>
+        <Grid item xs={12}>
           <InputField
             form={form}
             name="confirmPassword"
-            label="Nhập lại mật khẩu"
+            label="Nhập lại mật khẩu mới"
             type="password"
             rules={{
               required: {
@@ -67,8 +82,8 @@ const DialogResetPassword: FC<Props> = ({open = false, id = null, onClose, onSub
               },
               validate: {
                 match: (value: string) => {
-                  const {password} = getValues();
-                  return value === password || 'Mật khẩu không khớp.';
+                  const {newPassword} = getValues();
+                  return value === newPassword || 'Mật khẩu không khớp.';
                 },
               },
             }}
