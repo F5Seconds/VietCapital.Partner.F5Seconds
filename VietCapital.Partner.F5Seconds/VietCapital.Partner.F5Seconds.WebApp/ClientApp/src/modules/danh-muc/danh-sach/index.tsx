@@ -129,7 +129,9 @@ const DanhSachDanhMucPage = () => {
         loading={isLoading}
         height={height - 200}
         onRowClick={(row: Category) => {
-          navigate(`sua-danh-muc/${row.id}`);
+          if (checkQuyen('create') && checkQuyen('edit')) {
+            navigate(`sua-danh-muc/${row.id}`);
+          }
         }}
         pagination={{
           show: true,
