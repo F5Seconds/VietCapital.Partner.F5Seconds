@@ -16,7 +16,7 @@ namespace VietCapital.Partner.F5Seconds.Application.Interfaces
         Task<object> InfoUser(string Auth);
         Task<object> ForgotPassword(ForgotPasswordRequest model, string origin);
         Task<Response<string>> ResetPassword(ResetPasswordRequest model);
-        Task<Response<string>> ChangePassword(string Email,string oldPassword,string ConfirmPassword,string newPassword);
+        Task<Response<string>> ChangePassword(ChangePassword data);
 
         Task<object> CreateRole(string name);
         Task<object> GetAllRoles();

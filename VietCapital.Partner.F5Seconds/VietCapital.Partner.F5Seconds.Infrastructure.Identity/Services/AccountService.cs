@@ -51,7 +51,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
             {
-                throw new ApiException($"Không có tài khoản nào với mail {request.Email}.");
+                throw new ApiException($"Không có tài khoản nào với email {request.Email}.");
             }
             var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
             if (!result.Succeeded)
@@ -97,7 +97,7 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
+                    // await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
                     return new Response<string>(user.Id, message: $"Đăng ký thành công");
 
                     // var verificationUri = await SendVerificationEmail(user, origin);
@@ -277,26 +277,26 @@ namespace VietCapital.Partner.F5Seconds.Infrastructure.Identity.Services
                 throw new ApiException($"Error occured while reseting the password.");
             }
         }
-        public async Task<Response<string>> ChangePassword(string Email, string oldPassword, string ConfirmPassword, string newPassword)
+        public async Task<Response<string>> ChangePassword(ChangePassword data)
         {
 
-            if (ConfirmPassword.Equals(newPassword))
+            if (data.ConfirmPassword.Equals(data.NewPassword))
             {
-                var account = await _userManager.FindByEmailAsync(Email);
+                var account = await _userManager.FindByEmailAsync(data.Email);
 
-                if (account == null) throw new ApiException($"Không có tài khoản nào với email là {Email}.");
+                if (account == null) throw new ApiException($"Không có tài khoản nào với email là {data.Email}.");
 
-                var checkLogin = await _signInManager.PasswordSignInAsync(account.UserName, oldPassword, false, lockoutOnFailure: false);
+                var checkLogin = await _signInManager.PasswordSignInAsync(account.UserName, data.OldPassword, false, lockoutOnFailure: false);
                 if(!checkLogin.Succeeded){
                     throw new ApiException($"Sai mật khẩu cũ");
                 }
                 var token = await _userManager.GeneratePasswordResetTokenAsync(account);
 
-                var result = await _userManager.ResetPasswordAsync(account, token, newPassword);
+                var result = await _userManager.ResetPasswordAsync(account, token, data.NewPassword);
                 // var result = await _userManager.ResetPasswordAsync(account, model.Token, model.Password);
                 if (result.Succeeded)
                 {
-                    return new Response<string>(Email, message: $"Đổi mật khẩu thành công.");
+                    return new Response<string>(data.Email, message: $"Đổi mật khẩu thành công.");
                 }
                 else
                 {
