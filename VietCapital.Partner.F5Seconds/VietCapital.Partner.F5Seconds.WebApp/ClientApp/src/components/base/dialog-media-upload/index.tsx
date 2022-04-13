@@ -45,7 +45,7 @@ const DialogMediaUpload: FC<Props> = ({
   init,
   ...rest
 }) => {
-  const storageRef = ref(storage, 'images');
+  const storageRef = ref(storage, 'images/bvb');
   const [listImage, setListImage] = useState<{url: string; name: string; checked: boolean}[]>([]);
   const [listChecked, setListChecked] = useState<string[]>(init ? [init] : []);
   const {enqueueSnackbar} = useSnackbar();
@@ -58,7 +58,7 @@ const DialogMediaUpload: FC<Props> = ({
       setIsSubmitting(true);
       const result = await Promise.all(
         files.map(async item => {
-          const storageRef = ref(storage, `images/${item.name}`);
+          const storageRef = ref(storage, `images/bvb/${item.name}`);
           const resUpload = await uploadBytes(storageRef, item);
           // console.log(resUpload);
           return resUpload;

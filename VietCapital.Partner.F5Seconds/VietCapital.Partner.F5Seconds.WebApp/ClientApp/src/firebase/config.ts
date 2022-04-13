@@ -6,12 +6,14 @@ import {getStorage, ref} from 'firebase/storage';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyCRXmkFT1jfghdEtfQQtUMHLC3EXlSSOVs',
-  authDomain: 'vietcapitalstorage.firebaseapp.com',
-  projectId: 'vietcapitalstorage',
-  storageBucket: 'vietcapitalstorage.appspot.com',
-  messagingSenderId: '330302205051',
-  appId: '1:330302205051:web:66137b13d9c51a4896c6de',
+  apiKey: 'AIzaSyCUdViRNyTMrR_zZOd34dIrZVGYdZ-V-JA',
+  authDomain: 'core-loyalty.firebaseapp.com',
+  databaseURL: 'https://core-loyalty-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: 'core-loyalty',
+  storageBucket: 'core-loyalty.appspot.com',
+  messagingSenderId: '84291535157',
+  appId: '1:84291535157:web:4bc387dc15d42d393b4c7c',
+  measurementId: 'G-T6MNPRZP9S',
 };
 
 // Initialize Firebase
